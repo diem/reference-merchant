@@ -1,0 +1,35 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pre-commit = "*"
+black = "==19.10b0"
+pytest = "*"
+pytest-mock = "*"
+pytest-cov = "*"
+ipython = "*"
+python-dotenv = "*"
+
+[packages]
+setuptools = "===47.3.1"
+SQLAlchemy = "*"
+pylibra-beta = "*"
+Flask = "*"
+flasgger = "*"
+requests = "*"
+Werkzeug = "*"
+bech32 = "*"
+dramatiq = "*"
+pika = "*"
+redis = "*"
+psycopg2-binary = "*"
+pyqrcode = "*"
+pypng = "*"
+apispec = "*"
+dataclasses-json = "*"
+libra-utils = {git = "https://49decaaaf2e5c1c77eca2805117a36b3135f2c26@github.com/libra/libra-reference-utils.git", ref = "master"}
+
+[requires]
+python_version = "3.7"

@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pre-commit = "*"
+black = "==19.10b0"
+pytest = "*"
+pytest-mock = "*"
+
+[packages]
+Flask = "*"
+flasgger = "*"
+marshmallow = "*"
+apispec = "*"
+requests = "*"
+dataclasses-json = "*"
+libra-utils = {git = "https://49decaaaf2e5c1c77eca2805117a36b3135f2c26@github.com/libra/libra-reference-utils.git", ref = "master"}
+sqlalchemy = "*"
+
+[requires]
+python_version = "3.7"

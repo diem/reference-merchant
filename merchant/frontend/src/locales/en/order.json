@@ -1,0 +1,20 @@
+{
+  "title": "Order Details",
+  "time": "Time",
+  "event": "Event",
+  "status": {
+    "title": "Status",
+    "created":  "Created",
+    "cleared": "Cleared",
+    "rejected":  "Rejected",
+    "refunded":  "Refunded",
+    "Refund requested": "Refund requested",
+    "Refund rejected": "Refund rejected",
+    "Refund refunded": "Refunded",
+    "Refund error": "Refund error",
+    "error": "Error",
+    "payout_processing":  "Started payout",
+    "payout_completed": "Payout completed"
+  },
+  "unknown": "Unknown payment ID."
+}

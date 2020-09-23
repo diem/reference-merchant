@@ -1,0 +1,42 @@
+version: '3.4'
+services:
+  gateway:
+    build:
+      target: dynamic_conf
+    volumes:
+      - ../gateway/nginx.dev.conf:/etc/nginx/nginx.conf
+
+  merchant-backend:
+    environment:
+      - COMPOSE_ENV=development
+    volumes:
+      - ../merchant/backend:/merchant-backend
+
+  merchant-frontend:
+    volumes:
+      - ../merchant/frontend:/app
+      - /app/node_modules/
+
+  vasp-backend-web:
+    build:
+      args:
+        REACT_APP_BACKEND_URL: "/vasp"
+    environment:
+      - SETUP_FAKE_MERCHANT=1
+      - COMPOSE_ENV=development
+    volumes:
+      - ../vasp/backend:/vasp-backend
+
+  vasp-backend-pubsub:
+    volumes:
+      - ../vasp/backend:/vasp-vackend
+
+  liquidity:
+    environment:
+      - COMPOSE_ENV=development
+    volumes:
+      - ../liquidity:/liquidity
+
+  db:
+    ports:
+      - 25432:5432

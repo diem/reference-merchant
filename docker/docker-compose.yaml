@@ -1,0 +1,97 @@
+version: '3.4'
+services:
+  gateway:
+    image: lrm-gateway
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+      target: default_conf
+    ports:
+      - ${GW_PORT:-8000}:8000
+    restart: always
+
+  merchant-backend:
+    image: lrm-merchant-backend
+    build:
+      context: ../merchant/backend
+    environment:
+      - COMPOSE_ENV=production
+      - PAYMENT_VASP_URL=http://vasp-backend-web:5000
+      - VASP_TOKEN=abcdefghijklmnop
+    restart: always
+
+  merchant-frontend:
+    stdin_open: true
+    image: lrm-merchant-frontend
+    build:
+      context: ../merchant/frontend
+    restart: always
+
+  vasp-backend-web:
+    image: lrm-vasp-backend
+    build:
+      context: ..
+      dockerfile: vasp/backend/Dockerfile
+    env_file:
+      - ../vasp/backend/.env
+    environment:
+      - REDIS_HOST=redis
+      - COMPOSE_ENV=production
+      - DB_URL=postgresql://backenduser:backendpassword@db/vasp_backend_db
+      - MY_EXTERNAL_URL=http://localhost:8000/vasp
+    command: sh -c "./wait.sh db 5432 && ./run_web.sh"
+    restart: always
+
+  vasp-backend-pubsub:
+    image: lrm-vasp-backend
+    env_file:
+      - ../vasp/backend/.env
+    environment:
+      - REDIS_HOST=redis
+      - DB_URL=postgresql://backenduser:backendpassword@db/vasp_backend_db
+    restart: always
+    command: sh -c "./wait.sh db 5432 && ./run_pubsub.sh"
+
+  vasp-backend-worker:
+    image: lrm-vasp-backend
+    env_file:
+      - ../vasp/backend/.env
+    environment:
+      - REDIS_HOST=redis
+      - DB_URL=postgresql://backenduser:backendpassword@db/vasp_backend_db
+    command: sh -c "./wait.sh db 5432 && ./run_worker.sh"
+    restart: always
+
+  liquidity:
+    image: lrm_liquidity
+    build:
+      context: ../
+      dockerfile: liquidity/Dockerfile
+    env_file:
+      - ../liquidity/.env
+    environment:
+      - COMPOSE_ENV=production
+      - LP_DB_URL=postgresql://backenduser:backendpassword@db/liquidity_provider_db
+      - ADMIN_USERNAME=admin@lrm
+      - LIQUIDITY_SERVICE_HOST=liquidity
+      - LIQUIDITY_SERVICE_PORT=5000
+    restart: always
+
+  redis:
+    image: redis:5
+    restart: always
+
+  db:
+    image: lrm_db
+    build:
+      context: ./pg
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=backenduser
+      - POSTGRES_USER=backendpassword
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:
+    driver: local
