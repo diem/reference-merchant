@@ -33,13 +33,12 @@ docker-compose.
 * python 3.7
 
 Run the following commands in the repository root:
-
 ```shell script
 scripts/lrm.sh setup_environment
 scripts/lrm.sh build
 scripts/lrm.sh develop
 ```
 
-At this stage the merchant website will be available at http://localhost:8000
+The merchant website will be available at http://localhost:8000
 
 See `docker/docker-compose.yaml` for the setup details.
