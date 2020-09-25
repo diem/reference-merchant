@@ -28,9 +28,9 @@ The project is separated into the following components:
 The project uses Docker containers to run its components. The containers are orchestrated using
 docker-compose.
 
-## System Requirements:
-docker and docker-compose - Docker can be installed from the [web](https://www.docker.com/products/docker-desktop)
-python 3.7
+**System Requirements:**
+* docker and docker-compose - Docker can be installed from the [web](https://www.docker.com/products/docker-desktop)
+* python 3.7
 
 Run the following commands in the repository root:
 
