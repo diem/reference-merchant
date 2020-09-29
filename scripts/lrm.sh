@@ -53,6 +53,7 @@ run() {
 }
 
 build() {
+  info "***Building docker services***"
   # build all the service images using compose
   docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} build  || fail 'docker-compose build failed!'
 }
@@ -100,10 +101,22 @@ stop() {
 }
 
 setup_environment() {
+  if ! command -v python &> /dev/null
+  then
+    ec "Install Python 3.7 or greater"
+    exit 1
+  fi
+
+  if ! python -c 'import sys; assert sys.version_info >= (3, 7)' &> /dev/null
+  then
+    ec "You need Python 3.7 or greater installed and mapped to the 'python' command"
+    exit 1
+  fi
+
   if ! command -v pipenv &> /dev/null
   then
     ec "Installing pipenv"
-    pip3 install pipenv
+    pip install pipenv
     exit
   fi
 
@@ -130,10 +143,6 @@ setup_environment() {
 
   info "***Setting up docker-compose project name***"
   cp .env.example .env
-
-
-  info "***Building docker services***"
-  build
 }
 # make sure we actually *did* get passed a valid function name
 if declare -f "$1" >/dev/null 2>&1; then
