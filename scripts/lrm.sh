@@ -53,6 +53,9 @@ run() {
 }
 
 build() {
+  info "***Building Pay-with-Libra***"
+  (cd vasp/backend/pay_with_libra; REACT_APP_BACKEND_URL=/vasp yarn build)
+
   info "***Building docker services***"
   # build all the service images using compose
   docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} build  || fail 'docker-compose build failed!'
@@ -70,7 +73,6 @@ develop() {
   local follow=${2:-true}
   echo "debug mode with gw port ${port}"
 
-  # build the entire docker services using compose
   docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} pull redis
 
   GW_PORT=$port docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} up --detach --no-build
