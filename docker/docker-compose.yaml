@@ -20,12 +20,6 @@ services:
       - VASP_TOKEN=abcdefghijklmnop
     restart: always
 
-  merchant-frontend:
-    stdin_open: true
-    image: lrm-merchant-frontend
-    build:
-      context: ../merchant/frontend
-    restart: always
 
   vasp-backend-web:
     image: lrm-vasp-backend
@@ -63,7 +57,7 @@ services:
     restart: always
 
   liquidity:
-    image: lrm_liquidity
+    image: lrm-liquidity
     build:
       context: ../
       dockerfile: liquidity/Dockerfile

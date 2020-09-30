@@ -1,0 +1,198 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "libra-reference-merchant.fullname" . }}-vasp
+  labels:
+    app: {{ include "libra-reference-merchant.fullname" . }}-vasp
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "libra-reference-merchant.fullname" . }}-vasp
+      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app: {{ include "libra-reference-merchant.fullname" . }}-vasp
+        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-wait
+        image: "{{ .Values.images.vaspBackend }}"
+        command: ["sh", "-c", '/vasp-backend/wait.sh {{ include "libra-reference-merchant.fullname" . }}-db {{ .Values.peripherals.database.port }} || exit 1']
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+      containers:
+      - command:
+          - /vasp-backend/run_web.sh
+        env:
+        - name: COMPOSE_ENV
+          value: "production"
+        - name: MERCHANT_BACKEND_PORT
+          value: {{.Values.service.targetPort | quote}}
+        - name: REDIS_HOST
+          value: {{ include "libra-reference-merchant.peripherals.redis.url" . }}
+        - name: DB_URL
+          value: {{ include "libra-reference-merchant.peripherals.database.url" . }}
+        - name: LP_DB_URL
+          value: {{ include "libra-reference-merchant.peripherals.database.liquidityUrl" . }}
+        - name: ADMIN_USERNAME
+          value: {{ .Values.peripherals.database.adminUsername }}
+        - name: CUSTODY_PRIVATE_KEYS
+          value: {{ .Values.custodyPrivateKeysMerchant | toJson | quote }}
+        - name: LIQUIDITY_SERVICE_PORT
+          value: {{ .Values.service.targetPort | quote }}
+        - name: LIQUIDITY_SERVICE_HOST
+          value: {{ include "libra-reference-merchant.fullname" . }}-liquidity
+        - name: FAKE_MERCHANT_API_KEY
+          value: {{ .Values.fakeMerchantAPIKey }}
+        - name: MY_EXTERNAL_URL
+          value: {{ .Values.ingress.vasp.host | quote }}
+        image: "{{ .Values.images.vaspBackend }}"
+        name: lrm-vasp
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        ports:
+          - name: http
+            containerPort: {{.Values.service.targetPort}}
+            protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "libra-reference-merchant.fullname" . }}-worker
+  labels:
+    app: {{ include "libra-reference-merchant.fullname" . }}-worker
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "libra-reference-merchant.fullname" . }}-worker
+      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app: {{ include "libra-reference-merchant.fullname" . }}-worker
+        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-wait
+        image: "{{ .Values.images.vaspBackend }}"
+        command: ["sh", "-c", '/vasp-backend/wait.sh {{ include "libra-reference-merchant.fullname" . }}-db {{ .Values.peripherals.database.port }} || exit 1']
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+      containers:
+      - command:
+          - /vasp-backend/run_worker.sh
+        env:
+        - name: REDIS_HOST
+          value: {{ include "libra-reference-merchant.peripherals.redis.url" . }}
+        - name: DB_URL
+          value: {{ include "libra-reference-merchant.peripherals.database.url" . }}
+        - name: LP_DB_URL
+          value: {{ include "libra-reference-merchant.peripherals.database.liquidityUrl" . }}
+        - name: ADMIN_USERNAME
+          value: {{ .Values.peripherals.database.adminUsername }}
+        - name: CUSTODY_PRIVATE_KEYS
+          value: {{ .Values.custodyPrivateKeysMerchant | toJson | quote }}
+        - name: LIQUIDITY_SERVICE_PORT
+          value: {{ .Values.service.targetPort | quote }}
+        - name: LIQUIDITY_SERVICE_HOST
+          value: {{ include "libra-reference-merchant.fullname" . }}-liquidity
+        - name: PROCS
+          value: {{ .Values.workers.numProcs | quote }}
+        - name: THREADS
+          value: {{ .Values.workers.numThreads | quote }}        
+        image: "{{ .Values.images.vaspBackend }}"
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        name: lrm-worker
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "libra-reference-merchant.fullname" . }}-pubsub
+  labels:
+    app: {{ include "libra-reference-merchant.fullname" . }}-pubsub
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "libra-reference-merchant.fullname" . }}-pubsub
+      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app: {{ include "libra-reference-merchant.fullname" . }}-pubsub
+        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-wait
+        image: "{{ .Values.images.vaspBackend }}"
+        command: ["sh", "-c", '/vasp-backend/wait.sh {{ include "libra-reference-merchant.fullname" . }}-vasp {{ .Values.service.port }} || exit 1']
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+      containers:
+      - command:
+          - /vasp-backend/run_pubsub.sh
+        env:
+        - name: REDIS_HOST
+          value: {{ include "libra-reference-merchant.peripherals.redis.url" . }}
+        - name: DB_URL
+          value: {{ include "libra-reference-merchant.peripherals.database.url" . }}
+        - name: VASP_ADDR
+          value: {{ .Values.vaspAddr }}
+        - name: CUSTODY_PRIVATE_KEYS
+          value: {{ .Values.custodyPrivateKeysMerchant | toJson | quote }}
+        - name: LIQUIDITY_SERVICE_PORT
+          value: {{ .Values.service.targetPort | quote }}
+        - name: LIQUIDITY_SERVICE_HOST
+          value: {{ include "libra-reference-merchant.fullname" . }}-liquidity
+        image: "{{ .Values.images.vaspBackend }}"
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        name: lrm-pubsub
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP

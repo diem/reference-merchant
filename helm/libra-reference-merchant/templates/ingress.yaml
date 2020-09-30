@@ -1,0 +1,79 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "libra-reference-merchant.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-backend
+  labels:
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/x-forwarded-prefix: "/api"
+    {{- if .Values.ingress.merchant.annotations }}
+    {{ toYaml .Values.ingress.merchant.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.merchant.host | quote }}
+      http:
+        paths:
+        - backend:
+            serviceName: {{ include "libra-reference-merchant.fullname" . }}-web
+            servicePort: {{ .Values.service.port }}
+          path: /api(/|$)(.*)
+---
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-frontend
+  labels:
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+  {{- if .Values.ingress.merchant.annotations }}
+  annotations:
+    {{ toYaml .Values.ingress.merchant.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.merchant.host | quote }}
+      http:
+        paths:
+        - backend:
+            serviceName: {{ include "libra-reference-merchant.fullname" . }}-frontend
+            servicePort: {{ .Values.service.port }}
+          path: /
+
+---
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-vasp
+  labels:
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+  {{- if .Values.ingress.vasp.annotations }}
+  annotations:
+    {{ toYaml .Values.ingress.vasp.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.vasp.host | quote }}
+      http:
+        paths:
+        - backend:
+            serviceName: {{ include "libra-reference-merchant.fullname" . }}-frontend
+            servicePort: {{ .Values.service.port }}
+          path: /
+
+{{- end }}
