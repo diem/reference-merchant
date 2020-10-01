@@ -62,6 +62,14 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+
+{{/*
+Create the payment VASP URL
+*/}}
+{{- define "libra-reference-merchant.vaspUrl" -}}
+http://{{ include "libra-reference-merchant.fullname" . }}-vasp:{{ .Values.service.port }}
+{{- end }}
+
 {{- define "libra-reference-merchant.peripherals.redis.url" -}}
 {{- if .Values.peripherals.redis.create }}
 {{- (include "libra-reference-merchant.fullname" .) }}-redis

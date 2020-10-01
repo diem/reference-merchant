@@ -60,7 +60,7 @@ spec:
         - name: FAKE_MERCHANT_API_KEY
           value: {{ .Values.fakeMerchantAPIKey }}
         - name: MY_EXTERNAL_URL
-          value: {{ .Values.ingress.vasp.host | quote }}
+          value: {{ printf "http://%s" .Values.ingress.vasp.host | quote }}
         image: "{{ .Values.images.vaspBackend }}"
         name: lrm-vasp
         imagePullPolicy: {{ .Values.images.pullPolicy }}

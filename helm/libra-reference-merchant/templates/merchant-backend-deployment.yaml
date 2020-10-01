@@ -33,7 +33,7 @@ spec:
       initContainers:
       - name: init-wait
         image: "{{ .Values.images.merchantBackend }}"
-        command: ["sh", "-c", '/merchant-backend/wait.sh {{ include "libra-reference-merchant.fullname" . }}-db {{ .Values.peripherals.database.port }} || exit 1']
+        command: ["sh", "-c", 'wait-for-it -t 30 {{ include "libra-reference-merchant.fullname" . }}-db:{{ .Values.peripherals.database.port }} || exit 1']
         imagePullPolicy: {{ .Values.images.pullPolicy }}
       containers:
       - command:
@@ -44,7 +44,7 @@ spec:
         - name: MERCHANT_BACKEND_PORT
           value: {{.Values.service.targetPort | quote}}
         - name: PAYMENT_VASP_URL
-          value: http://{{ include "libra-reference-merchant.fullname" . }}-vasp:{{ .Values.service.port }}
+          value: {{ include "libra-reference-merchant.vaspUrl" . | quote}}
         - name: VASP_TOKEN
           value: {{ .Values.fakeMerchantAPIKey }}
         image: "{{ .Values.images.merchantBackend }}"

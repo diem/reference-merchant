@@ -72,7 +72,7 @@ spec:
       http:
         paths:
         - backend:
-            serviceName: {{ include "libra-reference-merchant.fullname" . }}-frontend
+            serviceName: {{ include "libra-reference-merchant.fullname" . }}-vasp
             servicePort: {{ .Values.service.port }}
           path: /
 
