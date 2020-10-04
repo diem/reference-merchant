@@ -137,6 +137,9 @@ setup_environment() {
   info "***Installing merchant frontend dependencies***"
   sh -c "cd merchant/frontend && yarn"
 
+  info "***Installing pay_with_libra yarn***"
+  sh -c "cd vasp/backend/pay_with_libra && yarn"
+
   info "***Installing liquidity dependencies***"
   sh -c "cd liquidity && pipenv install --dev"
 
