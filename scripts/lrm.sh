@@ -54,7 +54,7 @@ run() {
 
 build() {
   info "***Building Pay-with-Libra***"
-  (cd vasp/backend/pay_with_libra; REACT_APP_BACKEND_URL=/vasp yarn build)
+  (cd vasp/backend/pay_with_libra; REACT_APP_BACKEND_URL=/vasp yarn build) || fail 'pay-with-libra build failed!'
 
   info "***Building docker services***"
   # build all the service images using compose
@@ -103,16 +103,19 @@ stop() {
 }
 
 setup_environment() {
+  if ! command -v yarn -v &> /dev/null
+  then
+    fail "yarn not found"
+  fi
+
   if ! command -v python &> /dev/null
   then
-    ec "Install Python 3.7 or greater"
-    exit 1
+    fail "Install Python 3.7 or greater"
   fi
 
   if ! python -c 'import sys; assert sys.version_info >= (3, 7)' &> /dev/null
   then
-    ec "You need Python 3.7 or greater installed and mapped to the 'python' command"
-    exit 1
+    fail "You need Python 3.7 or greater installed and mapped to the 'python' command"
   fi
 
   if ! command -v pipenv &> /dev/null
