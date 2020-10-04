@@ -31,6 +31,8 @@ docker-compose.
 **System Requirements:**
 * docker and docker-compose - Docker can be installed from the [web](https://www.docker.com/products/docker-desktop). If you are installing Docker for the first time on your system, be sure to run it at least once to have it configure itself and get `docker-compose` as a runnable command.
 * python 3.7
+* yarn
+* react-scripts
 
 Run the following commands in the repository root:
 ```shell script
