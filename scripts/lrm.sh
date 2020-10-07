@@ -70,6 +70,9 @@ build() {
   local build_mode=$1
   info "build mode is ${build_mode}"
 
+  info "***Building Pay-with-Libra***"
+  (cd vasp/backend/pay_with_libra; REACT_APP_BACKEND_URL=/vasp yarn build) || fail 'pay-with-libra build failed!'
+
   if [ "$build_mode" = "helm" ]; then
     build_helm
   else
@@ -91,7 +94,6 @@ develop() {
   local follow=${2:-true}
   echo "debug mode with gw port ${port}"
 
-  # build the entire docker services using compose
   docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} pull redis
 
   GW_PORT=$port docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} up --detach --no-build
@@ -122,16 +124,19 @@ stop() {
 }
 
 setup_environment() {
+  if ! command -v yarn -v &> /dev/null
+  then
+    fail "yarn not found"
+  fi
+
   if ! command -v python &> /dev/null
   then
-    ec "Install Python 3.7 or greater"
-    exit 1
+    fail "Install Python 3.7 or greater"
   fi
 
   if ! python -c 'import sys; assert sys.version_info >= (3, 7)' &> /dev/null
   then
-    ec "You need Python 3.7 or greater installed and mapped to the 'python' command"
-    exit 1
+    fail "You need Python 3.7 or greater installed and mapped to the 'python' command"
   fi
 
   if ! command -v pipenv &> /dev/null
@@ -152,6 +157,9 @@ setup_environment() {
 
   info "***Installing merchant frontend dependencies***"
   sh -c "cd merchant/frontend && yarn"
+
+  info "***Installing pay_with_libra yarn***"
+  sh -c "cd vasp/backend/pay_with_libra && yarn"
 
   info "***Installing liquidity dependencies***"
   sh -c "cd liquidity && pipenv install --dev"
