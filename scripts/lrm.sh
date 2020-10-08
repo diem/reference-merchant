@@ -164,9 +164,6 @@ setup_environment() {
   info "***Setting up environment .env files***"
   PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/set_env.py || fail "Fail execute scripts/set_env.py"
 
-  info "***Setting up blockchain Vasp account***"
-  PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/setup_blockchain.py || fail "Fail execute setup_blockchain.py"
-
   info "***Setting up docker-compose project name***"
   cp .env.example .env
 }
