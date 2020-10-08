@@ -13,6 +13,11 @@ services:
       - ../merchant/backend:/merchant-backend
 
   merchant-frontend:
+    stdin_open: true
+    image: lrm-merchant-frontend
+    build:
+      context: ../merchant/frontend
+    restart: always
     volumes:
       - ../merchant/frontend:/app
       - /app/node_modules/

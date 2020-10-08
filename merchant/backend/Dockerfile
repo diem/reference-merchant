@@ -2,7 +2,7 @@ FROM python:3.7-slim
 
 WORKDIR /merchant-backend
 
-RUN apt-get update && apt-get install -y gcc git netcat
+RUN apt-get update && apt-get install -y gcc git netcat wait-for-it
 RUN pip install pipenv
 
 COPY Pipfile Pipfile.lock ./

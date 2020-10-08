@@ -1,13 +1,14 @@
 # Copyright (c) The Libra Core Contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import json
+import sys
 import os
+import subprocess
+import re
+import json
 from secrets import token_bytes
 
-import sys
 from pylibra import AccountKeyUtils
-
 from libra_utils.custody import Custody
 from libra_utils.libra import get_network_supported_currencies, mint_and_wait
 from libra_utils.vasp import Vasp

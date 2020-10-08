@@ -22,7 +22,7 @@ show_help() {
   echo "logs                       Show services logs when debug mode is active"
   echo "down                       Stop all running services and remove them"
   echo "stop                       Stop all running services"
-  echo "build                      Rebuild all services"
+  echo "build <build_mode>         Rebuild all services. Build mode `helm` will build images for helm chart."
   echo "purge                      Reset local database"
   echo
 }
@@ -32,6 +32,7 @@ OPTIND=1
 PRODUCTION=1
 COMPOSE_YAML=docker/docker-compose.yaml
 COMPOSE_DEV_YAML=docker/dev.docker-compose.yaml
+COMPOSE_STATIC_YAML=docker/static.docker-compose.yaml
 PG_VOLUME=pg-data
 export GW_PORT=8080
 
@@ -52,13 +53,33 @@ run() {
   fi
 }
 
+build_helm() {
+  info "running docker to compile frontend..."
+  docker build -t reference-merchant-frontend-build -f "${project_dir}/merchant/frontend/Dockerfile" "${project_dir}/merchant/frontend/" || fail 'merchant frontend container build failed!'
+  docker create --name tmp_reference_merchant_frontend reference-merchant-frontend-build || fail 'frontend compilation failed!'
+  rm -rf "${project_dir}/gateway/tmp/frontend/"
+  mkdir -p "${project_dir}/gateway/tmp/frontend/"
+  docker cp tmp_reference_merchant_frontend:/app/build/. "${project_dir}/gateway/tmp/frontend/" || fail 'frontend copy artifacts failed!'
+  docker rm tmp_reference_merchant_frontend
+  info "frontend build completed"
+
+  docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_STATIC_YAML} build  || fail 'docker-compose build failed!'
+}
+
 build() {
+  local build_mode=$1
+  info "build mode is ${build_mode}"
+
   info "***Building Pay-with-Libra***"
   (cd vasp/backend/pay_with_libra; REACT_APP_BACKEND_URL=/vasp yarn build) || fail 'pay-with-libra build failed!'
 
-  info "***Building docker services***"
-  # build all the service images using compose
-  docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} build  || fail 'docker-compose build failed!'
+  if [ "$build_mode" = "helm" ]; then
+    build_helm
+  else
+    info "***Building docker services***"
+    # build all the service images using compose
+    docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} build  || fail 'docker-compose build failed!'
+  fi
 }
 
 start() {
