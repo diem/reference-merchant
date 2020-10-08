@@ -103,7 +103,7 @@ with open(wallet_env_file_path, "w") as dotenv:
     dotenv.write(f"GW_PORT={GW_PORT}\n")
     dotenv.write(f"WALLET_CUSTODY_ACCOUNT_NAME={wallet_account_name}\n")
     dotenv.write(f"CUSTODY_PRIVATE_KEYS={wallet_custody_private_keys}\n")
-    dotenv.write(f"VASP_ADDR={wallet_account.public_key_bytes.hex()}\n")
+    dotenv.write(f"VASP_ADDR={utils.account_address_hex(wallet_account.account_address)}\n")
     dotenv.write(f"VASP_BASE_URL={VASP_BASE_URL}\n")
     dotenv.write(f"VASP_COMPLIANCE_KEY={VASP_COMPLIANCE_KEY}\n")
     dotenv.write(f"LIQUIDITY_SERVICE_HOST={LIQUIDITY_SERVICE_HOST}\n")
