@@ -139,7 +139,7 @@ with open(liquidity_env_file_path, "w") as dotenv:
     )
 
     print('Mint currencies to liquidity account')
-    address_str = utils.account_address_hex(account.account_address)
+    address_str = utils.account_address_hex(lp_account.account_address)
     faucet = testnet.Faucet(libra_client)
 
     amount = 999 * 1_000_000
