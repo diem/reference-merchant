@@ -2,7 +2,7 @@
 import logging
 from datetime import datetime, timedelta
 
-from libra import utils
+from libra import utils, identifier
 from libra_utils.types.currencies import LibraCurrency
 
 from merchant_vasp import payment_service
@@ -15,7 +15,7 @@ from merchant_vasp.storage import (
     db_session,
 )
 from merchant_vasp.storage.models import PaymentStatus, Merchant
-from pubsub.libra import gen_subaddr, SUBADDRESS_LENGTH, encode_full_addr
+from pubsub.libra import gen_sub_address, SUB_ADDRESS_LENGTH, encode_full_addr
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ def create_payment(currency, merchant_reference_id, amount, merchant_id):
     if existing_order is not None:
         raise TakenMerchantReferenceId
 
-    sub_address = gen_subaddr()
+    sub_address = gen_sub_address()
     new_payment = Payment(
         merchant_id=merchant_id,
         requested_currency=currency,
@@ -79,7 +79,10 @@ def refund(payment):
     if target_transaction.is_refund:
         raise InvalidPaymentStatus("refund_transaction")
 
-    refund_target_address, refund_target_sub_address = utils.account_address_hex(target_transaction.sender_address)
+    refund_target_address, refund_target_sub_address = identifier.decode_account(target_transaction.sender_address)
+    refund_target_address = utils.account_address_hex(refund_target_address)
+    refund_target_sub_address = refund_target_sub_address.hex()
+
     refund_amount = target_transaction.amount  # payment.requested_amount
     refund_currency = LibraCurrency(target_transaction.currency)
 
@@ -98,13 +101,14 @@ def refund(payment):
         )
         payment.add_chain_transaction(
             amount=refund_amount,
-            sender_address=wallet.vasp_address,
+            sender_address=wallet.address_str,
             currency=refund_currency,
             tx_id=refund_tx_id,
             is_refund=True,
         )
         payment.set_status(PaymentStatus.refund_completed)
-    except Exception:  # TODO - narrow to blockchain exception
+    except Exception as e:  # TODO - narrow to blockchain exception
+        logger.exception("Failed during refund")
         payment.set_status(PaymentStatus.refund_error)
 
     return refund_tx_id, target_transaction
@@ -141,7 +145,7 @@ def payout(merchant: Merchant, payment: Payment):
         LibraCurrency(client_payment.currency),
         client_payment.amount,
         liquidity_provider.vasp_address(),
-        payout_target.bytes[:SUBADDRESS_LENGTH].hex(),
+        payout_target.bytes[:SUB_ADDRESS_LENGTH].hex(),
     )
     payment.set_status(PaymentStatus.payout_completed)
     db_session.commit()
@@ -151,13 +155,13 @@ def payout(merchant: Merchant, payment: Payment):
 
 def get_payment_events(payment):
     return [
-        {"created_at": payment_log.created_at, "status": payment_log.status,}
+        {"created_at": payment_log.created_at, "status": payment_log.status, }
         for payment_log in payment.payment_status_logs
     ]
 
 
 def get_merchant_full_addr(payment):
-    return encode_full_addr(OnchainWallet().vasp_address, payment.subaddress)
+    return encode_full_addr(OnchainWallet().address_str, payment.subaddress)
 
 
 def get_merchant_payments(merchant):
@@ -202,8 +206,8 @@ def payment_chain_txs(payment: Payment):
 
 def payment_can_pay(payment: Payment):
     return (
-        payment.status == PaymentStatus.created
-        and payment.expiry_date >= datetime.utcnow()
+            payment.status == PaymentStatus.created
+            and payment.expiry_date >= datetime.utcnow()
     )
 
 

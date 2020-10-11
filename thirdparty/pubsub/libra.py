@@ -4,32 +4,31 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import time
 from dataclasses import dataclass
 from typing import Optional, Tuple, List
 
 from bech32 import encode, decode
+from libra import testnet, jsonrpc
+from libra.jsonrpc import CurrencyInfo
 
 ASSOC_ADDRESS: str = "0000000000000000000000000a550c18"
 ASSOC_AUTHKEY: str = "3126dc954143b1282565e8829cd8cdfdc179db444f64b406dee28015fce7f392"
 
 VASP_ADDRESS_LENGTH: int = 16
-SUBADDRESS_LENGTH: int = 8
-
-api = LibraNetwork()
+SUB_ADDRESS_LENGTH: int = 8
 
 
 # tlb for testnet, lbr for mainnet
 def encode_full_addr(
-    vasp_addr: str, subaddr: Optional[str] = None, hrp: str = "tlb"
+        vasp_addr: str, sub_address: Optional[str] = None, hrp: str = "tlb"
 ) -> str:
-    if subaddr is None or subaddr == "":
+    if sub_address is None or sub_address == "":
         version = 0
         raw_bytes = bytes.fromhex(vasp_addr)
     else:
         version = 1
-        raw_bytes_subaddr = encode_subaddr(subaddr)
-        raw_bytes = bytes.fromhex(vasp_addr) + raw_bytes_subaddr
+        raw_bytes_sub_address = encode_sub_address(sub_address)
+        raw_bytes = bytes.fromhex(vasp_addr) + raw_bytes_sub_address
     encoded_addr = encode(hrp, version, raw_bytes)
     if encoded_addr is None:
         raise ValueError(f'Cannot convert to LibraAddress: "{raw_bytes}"')
@@ -37,9 +36,9 @@ def encode_full_addr(
     return encoded_addr
 
 
-# returns address, subaddress tuple
+# returns address, sub address tuple
 def decode_full_addr(
-    encoded_address: str, hrp: str = "tlb"
+        encoded_address: str, hrp: str = "tlb"
 ) -> Tuple[str, Optional[str]]:
     assert hrp in ("lbr", "tlb")
     # Do basic bech32 decoding
@@ -58,7 +57,7 @@ def decode_full_addr(
 
     elif version == 1:
         # This is a libra network sub-address
-        if len(decoded_address) < VASP_ADDRESS_LENGTH + SUBADDRESS_LENGTH:
+        if len(decoded_address) < VASP_ADDRESS_LENGTH + SUB_ADDRESS_LENGTH:
             raise ValueError(
                 f"Libra network sub-address must be > 16+8"
                 f' bytes, found: "{len(decoded_address)}"'
@@ -73,44 +72,44 @@ def decode_full_addr(
 
 def gen_raw_subaddr() -> bytes:
     """
-    Return a raw subaddress bytestring of a given length
+    Return a raw sub address bytestring of a given length
     """
-    return os.urandom(SUBADDRESS_LENGTH)
+    return os.urandom(SUB_ADDRESS_LENGTH)
 
 
-def gen_subaddr() -> str:
-    return decode_subaddr(gen_raw_subaddr())
+def gen_sub_address() -> str:
+    return decode_sub_address(gen_raw_subaddr())
 
 
-def encode_subaddr(subaddr: str) -> bytes:
-    return bytes.fromhex(subaddr)
+def encode_sub_address(sub_address: str) -> bytes:
+    return bytes.fromhex(sub_address)
 
 
-def decode_subaddr(subaddr: bytes) -> str:
-    return subaddr.hex()
+def decode_sub_address(sub_address: bytes) -> str:
+    return sub_address.hex()
 
 
 @dataclass
 class TransactionMetadata:
     def __init__(
-        self,
-        to_subaddr: bytes = b"",
-        from_subaddr: bytes = b"",
-        referenced_event: bytes = b"",
+            self,
+            to_sub_address: bytes = b"",
+            from_sub_address: bytes = b"",
+            referenced_event: bytes = b"",
     ) -> None:
-        self.to_subaddress: bytes = to_subaddr
-        self.from_subaddress: bytes = from_subaddr
+        self.to_sub_address: bytes = to_sub_address
+        self.from_sub_address: bytes = from_sub_address
         self.referenced_event: bytes = referenced_event
 
     def to_bytes(self) -> bytes:
         ret = b""
-        if self.to_subaddress:
-            ret += b"\x01" + self.to_subaddress
+        if self.to_sub_address:
+            ret += b"\x01" + self.to_sub_address
         else:
             ret += b"\x00"
 
-        if self.from_subaddress:
-            ret += b"\x01" + self.from_subaddress
+        if self.from_sub_address:
+            ret += b"\x01" + self.from_sub_address
         else:
             ret += b"\x00"
 
@@ -131,20 +130,20 @@ class TransactionMetadata:
             return TransactionMetadata()
 
         curr_byte = 2
-        to_subaddress, from_subaddress, referenced_event = b"", b"", b""
+        to_sub_address, from_sub_address, referenced_event = b"", b"", b""
 
         try:
-            to_subaddr_present = lcs_bytes[curr_byte] == 0x01
+            to_sub_address_present = lcs_bytes[curr_byte] == 0x01
             curr_byte += 1
-            if not to_subaddr_present:  # to_subaddress is mandatory
+            if not to_sub_address_present:  # to_sub_address is mandatory
                 return TransactionMetadata()
-            to_subaddress = lcs_bytes[curr_byte : curr_byte + 8]
+            to_sub_address = lcs_bytes[curr_byte: curr_byte + 8]
             curr_byte += 8
 
-            from_subaddress_present = lcs_bytes[curr_byte] == 0x01
+            from_sub_address_present = lcs_bytes[curr_byte] == 0x01
             curr_byte += 1
-            if from_subaddress_present:
-                from_subaddress = lcs_bytes[curr_byte : curr_byte + 8]
+            if from_sub_address_present:
+                from_sub_address = lcs_bytes[curr_byte: curr_byte + 8]
                 curr_byte += 8
 
             referenced_event_present = lcs_bytes[curr_byte] == 0x01
@@ -152,7 +151,7 @@ class TransactionMetadata:
             if referenced_event_present:
                 referenced_event = lcs_bytes[curr_byte:]
 
-            return TransactionMetadata(to_subaddress, from_subaddress, referenced_event)
+            return TransactionMetadata(to_sub_address, from_sub_address, referenced_event)
         except IndexError:
             print("Metadata malformed")
             return TransactionMetadata()
@@ -167,38 +166,6 @@ def decode_txn_metadata(meta_bytes: bytes) -> "TransactionMetadata":
 
 
 def get_network_supported_currencies() -> List[CurrencyInfo]:
-    api = LibraNetwork()
+    api = jsonrpc.Client(testnet.JSON_RPC_URL)
+
     return api.get_currencies()
-
-
-def wait_for_account_seq(addr_hex: str, seq: int) -> AccountResource:
-    num_tries = 0
-
-    while num_tries < 1000:
-        ar = api.getAccount(addr_hex)
-        if ar is not None and ar.sequence >= seq:
-            return ar
-        time.sleep(1)
-        num_tries += 1
-    raise Exception("Wait for account sequence timed out!")
-
-
-def mint_and_wait(authkey_hex: str, amount: int, currency: str) -> AccountResource:
-    f = FaucetUtils()
-    seq = f.mint(authkey_hex=authkey_hex, amount=amount, identifier=currency)
-    return wait_for_account_seq(ASSOC_ADDRESS, seq)
-
-
-def create_account(auth_key, public_address):
-    """
-    Create account with all supported blockchain currencies
-    """
-    account = api.getAccount(public_address)
-    if not account:
-        mint_and_wait(auth_key, 1_000_000, "LBR")
-        account = api.getAccount(public_address)
-
-        if not account:
-            raise Exception(f"Could not create vasp account for auth key {auth_key}")
-
-    return account

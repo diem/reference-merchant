@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
+from libra.jsonrpc import CurrencyInfo
 from libra_utils.sdks import liquidity
 from libra_utils.types.liquidity.currency import CurrencyPairs
 from libra_utils.types.liquidity.lp import LPDetails
@@ -17,6 +18,7 @@ from merchant_vasp.storage import (
     PaymentOption,
     PaymentStatus,
 )
+from pubsub.libra import encode_full_addr
 from webapp import app
 
 TOKEN_1 = "mailmen111"
@@ -126,11 +128,6 @@ MOCK_LP_DETAILS = LPDetails(
 @pytest.fixture()
 def db(mocker):
     clear_db()
-    # TODO - remock vasp_address!!
-    mocker.patch(
-        "libra_utils.libra.get_network_supported_currencies",
-        return_value=MOCK_NETWORK_SUPPORTED_CURRENCIES,
-    )
     # Add Merchant and Payment for testing
     merchant = Merchant(
         api_key=TOKEN_1,
