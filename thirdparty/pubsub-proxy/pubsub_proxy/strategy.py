@@ -19,7 +19,8 @@ from typing import (
     cast,
 )
 
-import pylibra
+import libra
+from libra import jsonrpc
 
 from .account_subscription_storage import (
     BaseAccountSubscriptionStorage,
@@ -28,7 +29,6 @@ from .account_subscription_storage import (
 from .events import PubSubEvent
 from .settings import Settings
 from .util import load_custom_backend, transform_address
-
 
 TProgressState = TypeVar("TProgressState", bound="ProgressState")
 
@@ -50,12 +50,12 @@ class AbstractStrategy(ABC, Generic[TProgressState]):
     """
 
     def __init__(
-        self,
-        libra_client: pylibra.LibraNetwork,
-        subscription_storage: BaseAccountSubscriptionStorage,
-        config: Dict[str, Any],
+            self,
+            libra_client: jsonrpc.Client(""),
+            subscription_storage: BaseAccountSubscriptionStorage,
+            config: Dict[str, Any],
     ) -> None:
-        self.libra_client = libra_client
+        self.libra_client = jsonrpc.Client("")
         self.subscription_storage = subscription_storage
 
     @abstractmethod
@@ -93,16 +93,16 @@ class TailBlockchainStrategy(AbstractStrategy[TailBlockchainStrategyState]):
     """
 
     def __init__(
-        self,
-        libra_client: pylibra.LibraNetwork,
-        subscription_storage: BaseAccountSubscriptionStorage,
-        config: Dict[str, Any],
+            self,
+            libra_client: jsonrpc.Client(""),
+            subscription_storage: BaseAccountSubscriptionStorage,
+            config: Dict[str, Any],
     ) -> None:
         super().__init__(libra_client, subscription_storage, config)
         self.batch_size = config["batch_size"]
 
     def sync(
-        self, state: TailBlockchainStrategyState
+            self, state: TailBlockchainStrategyState
     ) -> Tuple[List[PubSubEvent], TailBlockchainStrategyState]:
         known_version = state.version
 
@@ -112,14 +112,13 @@ class TailBlockchainStrategy(AbstractStrategy[TailBlockchainStrategyState]):
         updates = []
         for transaction, events in response:
             # TODO: change to `known_version = transaction.version()`
-            # once pylibra returns this info
             known_version += 1
 
             if transaction is None:
                 continue
 
             for event in events:
-                if isinstance(event, pylibra.PaymentEvent):
+                if isinstance(event, libra.PaymentEvent):
                     address = (
                         event.sender_address
                         if event.is_sent
@@ -159,7 +158,7 @@ class EventStreamStrategyState(ProgressState):
     def __init__(self, accounts: Dict[str, List[EventStreamState]]):
         self.accounts = accounts
 
-    def add(self, account_resource: Optional[pylibra.AccountResource]) -> None:
+    def add(self, account_resource: Optional[libra.AccountResource]) -> None:
         if account_resource is not None:
             self.accounts[transform_address(account_resource.address)] = [
                 EventStreamState(account_resource.sent_events_key.hex(), 0),
@@ -206,10 +205,10 @@ class EventStreamStrategy(AbstractStrategy[EventStreamStrategyState]):
     """
 
     def __init__(
-        self,
-        libra_client: pylibra.LibraNetwork,
-        subscription_storage: BaseAccountSubscriptionStorage,
-        config: Dict[str, Any],
+            self,
+            libra_client: jsonrpc.Client(""),
+            subscription_storage: BaseAccountSubscriptionStorage,
+            config: Dict[str, Any],
     ) -> None:
         super().__init__(libra_client, subscription_storage, config)
         self.batch_size = config["batch_size"]
@@ -217,7 +216,7 @@ class EventStreamStrategy(AbstractStrategy[EventStreamStrategyState]):
         self.subscription_last_fetch_tst: float = 0
 
     def sync(
-        self, state: EventStreamStrategyState
+            self, state: EventStreamStrategyState
     ) -> Tuple[List[PubSubEvent], EventStreamStrategyState]:
         events = []
         new_state = self.refetch_subscriptions(state)
@@ -230,21 +229,21 @@ class EventStreamStrategy(AbstractStrategy[EventStreamStrategyState]):
                 events.append(PubSubEvent(event, event_stream.event_key))
                 # TODO: replace hacky hardcode after pylibra update
                 event_stream.sequence_number = (
-                    event.__dict__["_ev_dict"]["sequence_number"] + 1
+                        event.__dict__["_ev_dict"]["sequence_number"] + 1
                 )
         return (events, new_state)
 
     def refetch_subscriptions(
-        self, progress_state: EventStreamStrategyState
+            self, progress_state: EventStreamStrategyState
     ) -> EventStreamStrategyState:
         if (
-            time.time() - self.subscription_last_fetch_tst
-            > self.subscription_fetch_interval_ms / 1000
+                time.time() - self.subscription_last_fetch_tst
+                > self.subscription_fetch_interval_ms / 1000
         ):
             accounts = self.subscription_storage.get_accounts()
             for address in accounts.difference(progress_state.accounts):
                 # TODO: we need to utilize json-rpc batching here
-                progress_state.add(self.libra_client.getAccount(address))
+                progress_state.add(self.libra_client.get_account(address))
             progress_state.gc_subscriptions(accounts)
 
         return progress_state
@@ -258,7 +257,7 @@ class EventStreamStrategy(AbstractStrategy[EventStreamStrategyState]):
 
 
 def create_sync_strategy(settings: Settings) -> AbstractStrategy[ProgressState]:
-    libra_client = pylibra.LibraNetwork()
+    libra_client = jsonrpc.Client("")
     libra_client._url = settings.libra_node_uri
     subscription_storage = create_account_subscription_storage(
         settings.account_subscription_storage_type,

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 from typing import Any, Dict, Optional
 
-import pylibra
+import libra
 
 from .util import transform_address
 
 
 class PubSubEvent:
     def __init__(
-        self, event: pylibra.PaymentEvent, event_key: Optional[str] = None
+            self, event: libra.PaymentEvent, event_key: Optional[str] = None
     ) -> None:
         self.payer: bytes = event.sender_address
         self.payee: bytes = event.receiver_address

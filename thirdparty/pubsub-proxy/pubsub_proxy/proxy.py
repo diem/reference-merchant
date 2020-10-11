@@ -2,7 +2,7 @@
 import logging
 import time
 
-import pylibra
+from libra import jsonrpc
 
 from .progress_storage import create_progress_storage
 from .pubsub_adapter import create_pubsub_client
@@ -19,7 +19,7 @@ class LibraPubSubProxy:
     def __init__(self, settings: Settings) -> None:
         logging.basicConfig(level=logging.DEBUG, filename=settings.log_file)
 
-        self.libra_client = pylibra.LibraNetwork()
+        self.libra_client = jsonrpc.Client(settings.libra_node_uri)
         self.libra_client._url = settings.libra_node_uri
 
         self.sync_strategy = create_sync_strategy(settings)

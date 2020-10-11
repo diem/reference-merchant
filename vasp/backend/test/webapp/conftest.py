@@ -3,13 +3,11 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
-from libra_utils.libra import encode_full_addr
 from libra_utils.sdks import liquidity
 from libra_utils.types.liquidity.currency import CurrencyPairs
 from libra_utils.types.liquidity.lp import LPDetails
 from libra_utils.types.liquidity.quote import Rate, QuoteData
 from libra_utils.types.liquidity.trade import TradeId
-from pylibra import CurrencyInfo
 
 from merchant_vasp.storage import (
     db_session,

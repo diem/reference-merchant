@@ -2,12 +2,7 @@
 import logging
 from datetime import datetime, timedelta
 
-from libra_utils.libra import (
-    gen_subaddr,
-    decode_full_addr,
-    encode_full_addr,
-    SUBADDRESS_LENGTH,
-)
+from libra import utils
 from libra_utils.types.currencies import LibraCurrency
 
 from merchant_vasp import payment_service
@@ -20,6 +15,7 @@ from merchant_vasp.storage import (
     db_session,
 )
 from merchant_vasp.storage.models import PaymentStatus, Merchant
+from pubsub.libra import gen_subaddr, SUBADDRESS_LENGTH, encode_full_addr
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +60,7 @@ def create_payment(currency, merchant_reference_id, amount, merchant_id):
         )
     Payment.add_payment(new_payment)
     logger.debug(
-        f"Adding new payment (id {new_payment.id}) to subaddress {new_payment.subaddress}"
+        f"Adding new payment (id {new_payment.id}) to sub address {new_payment.subaddress}"
     )
     return new_payment
 
@@ -83,23 +79,26 @@ def refund(payment):
     if target_transaction.is_refund:
         raise InvalidPaymentStatus("refund_transaction")
 
-    refund_target_address, refund_target_subaddr = decode_full_addr(
-        target_transaction.sender_address
-    )
+    refund_target_address, refund_target_sub_address = utils.account_address_hex(target_transaction.sender_address)
     refund_amount = target_transaction.amount  # payment.requested_amount
     refund_currency = LibraCurrency(target_transaction.currency)
 
     payment.set_status(PaymentStatus.refund_requested)
+
+    refund_tx_id = None
+
     try:
-        refund_tx_id, _ = OnchainWallet().send_transaction(
+        wallet = OnchainWallet()
+
+        refund_tx_id, _ = wallet.send_transaction(
             refund_currency,
             refund_amount,
             refund_target_address,
-            refund_target_subaddr,  # TODO - new subaddr for refund?
+            refund_target_sub_address,  # TODO - new sub_address for refund?
         )
         payment.add_chain_transaction(
             amount=refund_amount,
-            sender_address=OnchainWallet().vasp_address,
+            sender_address=wallet.vasp_address,
             currency=refund_currency,
             tx_id=refund_tx_id,
             is_refund=True,

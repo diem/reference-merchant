@@ -110,9 +110,9 @@ class StrictSchemaView(flasgger.SwaggerView):
 def validate_response(response, http_status_code, response_definitions):
     schema_factory = (
         response_definitions.get(http_status_code, {})
-        .get("content", {})
-        .get("application/json", {})
-        .get("schema")
+            .get("content", {})
+            .get("application/json", {})
+            .get("schema")
     )
     if not schema_factory:
         return
@@ -170,7 +170,7 @@ def path_uuid_param(name, description):
         "in": "path",
         "required": True,
         "description": description,
-        "schema": {"type": "string", "format": "uuid",},
+        "schema": {"type": "string", "format": "uuid", },
     }
 
 
