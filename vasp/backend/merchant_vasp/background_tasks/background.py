@@ -16,13 +16,13 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
 
     if metadata and isinstance(metadata, libra_types.Metadata__GeneralMetadata) \
             and isinstance(metadata.value, libra_types.GeneralMetadata__GeneralMetadataVersion0):
-        general_v0 = metadata.value.value
+        general_metadata = metadata.value.value
 
-        if general_v0.to_subaddress:
-            receiver_sub_address = general_v0.to_subaddress.hex()
+        if general_metadata.to_subaddress:
+            receiver_sub_address = general_metadata.to_subaddress.hex()
 
-        if general_v0.from_subaddress:
-            sender_sub_address = general_v0.from_subaddress.hex()
+        if general_metadata.from_subaddress:
+            sender_sub_address = general_metadata.from_subaddress.hex()
 
     try:
         process_incoming_transaction(
