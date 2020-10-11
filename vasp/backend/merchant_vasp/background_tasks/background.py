@@ -25,16 +25,10 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
             sender_sub_address = general_metadata.from_subaddress.hex()
 
     try:
-        process_incoming_transaction(
-            version=txn.version,
-            sender_address=txn.sender,
-            sender_subaddress=sender_sub_address,
-            receiver_address=txn.receiver,
-            receiver_subaddress=receiver_sub_address,
-            sequence=txn.sequence,
-            amount=txn.amount,
-            currency=LibraCurrency[txn.currency],
-        )
+        process_incoming_transaction(version=txn.version, sender_address=txn.sender,
+                                     sender_sub_address=sender_sub_address, receiver_address=txn.receiver,
+                                     receiver_sub_address=receiver_sub_address, amount=txn.amount,
+                                     currency=LibraCurrency[txn.currency])
     except PaymentServiceException as _:
         # TODO - log exception
         db_session.rollback()

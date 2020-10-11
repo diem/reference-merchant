@@ -31,14 +31,13 @@ def get_supported_currencies() -> Tuple[str]:
 
 
 def process_incoming_transaction(
-    version,
-    sender_address,
-    sender_subaddress,
-    receiver_address,
-    receiver_subaddress,
-    sequence,
-    amount,
-    currency,
+        version,
+        sender_address,
+        sender_sub_address,
+        receiver_address,
+        receiver_sub_address,
+        amount,
+        currency,
 ) -> None:
     """This function receives incoming payment events from the chain"""
     # Check if the payment is intended for us - this address is configured via environment variable, see config.py
@@ -47,10 +46,10 @@ def process_incoming_transaction(
         raise WrongReceiverAddressException("wrongaddr")
 
     # Locate payment id and payment options related to the given subaddress
-    payment = Payment.find_by_subaddress(receiver_subaddress)
+    payment = Payment.find_by_subaddress(receiver_sub_address)
     if payment is None:
         logging.debug(
-            f"Could not find the qualifying payment {receiver_subaddress}, ignoring."
+            f"Could not find the qualifying payment {receiver_sub_address}, ignoring."
         )
         # TODO - Process for errant payments?
         raise PaymentForSubaddrNotFoundException("wrongsubaddr")
@@ -80,7 +79,7 @@ def process_incoming_transaction(
     # version is tx_id
 
     payment.add_chain_transaction(
-        libra.encode_full_addr(sender_address, sender_subaddress),
+        libra.encode_full_addr(sender_address, sender_sub_address),
         amount,
         currency,
         version,
