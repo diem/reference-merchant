@@ -16,6 +16,7 @@ class Product:
     description: str
     quantity: int
     payment_type: str
+    image_url: str
 
 
 PRODUCTS = {
@@ -24,27 +25,30 @@ PRODUCTS = {
             price=34250000,
             currency=FiatCurrency.USD.value,
             name="Libra T-Shirt",
-            description="The all new Libra T-Shirt available now. Amazing black / white colors!",
+            description="The all new Libra T-Shirt available now. Amazing purple / white colors!",
             quantity=1000,
             payment_type="direct",
+            image_url="/images/t-shirt-purple.png"
         ),
     "00000002": Product(
             gtin="00000002",
-            price=15891000,
+            price=15890000,
             currency=FiatCurrency.EUR.value,
-            name="Libra Key Holder",
-            description="The all new Libra Key Holder available now. Amazing black / white colors!",
+            name="Libra Key Chain",
+            description="The all new Libra Key Chain available now in purple colors!",
             quantity=1000,
             payment_type="direct",
+            image_url="/images/key-chain.png"
         ),
     "00000003": Product(
             gtin="00000003",
             price=21010000,
             currency=FiatCurrency.USD.value,
-            name="Libra Socks",
-            description="The all new Libra Socks available now. Amazing black / white colors!",
+            name="Libra Hat",
+            description="The all new Libra Hat available now. Amazing purple color!",
             quantity=1000,
             payment_type="direct",
+            image_url="/images/hat.png"
         )
 }
 
