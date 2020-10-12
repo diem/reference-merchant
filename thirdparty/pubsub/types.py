@@ -21,10 +21,16 @@ class LRWPubSubEvent:
         self.receiver = receiver
         self.amount = amount
         self.currency = currency
-        self.metadata = libra_types.Metadata.lcs_deserialize(metadata) \
-            if metadata else libra_types.Metadata__Undefined()
         self.version = version
         self.sequence = sequence
+
+        # The metadata deserializer is totally a prickly drama queen
+        # It breaks on data directly from the blockchain without saying much
+        self.metadata = libra_types.Metadata__Undefined()
+        try:
+            self.metadata = libra_types.Metadata.lcs_deserialize(metadata)
+        except:
+            pass
 
     @classmethod
     def from_jsonrpc_event(cls, event: jsonrpc.Event) -> "LRWPubSubEvent":
