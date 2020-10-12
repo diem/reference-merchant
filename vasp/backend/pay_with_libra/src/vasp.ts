@@ -30,6 +30,32 @@ export default class Vasp {
   }
 
   public async getPaymentOptions(paymentId: string): Promise<PaymentOptions> {
+    return {
+      "fiatCurrency": "USD",
+      "fiatPrice": 34250000,
+      "options": [
+        {
+          "address": "tlb1px0gsvlknj5z3kgxqe6jt3rdh38t3hxyewl7tmcg69kly5",
+          "amount": 34250000,
+          "currency": "Coin1",
+          "paymentLink": "libra://tlb1px0gsvlknj5z3kgxqe6jt3rdh38t3hxyewl7tmcg69kly5?c=Coin1&am=34250000"
+        },
+        {
+          "address": "tlb1px0gsvlknj5z3kgxqe6jt3rdh38t3hxyewl7tmcg69kly5",
+          "amount": 31712966,
+          "currency": "Coin2",
+          "paymentLink": "libra://tlb1px0gsvlknj5z3kgxqe6jt3rdh38t3hxyewl7tmcg69kly5?c=Coin2&am=31712966"
+        },
+        {
+          "address": "tlb1px0gsvlknj5z3kgxqe6jt3rdh38t3hxyewl7tmcg69kly5",
+          "amount": 32932676,
+          "currency": "LBR",
+          "paymentLink": "libra://tlb1px0gsvlknj5z3kgxqe6jt3rdh38t3hxyewl7tmcg69kly5?c=LBR&am=32932676"
+        }
+      ],
+      "paymentId": "32bf63df-8498-4d44-a6f5-ecf969de207a"
+    }
+
     const response = await this.client.get(`/payments/${paymentId}`);
     return {
       paymentId: response.data.payment_id,

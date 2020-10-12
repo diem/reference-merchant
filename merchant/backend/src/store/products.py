@@ -20,14 +20,32 @@ class Product:
 
 PRODUCTS = {
     "00000001": Product(
-        gtin="00000001",
-        price=34250000,
-        currency=FiatCurrency.USD.value,
-        name="Libra T-Shirt",
-        description="The all new Libra T-Shirt available now. Amazing black / white colors!",
-        quantity=1000,
-        payment_type="direct",
-    )
+            gtin="00000001",
+            price=34250000,
+            currency=FiatCurrency.USD.value,
+            name="Libra T-Shirt",
+            description="The all new Libra T-Shirt available now. Amazing black / white colors!",
+            quantity=1000,
+            payment_type="direct",
+        ),
+    "00000002": Product(
+            gtin="00000002",
+            price=15891000,
+            currency=FiatCurrency.EUR.value,
+            name="Libra Key Holder",
+            description="The all new Libra Key Holder available now. Amazing black / white colors!",
+            quantity=1000,
+            payment_type="direct",
+        ),
+    "00000003": Product(
+            gtin="00000003",
+            price=21010000,
+            currency=FiatCurrency.USD.value,
+            name="Libra Socks",
+            description="The all new Libra Socks available now. Amazing black / white colors!",
+            quantity=1000,
+            payment_type="direct",
+        )
 }
 
 

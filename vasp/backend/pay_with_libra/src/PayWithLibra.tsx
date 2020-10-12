@@ -23,10 +23,10 @@ function PayWithLibra({ paymentLink }: PayWithLibraProps) {
         {paymentOptions && (
           <div className="">
             {paymentOptions.map((option) => (
-              <div className="my-4">
+              <div className="mt-4">
                 <a
+                  className="btn btn-block btn-primary text-left"
                   href={paymentLink}
-                  className=""
                   key={option.id}
                 >
                   <img
