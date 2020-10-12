@@ -1,10 +1,8 @@
-from dataclasses import asdict
 from http import HTTPStatus
 from uuid import UUID
 
 import pytest
 
-from currency import Price
 from vasp_client import vasp_client
 from vasp_client.types import PaymentStatus, Payment
 
@@ -14,7 +12,7 @@ test_url = "http://redorect/to_here"
 
 @pytest.fixture
 def start_payment_mock(monkeypatch):
-    def start_payment_mock_impl(price: Price, order_id: UUID) -> Payment:
+    def start_payment_mock_impl(price: int, currency: str, order_id: UUID) -> Payment:
         return Payment(payment_id=test_payment_id, payment_form_url=test_url)
 
     monkeypatch.setattr(vasp_client, "start_payment", start_payment_mock_impl)
