@@ -81,7 +81,6 @@ app: Flask = _create_app()
 def init() -> Flask:
     _wait_for_postgres()
     _create_db(app)
-    OnchainWallet().setup_blockchain()
     _setup_fake_merchant()
     app.logger.info("App init complete!")
     return app
