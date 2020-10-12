@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
+from libra import identifier
 from libra.jsonrpc import CurrencyInfo
 from libra_utils.sdks import liquidity
 from libra_utils.types.liquidity.currency import CurrencyPairs
@@ -18,7 +19,6 @@ from merchant_vasp.storage import (
     PaymentOption,
     PaymentStatus,
 )
-from pubsub.libra import encode_full_addr
 from webapp import app
 
 TOKEN_1 = "mailmen111"
@@ -166,7 +166,7 @@ def db(mocker):
         requested_amount=10,
         requested_currency="USD",
         status=PaymentStatus.cleared,
-        subaddress="90",
+        subaddress="f3704755d1100cd2",
         expiry_date=datetime.utcnow() - timedelta(minutes=10),
     )
     cleared_payment.payment_options.append(
@@ -177,7 +177,7 @@ def db(mocker):
         )
     )
     cleared_payment.add_chain_transaction(
-        sender_address=encode_full_addr(SENDER_MOCK_ADDR, CLEARED_PAYMENT_SUBADDR),
+        sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR),
         amount=10,
         currency="LBR",
         tx_id=CLEARED_TX_ID,
