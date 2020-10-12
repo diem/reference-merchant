@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 
-import Vasp, { PaymentOptions } from "../vasp";
+import Vasp, {PaymentOptions} from "../vasp";
 import {
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Row,
-  Col,
   Button,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Row,
+  UncontrolledDropdown,
+  UncontrolledTooltip,
 } from "reactstrap";
 import QRCode from "qrcode.react";
 import PayWithLibra from "../PayWithLibra";
-import { fiatToHumanFriendly, libraToHumanFriendly } from "../utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import {fiatToHumanFriendly, libraToHumanFriendly} from "../utils";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faQuestionCircle,} from "@fortawesome/free-solid-svg-icons";
 
 export interface LibraCheckoutProps {
   paymentId: string;
@@ -63,18 +61,24 @@ export default function LibraCheckout({ paymentId }: LibraCheckoutProps) {
       <div className="w-100">
         <Row>
           <Col className="text-nowrap text-right">Total price:</Col>
-          <Col className="text-nowrap">
+          <Col className="d-flex align-items-center">
+            <span className="text-nowrap">
             {fiatToHumanFriendly(paymentOptions.fiatPrice)}{" "}
             {paymentOptions.fiatCurrency}
+            </span>
+            <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="totalPriceHelp" />
+            <UncontrolledTooltip target="totalPriceHelp">
+              The price in fiat set by the merchant
+            </UncontrolledTooltip>
           </Col>
         </Row>
         <Row>
           <Col className="text-nowrap text-right align-self-center">
             Payment currency:
           </Col>
-          <Col>
+          <Col className="d-flex align-items-center">
             <UncontrolledDropdown>
-              <DropdownToggle caret color="primary">
+              <DropdownToggle caret color="outline-dark" className="py-0 px-2">
                 {paymentOptions.options[selectedOption].currency}
               </DropdownToggle>
               <DropdownMenu>
@@ -88,63 +92,73 @@ export default function LibraCheckout({ paymentId }: LibraCheckoutProps) {
                 ))}
               </DropdownMenu>
             </UncontrolledDropdown>
+            <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="currencyHelp" />
+            <UncontrolledTooltip target="currencyHelp">
+              Please select a Libra currency
+            </UncontrolledTooltip>
           </Col>
         </Row>
         <Row>
           <Col className="text-nowrap text-right">Total to pay:</Col>
-          <Col className="text-nowrap">
-            {libraToHumanFriendly(
-              paymentOptions.options[selectedOption].amount
-            )}{" "}
-            {paymentOptions.options[selectedOption].currency}
+          <Col className="d-flex align-items-center">
+            <span className="text-nowrap">
+              {libraToHumanFriendly(
+                paymentOptions.options[selectedOption].amount
+              )}{" "}
+              {paymentOptions.options[selectedOption].currency}
+            </span>
+            <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="totalToPayHelp" />
+            <UncontrolledTooltip target="totalToPayHelp">
+              The amount you will be changed in Libra
+            </UncontrolledTooltip>
           </Col>
         </Row>
       </div>
       <div>
         {chooseWallet ? (
           <>
-            <Row>
-              <Col className="py-4">
-                <div className="text-center">Choose your wallet:</div>
-                <PayWithLibra
-                  paymentLink={
-                    paymentOptions.options[selectedOption].paymentLink
-                  }
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className="text-left">
-                <Button onClick={() => setChooseWallet(false)}>
-                  <FontAwesomeIcon icon={faChevronLeft} /> Scan QR
-                </Button>
-              </Col>
-            </Row>
+            <div className="mt-4">
+              <div className="text-center">Choose your wallet:</div>
+              <PayWithLibra
+                paymentLink={
+                  paymentOptions.options[selectedOption].paymentLink
+                }
+              />
+            </div>
+            <div className="text-center small py-4 font-weight-bold">
+              - OR -
+            </div>
+            <div className="text-center">
+              <Button color="primary" size="sm" onClick={() => setChooseWallet(false)}>
+                Scan QR
+              </Button>
+            </div>
           </>
         ) : (
           <>
-            <Row>
-              <Col className="py-4">
-                <QRCode
-                  className="img-fluid"
-                  size={256}
-                  value={paymentOptions.options[selectedOption].paymentLink}
-                  imageSettings={{
-                    src: require("../logo.svg"),
-                    height: 32,
-                    width: 32,
-                    excavate: true,
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className="text-right">
-                <Button onClick={() => setChooseWallet(true)}>
-                  Open in Libra wallet <FontAwesomeIcon icon={faChevronRight} />
-                </Button>
-              </Col>
-            </Row>
+            <QRCode
+              className="img-fluid mt-4"
+              size={192}
+              value={paymentOptions.options[selectedOption].paymentLink}
+              imageSettings={{
+                src: require("../logo.svg"),
+                height: 32,
+                width: 32,
+                excavate: true,
+              }}
+            />
+            <div className="text-center small py-4 font-weight-bold">
+              - OR -
+            </div>
+            <div className="text-center">
+              <Button color="primary" size="sm" onClick={() => setChooseWallet(true)}>
+                Open in Libra wallet
+              </Button>
+              <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="openInWalletHelp" />
+              <UncontrolledTooltip target="openInWalletHelp">
+                Choose your Libra wallet
+              </UncontrolledTooltip>
+            </div>
           </>
         )}
       </div>

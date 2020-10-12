@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Container, Modal, ModalBody, ModalHeader, Spinner } from "reactstrap";
-import BackendClient, { PaymentProcessingDetails } from "../services/merchant";
-import { Product } from "../interfaces/product";
+import React, {useEffect, useRef, useState} from "react";
+import {Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
+import BackendClient, {PaymentProcessingDetails} from "../services/merchant";
+import {Product} from "../interfaces/product";
 
 export interface PaymentProps {
   product?: Product;
@@ -104,23 +104,22 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
           />
         )}
 
-        <Container className="text-center">
-          {paymentState === "paymentCleared" && (
-            <h4 className="my-5 text-success">
-              <i className="fa fa-check" /> Paid successfully!
-            </h4>
-          )}
-          <div>
-            <strong>Order ID:</strong> <code>{paymentProcessingDetails?.orderId}</code>
-            <a
-              href={`admin/order/${paymentProcessingDetails?.orderId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa fa-eye small" />
-            </a>
-          </div>
-        </Container>
+        {paymentState === "paymentCleared" && (
+          <h4 className="my-5 text-success text-center">
+            <i className="fa fa-check" /> Paid successfully!
+          </h4>
+        )}
+
+        <div className="p-2 text-center">
+          <a
+            className="btn btn-sm btn-dark btn-block"
+            href={`admin/order/${paymentProcessingDetails?.orderId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See order details
+          </a>
+        </div>
       </ModalBody>
     </Modal>
   );

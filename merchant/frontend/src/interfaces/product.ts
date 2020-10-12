@@ -9,4 +9,5 @@ export interface Product {
   price: number;
   currency: FiatCurrency;
   payment_type: PaymentType;
+  image_url: string;
 }

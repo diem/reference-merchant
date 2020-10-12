@@ -6,7 +6,6 @@ import {
   CardBody,
   CardFooter,
   CardImg,
-  CardSubtitle,
   CardText,
   CardTitle,
   Col,
@@ -17,6 +16,7 @@ import { Product } from "../interfaces/product";
 import Payment from "../components/Payment";
 import ProductsLoader from "../components/ProductsLoader";
 import BackendClient from "../services/merchant";
+import TestnetWarning from "../components/TestnetWarning";
 
 function Home() {
   const { t } = useTranslation("layout");
@@ -38,18 +38,19 @@ function Home() {
 
   return (
     <>
-      <Container className="pt-5">
-        <h1 className="text-center font-weight-bold">{t("name")}</h1>
+      <TestnetWarning />
+      <Container>
+        <h1 className="text-center font-weight-bold mt-5">{t("name")}</h1>
 
         <section className="mt-5">
           {products && (
             <Row>
               {products.map((product, i) => (
-                <Col key={product.gtin} lg={4} className="mb-4">
-                  <Card key={product.gtin}>
+                <Col key={product.gtin} md={6} lg={4}>
+                  <Card key={product.gtin} className="mb-4">
                     <CardImg
                       top
-                      src="https://res.cloudinary.com/teepublic/image/private/s--7zJ6BFMp--/t_Resized%20Artwork/c_crop,x_10,y_10/c_fit,w_470/c_crop,g_north_west,h_626,w_470,x_0,y_0/g_north_west,u_upload:v1462829024:production:blanks:a59x1cgomgu5lprfjlmi,x_-395,y_-325/b_rgb:eeeeee/c_limit,f_jpg,h_630,q_90,w_630/v1544877956/production/designs/3743140_0.jpg"
+                      src={product.image_url}
                     />
                     <CardBody>
                       <CardTitle className="font-weight-bold h5">{product.name}</CardTitle>
@@ -68,6 +69,7 @@ function Home() {
                         </Col>
                         <Col lg={4} className="text-right">
                           <Button
+                            color="secondary"
                             block
                             className="btn-sm"
                             onClick={() => setSelectedProduct(products[i])}
