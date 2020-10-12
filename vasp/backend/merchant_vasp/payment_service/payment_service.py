@@ -2,9 +2,9 @@ import logging
 from typing import Tuple
 
 import pyqrcode
+from libra import identifier, jsonrpc, testnet
 from libra_utils.types.currencies import FiatCurrency, LibraCurrency
 
-from pubsub.libra import get_network_supported_currencies, encode_full_addr
 from .payment_exceptions import *
 from ..onchainwallet import OnchainWallet
 from ..storage import Payment, PaymentStatus, db_session
@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 def get_supported_network_currencies() -> Tuple[str]:
     # TODO - error handling
-    supported_currency_info = get_network_supported_currencies()
-    # This returns CurrencyInfo objects which are pylibra based
+    api = jsonrpc.Client(testnet.JSON_RPC_URL)
+    supported_currency_info = api.get_currencies()
 
     return tuple(_.code for _ in supported_currency_info)
 
@@ -25,7 +25,6 @@ def get_supported_currencies() -> Tuple[str]:
     supported_currency_info = [_.value for _ in FiatCurrency] + [
         _.value for _ in LibraCurrency
     ]
-    # This returns CurrencyInfo objects which are pylibra based
 
     return tuple(supported_currency_info)
 
@@ -79,7 +78,7 @@ def process_incoming_transaction(
     # version is tx_id
 
     payment.add_chain_transaction(
-        encode_full_addr(sender_address, sender_sub_address),
+        identifier.encode_account(sender_address, sender_sub_address),
         amount,
         currency,
         version,
@@ -92,10 +91,10 @@ def generate_payment_options_with_qr(payment):
 
     vasp_addr = OnchainWallet().address_str
     logger.debug(f"Current vasp address: {vasp_addr}")
-    full_payment_addr = encode_full_addr(vasp_addr, payment.subaddress)
+    full_payment_addr = identifier.encode_account(vasp_addr, payment.subaddress)
     logger.debug(f"Rendering full payment link: {full_payment_addr}")
 
-    bech32addr = encode_full_addr(vasp_addr, payment.subaddress)
+    bech32addr = identifier.encode_account(vasp_addr, payment.subaddress)
 
     for payment_option in payment.payment_options:
         payment_link = f"libra://{bech32addr}?c={payment_option.currency}&am={payment_option.amount}"

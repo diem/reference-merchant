@@ -1,5 +1,6 @@
 # VASP imports
 import logging
+import secrets
 from datetime import datetime, timedelta
 
 from libra import utils, identifier
@@ -7,15 +8,14 @@ from libra_utils.types.currencies import LibraCurrency
 
 from merchant_vasp import payment_service
 from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
-from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.fiat_liquidity_wrapper import FiatLiquidityWrapper
+from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.storage import (
     Payment,
     PaymentOption,
     db_session,
 )
 from merchant_vasp.storage.models import PaymentStatus, Merchant
-from pubsub.libra import gen_sub_address, SUB_ADDRESS_LENGTH, encode_full_addr
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ def create_payment(currency, merchant_reference_id, amount, merchant_id):
     if existing_order is not None:
         raise TakenMerchantReferenceId
 
-    sub_address = gen_sub_address()
+    sub_address = secrets.token_hex(identifier.LIBRA_SUBADDRESS_SIZE)
     new_payment = Payment(
         merchant_id=merchant_id,
         requested_currency=currency,
@@ -145,7 +145,7 @@ def payout(merchant: Merchant, payment: Payment):
         LibraCurrency(client_payment.currency),
         client_payment.amount,
         liquidity_provider.vasp_address(),
-        payout_target.bytes[:SUB_ADDRESS_LENGTH].hex(),
+        payout_target.bytes[:utils.SUB_ADDRESS_LEN].hex(),
     )
     payment.set_status(PaymentStatus.payout_completed)
     db_session.commit()
@@ -161,7 +161,7 @@ def get_payment_events(payment):
 
 
 def get_merchant_full_addr(payment):
-    return encode_full_addr(OnchainWallet().address_str, payment.subaddress)
+    return identifier.encode_account(OnchainWallet().address_str, payment.subaddress)
 
 
 def get_merchant_payments(merchant):
