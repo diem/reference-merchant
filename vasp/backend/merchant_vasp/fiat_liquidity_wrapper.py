@@ -26,7 +26,7 @@ class FiatLiquidityWrapper:
             )
             _ = CurrencyPairs.from_pair(currency_pair)
         except KeyError:
-            logging.debug(
+            logging.warning(
                 f"Could not get quote from {self.base_currency} to {quote_currency}"
             )
             return None

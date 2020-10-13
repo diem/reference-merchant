@@ -1,9 +1,11 @@
 # pyre-strict
+import logging
 import os
 import time
 
 import psycopg2
-from flask import Flask, request, send_from_directory
+from flask import Flask, request
+from flask.logging import default_handler
 from sqlalchemy.exc import IntegrityError
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -11,6 +13,10 @@ from merchant_vasp.config import DB_URL
 from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.storage import db_session, engine, models, Merchant
 from .routes import vasp, vasp_wallet
+
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+root.addHandler(default_handler)
 
 
 def _wait_for_postgres():

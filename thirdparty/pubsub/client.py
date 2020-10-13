@@ -14,7 +14,6 @@ from merchant_vasp.background_tasks import process_incoming_txn
 from .types import LRWPubSubEvent
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 class FileProgressStorage:
