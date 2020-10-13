@@ -41,10 +41,8 @@ backend=vasp-backend-web-server
 gateway=gateway
 db_file=/tmp/test.db
 
-
-
 run() {
-  local cmd=$1;
+  local cmd=$1
   shift 1
   if type "$cmd" >/dev/null 2>&1; then
     "$cmd" "$@"
@@ -63,7 +61,7 @@ build_helm() {
   docker rm tmp_reference_merchant_frontend
   info "frontend build completed"
 
-  docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_STATIC_YAML} build  || fail 'docker-compose build failed!'
+  docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_STATIC_YAML} build || fail 'docker-compose build failed!'
 }
 
 build() {
@@ -78,7 +76,7 @@ build() {
   else
     info "***Building docker services***"
     # build all the service images using compose
-    docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} build  || fail 'docker-compose build failed!'
+    docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} build || fail 'docker-compose build failed!'
   fi
 }
 
@@ -103,7 +101,6 @@ develop() {
     stop
   fi
 }
-
 
 purge() {
   info "Remove pg volume"
@@ -165,10 +162,7 @@ setup_environment() {
   sh -c "cd liquidity && pipenv install --dev"
 
   info "***Setting up environment .env files***"
-  PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/set_env.py
-
-  info "***Setting up blockchain Vasp account***"
-  PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/setup_blockchain.py
+  PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/set_env.py || fail "Fail execute scripts/set_env.py"
 
   info "***Setting up docker-compose project name***"
   cp .env.example .env

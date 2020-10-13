@@ -1,19 +1,15 @@
 # VASP imports
 import logging
+import secrets
 from datetime import datetime, timedelta
 
-from libra_utils.libra import (
-    gen_subaddr,
-    decode_full_addr,
-    encode_full_addr,
-    SUBADDRESS_LENGTH,
-)
+from libra import utils, identifier
 from libra_utils.types.currencies import LibraCurrency
 
 from merchant_vasp import payment_service
 from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
-from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.fiat_liquidity_wrapper import FiatLiquidityWrapper
+from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.storage import (
     Payment,
     PaymentOption,
@@ -41,7 +37,7 @@ def create_payment(currency, merchant_reference_id, amount, merchant_id):
     if existing_order is not None:
         raise TakenMerchantReferenceId
 
-    sub_address = gen_subaddr()
+    sub_address = secrets.token_hex(identifier.LIBRA_SUBADDRESS_SIZE)
     new_payment = Payment(
         merchant_id=merchant_id,
         requested_currency=currency,
@@ -64,7 +60,7 @@ def create_payment(currency, merchant_reference_id, amount, merchant_id):
         )
     Payment.add_payment(new_payment)
     logger.debug(
-        f"Adding new payment (id {new_payment.id}) to subaddress {new_payment.subaddress}"
+        f"Adding new payment (id {new_payment.id}) to sub address {new_payment.subaddress}"
     )
     return new_payment
 
@@ -83,29 +79,36 @@ def refund(payment):
     if target_transaction.is_refund:
         raise InvalidPaymentStatus("refund_transaction")
 
-    refund_target_address, refund_target_subaddr = decode_full_addr(
-        target_transaction.sender_address
-    )
+    refund_target_address, refund_target_sub_address = identifier.decode_account(target_transaction.sender_address)
+    refund_target_address = utils.account_address_hex(refund_target_address)
+    refund_target_sub_address = refund_target_sub_address.hex()
+
     refund_amount = target_transaction.amount  # payment.requested_amount
     refund_currency = LibraCurrency(target_transaction.currency)
 
     payment.set_status(PaymentStatus.refund_requested)
+
+    refund_tx_id = None
+
     try:
-        refund_tx_id, _ = OnchainWallet().send_transaction(
+        wallet = OnchainWallet()
+
+        refund_tx_id, _ = wallet.send_transaction(
             refund_currency,
             refund_amount,
             refund_target_address,
-            refund_target_subaddr,  # TODO - new subaddr for refund?
+            refund_target_sub_address,  # TODO - new sub_address for refund?
         )
         payment.add_chain_transaction(
             amount=refund_amount,
-            sender_address=OnchainWallet().vasp_address,
+            sender_address=wallet.address_str,
             currency=refund_currency,
             tx_id=refund_tx_id,
             is_refund=True,
         )
         payment.set_status(PaymentStatus.refund_completed)
-    except Exception:  # TODO - narrow to blockchain exception
+    except Exception as e:  # TODO - narrow to blockchain exception
+        logger.exception("Failed during refund")
         payment.set_status(PaymentStatus.refund_error)
 
     return refund_tx_id, target_transaction
@@ -142,7 +145,7 @@ def payout(merchant: Merchant, payment: Payment):
         LibraCurrency(client_payment.currency),
         client_payment.amount,
         liquidity_provider.vasp_address(),
-        payout_target.bytes[:SUBADDRESS_LENGTH].hex(),
+        payout_target.bytes[:utils.SUB_ADDRESS_LEN].hex(),
     )
     payment.set_status(PaymentStatus.payout_completed)
     db_session.commit()
@@ -152,13 +155,13 @@ def payout(merchant: Merchant, payment: Payment):
 
 def get_payment_events(payment):
     return [
-        {"created_at": payment_log.created_at, "status": payment_log.status,}
+        {"created_at": payment_log.created_at, "status": payment_log.status, }
         for payment_log in payment.payment_status_logs
     ]
 
 
 def get_merchant_full_addr(payment):
-    return encode_full_addr(OnchainWallet().vasp_address, payment.subaddress)
+    return identifier.encode_account(OnchainWallet().address_str, payment.subaddress)
 
 
 def get_merchant_payments(merchant):
@@ -203,8 +206,8 @@ def payment_chain_txs(payment: Payment):
 
 def payment_can_pay(payment: Payment):
     return (
-        payment.status == PaymentStatus.created
-        and payment.expiry_date >= datetime.utcnow()
+            payment.status == PaymentStatus.created
+            and payment.expiry_date >= datetime.utcnow()
     )
 
 

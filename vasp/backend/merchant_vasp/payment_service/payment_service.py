@@ -2,7 +2,7 @@ import logging
 from typing import Tuple
 
 import pyqrcode
-from libra_utils import libra
+from libra import identifier, jsonrpc, testnet
 from libra_utils.types.currencies import FiatCurrency, LibraCurrency
 
 from .payment_exceptions import *
@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 def get_supported_network_currencies() -> Tuple[str]:
     # TODO - error handling
-    supported_currency_info = libra.get_network_supported_currencies()
-    # This returns CurrencyInfo objects which are pylibra based
+    api = jsonrpc.Client(testnet.JSON_RPC_URL)
+    supported_currency_info = api.get_currencies()
 
     return tuple(_.code for _ in supported_currency_info)
 
@@ -25,32 +25,30 @@ def get_supported_currencies() -> Tuple[str]:
     supported_currency_info = [_.value for _ in FiatCurrency] + [
         _.value for _ in LibraCurrency
     ]
-    # This returns CurrencyInfo objects which are pylibra based
 
     return tuple(supported_currency_info)
 
 
 def process_incoming_transaction(
-    version,
-    sender_address,
-    sender_subaddress,
-    receiver_address,
-    receiver_subaddress,
-    sequence,
-    amount,
-    currency,
+        version,
+        sender_address,
+        sender_sub_address,
+        receiver_address,
+        receiver_sub_address,
+        amount,
+        currency,
 ) -> None:
     """This function receives incoming payment events from the chain"""
     # Check if the payment is intended for us - this address is configured via environment variable, see config.py
-    if receiver_address != OnchainWallet().vasp_address:
+    if receiver_address != OnchainWallet().address_str:
         logging.debug("Received payment to unknown base address.")
         raise WrongReceiverAddressException("wrongaddr")
 
     # Locate payment id and payment options related to the given subaddress
-    payment = Payment.find_by_subaddress(receiver_subaddress)
+    payment = Payment.find_by_subaddress(receiver_sub_address)
     if payment is None:
         logging.debug(
-            f"Could not find the qualifying payment {receiver_subaddress}, ignoring."
+            f"Could not find the qualifying payment {receiver_sub_address}, ignoring."
         )
         # TODO - Process for errant payments?
         raise PaymentForSubaddrNotFoundException("wrongsubaddr")
@@ -80,7 +78,7 @@ def process_incoming_transaction(
     # version is tx_id
 
     payment.add_chain_transaction(
-        libra.encode_full_addr(sender_address, sender_subaddress),
+        identifier.encode_account(sender_address, sender_sub_address),
         amount,
         currency,
         version,
@@ -91,12 +89,12 @@ def process_incoming_transaction(
 def generate_payment_options_with_qr(payment):
     payment_options_with_qr = []
 
-    vasp_addr = OnchainWallet().vasp_address
+    vasp_addr = OnchainWallet().address_str
     logger.debug(f"Current vasp address: {vasp_addr}")
-    full_payment_addr = libra.encode_full_addr(vasp_addr, payment.subaddress)
+    full_payment_addr = identifier.encode_account(vasp_addr, payment.subaddress)
     logger.debug(f"Rendering full payment link: {full_payment_addr}")
 
-    bech32addr = libra.encode_full_addr(vasp_addr, payment.subaddress)
+    bech32addr = identifier.encode_account(vasp_addr, payment.subaddress)
 
     for payment_option in payment.payment_options:
         payment_link = f"libra://{bech32addr}?c={payment_option.currency}&am={payment_option.amount}"
