@@ -18,7 +18,7 @@ PAYMENT_ID=`curl -s http://0.0.0.0:8000/payments \
     -X POST \
     -H "Authorization: Bearer aaaaaaaaaaaaaaaa" \
     -H "Content-Type: application/json" \
-    --data "{\"amount\": $RANDOM, \"requested_currency\": \"LBR\", \"merchant_reference_id\": \"$(uuidgen)\"}"  | jq -r '.["payment_id"]'`
+    --data "{\"amount\": $RANDOM, \"requested_currency\": \"Coin1\", \"merchant_reference_id\": \"$(uuidgen)\"}"  | jq -r '.["payment_id"]'`
 ```
 
 ### Generate new payment, get link to payment HTML
@@ -27,7 +27,7 @@ curl -s http://0.0.0.0:8000/payments \
     -X POST \
     -H "Authorization: Bearer aaaaaaaaaaaaaaaa" \
     -H "Content-Type: application/json" \
-    --data "{\"amount\": $RANDOM, \"requested_currency\": \"LBR\", \"order_id\": \"$(uuidgen)\"}"  | jq -r '.["payment_form_url"]'
+    --data "{\"amount\": $RANDOM, \"requested_currency\": \"Coin1\", \"order_id\": \"$(uuidgen)\"}"  | jq -r '.["payment_form_url"]'
 ```
 
 ### Payment status endpoint

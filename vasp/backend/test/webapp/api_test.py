@@ -1,20 +1,17 @@
 from http import HTTPStatus
-from typing import Tuple
-
-from merchant_vasp.onchainwallet import OnchainWallet
-from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
-from merchant_vasp.storage.models import PaymentStatusLog
-from .conftest import *
 
 from libra_utils.vasp import Vasp
 
+from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
 from merchant_vasp.payment_service import payment_service
+from merchant_vasp.storage.models import PaymentStatusLog
+from .conftest import *
 
 
 @pytest.fixture
 def mock_get_supported_network_currencies(monkeypatch):
     def get_supported_network_currencies_impl():
-        return "LBR", "Coin1", "Coin2"
+        return DEFAULT_LIBRA_CURRENCY
 
     monkeypatch.setattr(
         payment_service,

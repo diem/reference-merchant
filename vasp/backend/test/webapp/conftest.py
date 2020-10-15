@@ -6,6 +6,7 @@ import pytest
 from libra import identifier
 from libra.jsonrpc import CurrencyInfo
 from libra_utils.sdks import liquidity
+from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
 from libra_utils.types.liquidity.currency import CurrencyPairs
 from libra_utils.types.liquidity.lp import LPDetails
 from libra_utils.types.liquidity.quote import Rate, QuoteData
@@ -38,9 +39,8 @@ REJECTED_ORDER_ID = "REJ"
 EXPIRED_ORDER_ID = "EXP"
 PAYMENT_TX_ID = 5555
 PAYMENT_AMOUNT = 234
-PAYMENT_CURRENCY = "LBR"
+PAYMENT_CURRENCY = DEFAULT_LIBRA_CURRENCY
 PAYMENT_AMOUNT_2 = 432
-PAYMENT_CURRENCY_2 = "Coin1"
 PAYMENT_SUBADDR = "aaaaaaaaaaaaaaaa"
 EXPIRED_PAYMENT_SUBADDR = "bbbbbbbbbbbbbbbc"
 REJECTED_PAYMENT_SUBADDR = "bbbbbbbbbbbbbbbb"
@@ -67,9 +67,7 @@ MOCK_SUPPORTED_CURRENCIES = [
     "AUD",
     "NZD",
     "JPY",
-    "LBR",
-    "Coin1",
-    "Coin2",
+    DEFAULT_LIBRA_CURRENCY,
 ]
 
 MOCK_NETWORK_SUPPORTED_CURRENCIES = [
@@ -78,28 +76,6 @@ MOCK_NETWORK_SUPPORTED_CURRENCIES = [
         scaling_factor=1000000,
         fractional_part=100,
         to_lbr_exchange_rate=0.5,
-        mint_events_key="",
-        burn_events_key="",
-        preburn_events_key="",
-        cancel_burn_events_key="",
-        exchange_rate_update_events_key="",
-    ),
-    CurrencyInfo(
-        code="Coin2",
-        scaling_factor=1000000,
-        fractional_part=100,
-        to_lbr_exchange_rate=0.5,
-        mint_events_key="",
-        burn_events_key="",
-        preburn_events_key="",
-        cancel_burn_events_key="",
-        exchange_rate_update_events_key="",
-    ),
-    CurrencyInfo(
-        code="LBR",
-        scaling_factor=1000000,
-        fractional_part=1000,
-        to_lbr_exchange_rate=1.0,
         mint_events_key="",
         burn_events_key="",
         preburn_events_key="",
@@ -154,7 +130,7 @@ def db(mocker):
             PaymentOption(
                 payment_id=payment.id,
                 amount=PAYMENT_AMOUNT_2,
-                currency=PAYMENT_CURRENCY_2,
+                currency=PAYMENT_CURRENCY,
             ),
         ]
     )
@@ -179,7 +155,7 @@ def db(mocker):
     cleared_payment.add_chain_transaction(
         sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR),
         amount=10,
-        currency="LBR",
+        currency=DEFAULT_LIBRA_CURRENCY,
         tx_id=CLEARED_TX_ID,
     )
 

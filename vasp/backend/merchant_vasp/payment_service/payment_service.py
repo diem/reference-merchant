@@ -17,7 +17,7 @@ def get_supported_network_currencies() -> Tuple[str]:
     api = jsonrpc.Client(testnet.JSON_RPC_URL)
     supported_currency_info = api.get_currencies()
 
-    return tuple(_.code for _ in supported_currency_info)
+    return tuple(_.code for _ in supported_currency_info if _.code == LibraCurrency.Coin1)
 
 
 def get_supported_currencies() -> Tuple[str]:
