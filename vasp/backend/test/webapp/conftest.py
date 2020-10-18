@@ -1,56 +1,19 @@
+import json
 import random
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
-from libra import identifier
 from libra.jsonrpc import CurrencyInfo
+from libra_utils.custody import Custody
 from libra_utils.sdks import liquidity
 from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
 from libra_utils.types.liquidity.currency import CurrencyPairs
 from libra_utils.types.liquidity.lp import LPDetails
-from libra_utils.types.liquidity.quote import Rate, QuoteData
+from libra_utils.types.liquidity.quote import QuoteData, Rate
 from libra_utils.types.liquidity.trade import TradeId
 
-from merchant_vasp.storage import (
-    db_session,
-    clear_db,
-    Merchant,
-    Payment,
-    PaymentOption,
-    PaymentStatus,
-)
 from webapp import app
-
-TOKEN_1 = "mailmen111"
-TOKEN_2 = "mailmen222"
-PAYMENT_ID = "00000000-0000-7777-0000-00000000d0d1"
-CLEARED_PAYMENT_ID = "00000000-0000-7777-0000-00000000d0d2"
-CLEARED_PAYMENT_SUBADDR = "ffffffffffffffff"
-CLEARED_TX_ID = 7000282
-REJECTED_PAYMENT_ID = "00000000-0000-7777-0000-00000000d0d3"
-EXPIRED_PAYMENT_ID = "00000000-0000-7777-0000-00000000d0d4"
-REFUND_TX_ID = 7000289
-PAYOUT_TX_ID = 7000281
-TRANSACTION_ORIGIN = "BLAH"
-CREATED_ORDER_ID = "4"
-CLEARED_ORDER_ID = "5"
-REJECTED_ORDER_ID = "REJ"
-EXPIRED_ORDER_ID = "EXP"
-PAYMENT_TX_ID = 5555
-PAYMENT_AMOUNT = 234
-PAYMENT_CURRENCY = DEFAULT_LIBRA_CURRENCY
-PAYMENT_AMOUNT_2 = 432
-PAYMENT_SUBADDR = "aaaaaaaaaaaaaaaa"
-EXPIRED_PAYMENT_SUBADDR = "bbbbbbbbbbbbbbbc"
-REJECTED_PAYMENT_SUBADDR = "bbbbbbbbbbbbbbbb"
-
-MERCHANT_MOCK_ADDR = "M" * 32
-MERCHAND_CURRENCY = "USD"
-SENDER_MOCK_ADDR = "B" * 32
-SENDER_MOCK_SUBADDR = "ffffffffffffffff"
-
-GOOD_AUTH = {"Authorization": f"Bearer {TOKEN_1}"}
 
 CHECKOUT_ARGS = lambda: {
     "amount": 8.12,
@@ -86,7 +49,7 @@ MOCK_NETWORK_SUPPORTED_CURRENCIES = [
 
 MOCK_QUOTE = QuoteData(
     quote_id=UUID("f24d20f8-e49c-4303-a736-afec37f7f7f3"),
-    rate=Rate(pair=CurrencyPairs.LBR_Coin1, rate=1040000),
+    rate=Rate(pair=CurrencyPairs.Coin1_USD, rate=1040000),
     expires_at=datetime(
         2020, 7, 5, 16, 47, 49, 452315, tzinfo=timezone(timedelta(seconds=10800), "IDT")
     ),
@@ -99,95 +62,31 @@ MOCK_LP_DETAILS = LPDetails(
     sub_address="waka" * 8, vasp="b" * 32, IBAN_number="1" * 64,
 )
 
+FAKE_WALLET_PRIVATE_KEY = (
+    "682ddb5bcb41abd0a362fe3b332af32a9135abc8effbd75abe8ec6192e2b0c8b"
+)
+FAKE_WALLET_VASP_ADDR = "9135abc8effbd75abe8ec6192e2b0c8b"
+FAKE_LIQUIDITY_PRIVATE_KEY = (
+    "e3993257580a98855a5e068c579d06f036f92c7dac37c7b3094f78b2f26b3f00"
+)
+FAKE_LIQUIDITY_VASP_ADDR = "36f92c7dac37c7b3094f78b2f26b3f00"
 
-# TODO - rescope
-@pytest.fixture()
-def db(mocker):
-    clear_db()
-    # Add Merchant and Payment for testing
-    merchant = Merchant(
-        api_key=TOKEN_1,
-        settlement_information=MERCHANT_MOCK_ADDR,
-        settlement_currency=MERCHAND_CURRENCY,
-    )
-    db_session.add(merchant)
-    db_session.commit()
 
-    payment = Payment(
-        id=PAYMENT_ID,
-        merchant_id=merchant.id,
-        merchant_reference_id=CREATED_ORDER_ID,
-        requested_amount=1,
-        requested_currency="USD",
-        subaddress=PAYMENT_SUBADDR,
-        expiry_date=datetime.utcnow() + timedelta(minutes=10),
-    )
-    payment.payment_options.extend(
-        [
-            PaymentOption(
-                payment_id=payment.id, amount=PAYMENT_AMOUNT, currency=PAYMENT_CURRENCY,
-            ),
-            PaymentOption(
-                payment_id=payment.id,
-                amount=PAYMENT_AMOUNT_2,
-                currency=PAYMENT_CURRENCY,
-            ),
-        ]
+@pytest.fixture(autouse=True)
+def init_test_onchainwallet(monkeypatch):
+    monkeypatch.setenv("WALLET_CUSTODY_ACCOUNT_NAME", "test_wallet")
+    monkeypatch.setenv("LIQUIDITY_CUSTODY_ACCOUNT_NAME", "test_liq")
+    monkeypatch.setenv(
+        "CUSTODY_PRIVATE_KEYS",
+        json.dumps(
+            {
+                "test_wallet": FAKE_WALLET_PRIVATE_KEY,
+                "test_liq": FAKE_LIQUIDITY_PRIVATE_KEY,
+            }
+        ),
     )
 
-    cleared_payment = Payment(
-        id=CLEARED_PAYMENT_ID,
-        merchant_reference_id=CLEARED_ORDER_ID,
-        merchant_id=merchant.id,
-        requested_amount=10,
-        requested_currency="USD",
-        status=PaymentStatus.cleared,
-        subaddress="f3704755d1100cd2",
-        expiry_date=datetime.utcnow() - timedelta(minutes=10),
-    )
-    cleared_payment.payment_options.append(
-        PaymentOption(
-            payment_id=cleared_payment.id,
-            amount=cleared_payment.requested_amount,
-            currency=cleared_payment.requested_currency,
-        )
-    )
-    cleared_payment.add_chain_transaction(
-        sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR),
-        amount=10,
-        currency=DEFAULT_LIBRA_CURRENCY,
-        tx_id=CLEARED_TX_ID,
-    )
-
-    rejected_payment = Payment(
-        id=REJECTED_PAYMENT_ID,
-        merchant_id=merchant.id,
-        merchant_reference_id=REJECTED_ORDER_ID,
-        status=PaymentStatus.rejected,
-        requested_amount=100,
-        requested_currency="USD",
-        expiry_date=datetime.utcnow(),
-        subaddress=REJECTED_PAYMENT_SUBADDR,
-    )
-
-    expired_payment = Payment(
-        id=EXPIRED_PAYMENT_ID,
-        merchant_id=merchant.id,
-        merchant_reference_id=EXPIRED_ORDER_ID,
-        requested_amount=100,
-        requested_currency="USD",
-        subaddress=EXPIRED_PAYMENT_SUBADDR,
-        expiry_date=datetime.utcnow() - timedelta(seconds=1),
-    )
-
-    db_session.add(rejected_payment)
-    db_session.add(cleared_payment)
-    db_session.add(expired_payment)
-    db_session.add(payment)
-
-    db_session.commit()
-
-    yield db_session
+    Custody.init()
 
 
 @pytest.fixture()

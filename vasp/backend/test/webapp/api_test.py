@@ -5,7 +5,7 @@ from libra_utils.vasp import Vasp
 from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
 from merchant_vasp.payment_service import payment_service
 from merchant_vasp.storage.models import PaymentStatusLog
-from .conftest import *
+from test.conftest import *
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def mock_get_supported_network_currencies(monkeypatch):
 def test_supported_network_currencies(
     client, mocker, mock_get_supported_network_currencies
 ):
-    currencies = (_.code for _ in MOCK_NETWORK_SUPPORTED_CURRENCIES)
+    [currencies] = (_.code for _ in MOCK_NETWORK_SUPPORTED_CURRENCIES)
     data = client.get("/supported_network_currencies").get_json()
     assert len(data["currencies"]) > 0
     for c in currencies:

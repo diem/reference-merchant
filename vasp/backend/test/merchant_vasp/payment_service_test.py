@@ -4,7 +4,7 @@ from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
 from merchant_vasp import payment_service
 from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.storage import Payment, PaymentStatus
-from ..webapp.conftest import (
+from test.conftest import (
     REJECTED_PAYMENT_SUBADDR,
     SENDER_MOCK_ADDR,
     SENDER_MOCK_SUBADDR,
