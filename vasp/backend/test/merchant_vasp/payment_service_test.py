@@ -1,9 +1,10 @@
 import pytest
+from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
 
 from merchant_vasp import payment_service
 from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.storage import Payment, PaymentStatus
-from ..webapp.conftest import (
+from test.conftest import (
     REJECTED_PAYMENT_SUBADDR,
     SENDER_MOCK_ADDR,
     SENDER_MOCK_SUBADDR,
@@ -12,8 +13,9 @@ from ..webapp.conftest import (
     PAYMENT_AMOUNT,
     PAYMENT_CURRENCY,
     PAYMENT_ID,
-    db,
 )
+
+CURRENCY = DEFAULT_LIBRA_CURRENCY
 
 
 def test_payment_to_wrong_address(db):
@@ -27,7 +29,7 @@ def test_payment_to_wrong_address(db):
             receiver_address="cccccccccccccccccccccccccccccccc",  # wrong addr
             receiver_sub_address="ffffffffffffffff",
             amount=100,
-            currency="LBR",
+            currency=CURRENCY,
         )
 
 
@@ -41,7 +43,7 @@ def test_payment_to_wrong_sub_address(db):
             receiver_address=OnchainWallet().address_str,
             receiver_sub_address="ffffffffffffffff",  # wrong sub address
             amount=100,
-            currency="LBR",
+            currency=CURRENCY,
             version=0,
         )
 
@@ -56,7 +58,7 @@ def test_payment_status_invalid(db):
             receiver_address=OnchainWallet().address_str,
             receiver_sub_address=REJECTED_PAYMENT_SUBADDR,
             amount=100,
-            currency="LBR",
+            currency=CURRENCY,
             version=0,
         )
 
@@ -71,7 +73,7 @@ def test_payment_expired(db):
             receiver_address=OnchainWallet().address_str,
             receiver_sub_address=EXPIRED_PAYMENT_SUBADDR,
             amount=100,
-            currency="LBR",
+            currency=CURRENCY,
             version=0,
         )
 

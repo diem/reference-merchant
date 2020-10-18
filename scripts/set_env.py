@@ -12,6 +12,8 @@ from libra_utils.custody import Custody
 from libra_utils.vasp import Vasp
 from offchainapi.crypto import ComplianceKey
 
+from currency.currency import LibraCurrency
+
 libra_client = testnet.create_client()
 
 wallet_account_name = "wallet"
@@ -146,6 +148,6 @@ with open(liquidity_env_file_path, "w") as dotenv:
 
     print('Mint currencies to liquidity account')
     for currency in libra_client.get_currencies():
-        print(f"Minting {amount}{currency.code} for account {address_str}")
-        faucet.mint(lp_account.auth_key.hex(), amount, currency.code)
-        print(f'mint completed')
+        if currency.code == LibraCurrency.Coin1:
+            print(f"Minting {amount}{currency.code} for account {address_str}")
+            faucet.mint(lp_account.auth_key.hex(), amount, currency.code)
