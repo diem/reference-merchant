@@ -7,7 +7,7 @@ from libra import utils, identifier
 from libra_utils.types.currencies import LibraCurrency
 
 from merchant_vasp import payment_service
-from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
+from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES, CHAIN_HRP
 from merchant_vasp.fiat_liquidity_wrapper import FiatLiquidityWrapper
 from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.storage import (
@@ -79,7 +79,8 @@ def refund(payment):
     if target_transaction.is_refund:
         raise InvalidPaymentStatus("refund_transaction")
 
-    refund_target_address, refund_target_sub_address = identifier.decode_account(target_transaction.sender_address)
+    refund_target_address, refund_target_sub_address = identifier.decode_account(target_transaction.sender_address,
+                                                                                 CHAIN_HRP)
     refund_target_address = utils.account_address_hex(refund_target_address)
     refund_target_sub_address = refund_target_sub_address.hex()
 
