@@ -6,6 +6,7 @@ from libra import identifier, jsonrpc, testnet
 from libra_utils.types.currencies import FiatCurrency, LibraCurrency
 
 from .payment_exceptions import *
+from ..config import CHAIN_HRP
 from ..onchainwallet import OnchainWallet
 from ..storage import Payment, PaymentStatus, db_session
 
@@ -78,7 +79,7 @@ def process_incoming_transaction(
     # version is tx_id
 
     payment.add_chain_transaction(
-        identifier.encode_account(sender_address, sender_sub_address),
+        identifier.encode_account(sender_address, sender_sub_address, CHAIN_HRP),
         amount,
         currency,
         version,
@@ -91,10 +92,10 @@ def generate_payment_options_with_qr(payment):
 
     vasp_addr = OnchainWallet().address_str
     logger.debug(f"Current vasp address: {vasp_addr}")
-    full_payment_addr = identifier.encode_account(vasp_addr, payment.subaddress)
+    full_payment_addr = identifier.encode_account(vasp_addr, payment.subaddress, CHAIN_HRP)
     logger.debug(f"Rendering full payment link: {full_payment_addr}")
 
-    bech32addr = identifier.encode_account(vasp_addr, payment.subaddress)
+    bech32addr = identifier.encode_account(vasp_addr, payment.subaddress, CHAIN_HRP)
 
     for payment_option in payment.payment_options:
         payment_link = f"libra://{bech32addr}?c={payment_option.currency}&am={payment_option.amount}"

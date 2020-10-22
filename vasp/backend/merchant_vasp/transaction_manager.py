@@ -162,7 +162,7 @@ def get_payment_events(payment):
 
 
 def get_merchant_full_addr(payment):
-    return identifier.encode_account(OnchainWallet().address_str, payment.subaddress)
+    return identifier.encode_account(OnchainWallet().address_str, payment.subaddress, CHAIN_HRP)
 
 
 def get_merchant_payments(merchant):
