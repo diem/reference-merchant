@@ -9,10 +9,9 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from libra import LocalAccount, utils, testnet
 from libra_utils.custody import Custody
+from libra_utils.types.currencies import LibraCurrency
 from libra_utils.vasp import Vasp
 from offchainapi.crypto import ComplianceKey
-
-from currency.currency import LibraCurrency
 
 libra_client = testnet.create_client()
 
