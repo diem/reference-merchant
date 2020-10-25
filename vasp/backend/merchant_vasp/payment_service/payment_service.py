@@ -6,7 +6,7 @@ from libra import identifier, jsonrpc, testnet
 from libra_utils.types.currencies import FiatCurrency, LibraCurrency
 
 from .payment_exceptions import *
-from ..config import CHAIN_HRP
+from ..config import CHAIN_HRP, JSON_RPC_URL
 from ..onchainwallet import OnchainWallet
 from ..storage import Payment, PaymentStatus, db_session
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def get_supported_network_currencies() -> Tuple[str]:
     # TODO - error handling
-    api = jsonrpc.Client(testnet.JSON_RPC_URL)
+    api = jsonrpc.Client(JSON_RPC_URL)
     supported_currency_info = api.get_currencies()
 
     return tuple(_.code for _ in supported_currency_info if _.code == LibraCurrency.Coin1)

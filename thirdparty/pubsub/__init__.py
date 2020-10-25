@@ -3,7 +3,8 @@
 
 import os
 
-JSON_RPC_URL = os.getenv("JSON_RPC_URL", "https://testnet.libra.org/v1")
+from merchant_vasp.config import JSON_RPC_URL
+
 VASP_ADDR = os.getenv("VASP_ADDR")
 
 DEFL_CONFIG = {

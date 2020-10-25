@@ -7,7 +7,8 @@ from libra import testnet, jsonrpc, libra_types
 from libra_utils.custody import Custody
 from libra_utils.vasp import Vasp
 
-JSON_RPC_URL = os.getenv("JSON_RPC_URL", testnet.JSON_RPC_URL)
+from merchant_vasp.config import JSON_RPC_URL
+
 CHAIN_ID = libra_types.ChainId(value=os.getenv("CHAIN_ID", testnet.CHAIN_ID.value))
 
 Custody.init(CHAIN_ID)

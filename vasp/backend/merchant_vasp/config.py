@@ -1,4 +1,3 @@
-import logging
 import os
 
 import dramatiq
@@ -7,7 +6,7 @@ from dramatiq.brokers.redis import RedisBroker, Broker
 from dramatiq.encoder import PickleEncoder
 from dramatiq.results import Results
 from dramatiq.results.backends.redis import RedisBackend
-from libra import testnet, identifier
+from libra import identifier
 
 DB_URL: str = os.getenv("DB_URL", "sqlite:////tmp/merchant_test.db")
 
@@ -17,21 +16,9 @@ REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
 REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
 
-
-def calculate_chain_hrp() -> str:
-    testnet_id = testnet.CHAIN_ID.value
-    chain_id = int(os.getenv("CHAIN_ID", testnet_id))
-
-    if chain_id == testnet_id:
-        hdr = identifier.TLB
-    else:
-        hdr = identifier.LBR
-
-    logging.warning(f"CHAIN: ID={chain_id} HDR={hdr}")
-    return hdr
-
-
-CHAIN_HRP: str = calculate_chain_hrp()
+JSON_RPC_URL = os.environ["JSON_RPC_URL"]
+CHAIN_ID: int = int(os.environ["CHAIN_ID"])
+CHAIN_HRP: str = identifier.HRPS[CHAIN_ID]
 
 
 # init redis and dramatiq broker
