@@ -14,6 +14,7 @@ from libra_utils.types.liquidity.lp import LPDetails
 from libra_utils.types.liquidity.quote import QuoteData, Rate
 from libra_utils.types.liquidity.trade import TradeId
 
+from merchant_vasp.config import CHAIN_HRP
 from merchant_vasp.storage import (
     db_session,
     clear_db,
@@ -179,7 +180,7 @@ def db():
         )
     )
     cleared_payment.add_chain_transaction(
-        sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR),
+        sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR, CHAIN_HRP),
         amount=10,
         currency=DEFAULT_LIBRA_CURRENCY,
         tx_id=CLEARED_TX_ID,
