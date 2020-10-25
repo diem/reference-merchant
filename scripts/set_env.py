@@ -37,7 +37,7 @@ def init_onchain_account(
     account_addr = utils.account_address_hex(account.account_address)
     print(f'Creating and initialize blockchain account {account_name} @ {account_addr}')
     os.environ["CUSTODY_PRIVATE_KEYS"] = custody_private_keys
-    Custody.init()
+    Custody.init(CHAIN_ID)
     vasp = Vasp(libra_client, account_name)
     vasp.setup_blockchain(base_url, compliance_key)
     print(f'Account initialization done!')
