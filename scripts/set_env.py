@@ -7,7 +7,7 @@ import sys
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from libra import LocalAccount, utils, testnet
+from libra import LocalAccount, utils, testnet, libra_types
 from libra_utils.custody import Custody
 from libra_utils.types.currencies import LibraCurrency
 from libra_utils.vasp import Vasp
@@ -33,11 +33,12 @@ def init_onchain_account(
         account: LocalAccount,
         base_url,
         compliance_key,
+        chain_id: int
 ):
     account_addr = utils.account_address_hex(account.account_address)
     print(f'Creating and initialize blockchain account {account_name} @ {account_addr}')
     os.environ["CUSTODY_PRIVATE_KEYS"] = custody_private_keys
-    Custody.init(CHAIN_ID)
+    Custody.init(libra_types.ChainId.from_int(chain_id))
     vasp = Vasp(libra_client, account_name)
     vasp.setup_blockchain(base_url, compliance_key)
     print(f'Account initialization done!')
@@ -61,7 +62,7 @@ LIQUIDITY_SERVICE_PORT = os.getenv("LIQUIDITY_SERVICE_PORT", 5000)
 NETWORK = os.getenv("NETWORK", "testnet")
 JSON_RPC_URL = os.getenv("JSON_RPC_URL", "https://testnet.libra.org/v1")
 FAUCET_URL = os.getenv("FAUCET_URL", "http://testnet.libra.org/mint")
-CHAIN_ID = os.getenv("CHAIN_ID", testnet.CHAIN_ID.value)
+CHAIN_ID = int(os.getenv("CHAIN_ID", testnet.CHAIN_ID.value))
 OFFCHAIN_SERVICE_PORT: int = int(os.getenv("OFFCHAIN_SERVICE_PORT", 8091))
 VASP_BASE_URL = os.getenv("VASP_BASE_URL", "http://0.0.0.0:8091")
 LIQUIDITY_BASE_URL = os.getenv("LIQUIDITY_BASE_URL", "http://0.0.0.0:8092")
@@ -120,7 +121,8 @@ with open(wallet_env_file_path, "w") as dotenv:
         account_name=wallet_account_name,
         account=wallet_account,
         base_url=VASP_BASE_URL,
-        compliance_key=VASP_PUBLIC_KEY_BYTES
+        compliance_key=VASP_PUBLIC_KEY_BYTES,
+        chain_id=CHAIN_ID
     )
 
 # setup liquidity
@@ -136,7 +138,8 @@ with open(liquidity_env_file_path, "w") as dotenv:
         account_name=lp_account_name,
         account=lp_account,
         base_url=LIQUIDITY_BASE_URL,
-        compliance_key=LIQUIDITY_PUBLIC_KEY_BYTES
+        compliance_key=LIQUIDITY_PUBLIC_KEY_BYTES,
+        chain_id=CHAIN_ID
     )
 
     print('Mint currencies to liquidity account')
