@@ -132,6 +132,8 @@ with open(liquidity_env_file_path, "w") as dotenv:
     lp_custody_private_keys = json.dumps(private_keys, separators=(',', ':'))
     dotenv.write(f"LIQUIDITY_CUSTODY_ACCOUNT_NAME=liquidity\n")
     dotenv.write(f"CUSTODY_PRIVATE_KEYS={lp_custody_private_keys}\n")
+    dotenv.write(f"CHAIN_ID={CHAIN_ID}\n")
+    dotenv.write(f"JSON_RPC_URL={JSON_RPC_URL}\n")
 
     init_onchain_account(
         custody_private_keys=lp_custody_private_keys,
