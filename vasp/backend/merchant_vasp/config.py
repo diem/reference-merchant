@@ -6,9 +6,7 @@ from dramatiq.brokers.redis import RedisBroker, Broker
 from dramatiq.encoder import PickleEncoder
 from dramatiq.results import Results
 from dramatiq.results.backends.redis import RedisBackend
-from libra_utils.custody import Custody
-
-from .onchainwallet import OnchainWallet
+from libra import identifier
 
 DB_URL: str = os.getenv("DB_URL", "sqlite:////tmp/merchant_test.db")
 
@@ -17,6 +15,11 @@ PAYMENT_EXPIRE_MINUTES = 10
 REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
 REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
+
+JSON_RPC_URL = os.environ["JSON_RPC_URL"]
+CHAIN_ID: int = int(os.environ["CHAIN_ID"])
+CHAIN_HRP: str = identifier.HRPS[CHAIN_ID]
+
 
 # init redis and dramatiq broker
 def setup_redis_broker() -> None:
