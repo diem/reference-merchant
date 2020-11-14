@@ -47,6 +47,10 @@ spec:
           value: {{ include "libra-reference-merchant.vaspUrl" . | quote}}
         - name: VASP_TOKEN
           value: {{ .Values.fakeMerchantAPIKey }}
+        - name: JSON_RPC_URL
+          value: {{ .Values.sdk.jsonRpc }}
+        - name: CHAIN_ID
+          value: {{ .Values.chainId | quote }}
         image: "{{ .Values.images.merchantBackend }}"
         name: lrm-web
         imagePullPolicy: {{ .Values.images.pullPolicy }}

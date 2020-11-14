@@ -11,6 +11,11 @@ custodyPrivateKeysLiquidity:
   liquidity: '<LIQUIDITY_KEY>'
 vaspAddr: "<VASP_ADDR>"
 fakeMerchantAPIKey: "abcdefghijklmnop"
+chainId: 2
+
+sdk:
+  jsonRpc: "https://testnet.libra.org/v1"
+  faucet: "http://testnet.libra.org/mint"
 
 images:
   pullPolicy: Never
@@ -87,6 +92,7 @@ ingress:
     annotations: {}
   vasp:
     host: lrm.vasp
+    https: false
     annotations: {}
 
 
