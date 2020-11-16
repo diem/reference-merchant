@@ -1,6 +1,6 @@
-# Libra Reference Merchant
+# Reference Merchant
 
-Libra Reference Merchant is an open-source project aimed at demonstrating integration of Libra
+Reference Merchant is an open-source project aimed at demonstrating integration of 
 payments into an existing e-commerce solution. We tried to incorporate both technical and design
 aspects not only to show how the different technical pieces fit together, but also demonstrate
 thoughtful design, content, and best experience practices.
@@ -8,8 +8,8 @@ thoughtful design, content, and best experience practices.
 
 ## Note to Developers
 
-* Libra Reference Merchant is a reference implementation, and not meant to be fully production grade.
-* The project will continue to develop to include the different aspects of the evolving Libra ecosystem.
+* Reference Merchant is a reference implementation, and not meant to be fully production grade.
+* The project will continue to develop to include the different aspects of the evolving developer ecosystem.
 
 
 ## Project Organization
@@ -33,6 +33,7 @@ docker-compose.
 * python 3.7
 * yarn
 * react-scripts
+* macOS: xcode cli tools  ```xcode-select --install```
 
 Run the following commands in the repository root:
 ```shell script
