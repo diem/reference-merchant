@@ -60,7 +60,15 @@ spec:
         - name: FAKE_MERCHANT_API_KEY
           value: {{ .Values.fakeMerchantAPIKey }}
         - name: MY_EXTERNAL_URL
+        {{- if .Values.ingress.vasp.https }}
+          value: {{ printf "https://%s" .Values.ingress.vasp.host | quote }}
+        {{- else }}
           value: {{ printf "http://%s" .Values.ingress.vasp.host | quote }}
+        {{- end }}
+        - name: JSON_RPC_URL
+          value: {{ .Values.sdk.jsonRpc }}
+        - name: CHAIN_ID
+          value: {{ .Values.chainId | quote }}
         image: "{{ .Values.images.vaspBackend }}"
         name: lrm-vasp
         imagePullPolicy: {{ .Values.images.pullPolicy }}
@@ -124,10 +132,14 @@ spec:
           value: {{ .Values.service.targetPort | quote }}
         - name: LIQUIDITY_SERVICE_HOST
           value: {{ include "libra-reference-merchant.fullname" . }}-liquidity
+        - name: JSON_RPC_URL
+          value: {{ .Values.sdk.jsonRpc }}
+        - name: CHAIN_ID
+          value: {{ .Values.chainId | quote }}
         - name: PROCS
           value: {{ .Values.workers.numProcs | quote }}
         - name: THREADS
-          value: {{ .Values.workers.numThreads | quote }}        
+          value: {{ .Values.workers.numThreads | quote }}
         image: "{{ .Values.images.vaspBackend }}"
         imagePullPolicy: {{ .Values.images.pullPolicy }}
         name: lrm-worker
@@ -189,6 +201,10 @@ spec:
           value: {{ .Values.service.targetPort | quote }}
         - name: LIQUIDITY_SERVICE_HOST
           value: {{ include "libra-reference-merchant.fullname" . }}-liquidity
+        - name: JSON_RPC_URL
+          value: {{ .Values.sdk.jsonRpc }}
+        - name: CHAIN_ID
+          value: {{ .Values.chainId | quote }}
         image: "{{ .Values.images.vaspBackend }}"
         imagePullPolicy: {{ .Values.images.pullPolicy }}
         name: lrm-pubsub
