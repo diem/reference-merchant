@@ -99,5 +99,3 @@ http://{{ include "libra-reference-merchant.fullname" . }}-vasp:{{ .Values.servi
 {{- .Values.peripherals.database.host }}
 {{- end }}
 {{- end }}
-
-
