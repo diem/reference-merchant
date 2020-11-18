@@ -33,23 +33,24 @@ PRODUCTS = {
     "00000002": Product(
             gtin="00000002",
             price=15890000,
-            currency=FiatCurrency.EUR.value,
+            currency=FiatCurrency.USD.value,
             name="Key Chain",
             description="The all new Key Chain available now with white logo on purple lanyard.",
             quantity=1000,
             payment_type="direct",
             image_url="/images/key-chain.png"
-        ),
-    "00000003": Product(
-            gtin="00000003",
-            price=21010000,
-            currency=FiatCurrency.USD.value,
-            name="Hat",
-            description="The all new Hat available now with a purple logo on white.",
-            quantity=1000,
-            payment_type="direct",
-            image_url="/images/hat.png"
         )
+    ,
+    # "00000003": Product(
+    #         gtin="00000003",
+    #         price=21010000,
+    #         currency=FiatCurrency.USD.value,
+    #         name="Hat",
+    #         description="The all new Hat available now with a purple logo on white.",
+    #         quantity=1000,
+    #         payment_type="direct",
+    #         image_url="/images/hat.png"
+    #     )
 }
 
 
