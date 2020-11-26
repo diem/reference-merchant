@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) The Libra Core Contributors
+# Copyright (c) The Diem Core Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 script_dir="$(dirname "$0")"
@@ -10,7 +10,7 @@ source "$script_dir/funcs.sh"
 
 show_help() {
   echo ""
-  warn "Libra reference merchant C&C"
+  warn "Diem reference merchant C&C"
   echo ""
   echo "Usage: scripts/lrm.sh <command>"
   echo ""
@@ -68,8 +68,8 @@ build() {
   local build_mode=$1
   info "build mode is ${build_mode}"
 
-  info "***Building Pay-with-Libra***"
-  (cd vasp/backend/pay_with_libra; REACT_APP_BACKEND_URL=/vasp yarn build) || fail 'pay-with-libra build failed!'
+  info "***Building Pay-with-Diem***"
+  (cd vasp/backend/pay_with_diem; REACT_APP_BACKEND_URL=/vasp yarn build) || fail 'pay-with-diem build failed!'
 
   if [ "$build_mode" = "helm" ]; then
     build_helm
@@ -155,8 +155,8 @@ setup_environment() {
   info "***Installing merchant frontend dependencies***"
   sh -c "cd merchant/frontend && yarn"
 
-  info "***Installing pay_with_libra yarn***"
-  sh -c "cd vasp/backend/pay_with_libra && yarn"
+  info "***Installing pay_with_diem yarn***"
+  sh -c "cd vasp/backend/pay_with_diem && yarn"
 
   info "***Installing liquidity dependencies***"
   sh -c "cd liquidity && pipenv install --dev"

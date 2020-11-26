@@ -1,4 +1,4 @@
-# Default values for libra-reference-merchant.
+# Default values for diem-reference-merchant.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -14,6 +14,7 @@ fakeMerchantAPIKey: "abcdefghijklmnop"
 chainId: 2
 
 sdk:
+#  FIXME: DM
   jsonRpc: "https://testnet.libra.org/v1"
   faucet: "http://testnet.libra.org/mint"
 

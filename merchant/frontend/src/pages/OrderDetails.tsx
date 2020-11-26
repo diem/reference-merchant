@@ -102,27 +102,29 @@ function OrderDetails() {
             <InfoField caption="Payment ID" value={order.vaspPaymentRef.toUpperCase()} />
             <InfoField caption="Payment type" value="Direct" />
             <InfoField
-              caption="Merchant Libra address"
+              caption="Merchant Diem address"
               value={order.paymentStatus.merchantAddress}
             />
-            <InfoField caption="Payer Libra address" value={tx ? tx.senderAddress : "N/A"} />
+            <InfoField caption="Payer Diem address" value={tx ? tx.senderAddress : "N/A"} />
             <InfoField caption="Payer wallet type" value="Non-hosted" />
             <InfoField
-              caption="Libra amount"
+              caption="Diem amount"
               value={tx ? `${tx.amount / 1000000} ${tx.currency}` : "N/A"}
             />
 
             <LinkField
-              caption="Libra transaction ID"
+              caption="Diem transaction ID"
               text={tx ? `${tx.transactionId}` : undefined}
+              // FIXME: DM
               url={`https://librabrowser.io/version/${tx?.transactionId}`}
               external
             />
 
             {refundTx && (
               <LinkField
-                caption="Libra refund transaction ID"
+                caption="Diem refund transaction ID"
                 text={`${refundTx.transactionId}`}
+                // FIXME: DM
                 url={`https://librabrowser.io/version/${refundTx.transactionId}`}
                 external
               />

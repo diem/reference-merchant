@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
+# FIXME: DM
 from libra import identifier
 from libra.jsonrpc import CurrencyInfo
 from libra.testnet import CHAIN_ID
@@ -39,6 +40,7 @@ MOCK_SUPPORTED_CURRENCIES = [
     "AUD",
     "NZD",
     "JPY",
+    # FIXME: DM
     DEFAULT_LIBRA_CURRENCY,
 ]
 
@@ -92,6 +94,7 @@ EXPIRED_PAYMENT_ID = "00000000-0000-7777-0000-00000000d0d4"
 CREATED_ORDER_ID = "4"
 PAYMENT_SUBADDR = "aaaaaaaaaaaaaaaa"
 PAYMENT_AMOUNT = 234
+# FIXME: DM
 PAYMENT_CURRENCY = DEFAULT_LIBRA_CURRENCY
 PAYMENT_AMOUNT_2 = 432
 REFUND_TX_ID = 7000289
@@ -182,6 +185,7 @@ def db():
     cleared_payment.add_chain_transaction(
         sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR, CHAIN_HRP),
         amount=10,
+        # FIXME: DM
         currency=DEFAULT_LIBRA_CURRENCY,
         tx_id=CLEARED_TX_ID,
     )

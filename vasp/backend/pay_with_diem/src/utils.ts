@@ -1,17 +1,18 @@
 import { PaymentType } from "./blockchainService";
+// FIXME: DM
 import { Currency } from "@libra/client";
 
 const FIAT_MAX_FRACTION_DIGITS = 6;
 const FIAT_SCALING_FACTOR = Math.pow(10, FIAT_MAX_FRACTION_DIGITS);
-const LIBRA_MAX_FRACTION_DIGITS = 6;
-const LIBRA_SCALING_FACTOR = Math.pow(10, LIBRA_MAX_FRACTION_DIGITS);
+const DIEM_MAX_FRACTION_DIGITS = 6;
+const DIEM_SCALING_FACTOR = Math.pow(10, DIEM_MAX_FRACTION_DIGITS);
 
 const FIAT_VISUAL_FORMAT = {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 };
 
-const LIBRA_VISUAL_FORMAT = {
+const DIEM_VISUAL_FORMAT = {
   minimumFractionDigits: 0,
   maximumFractionDigits: 6,
 };
@@ -20,8 +21,8 @@ export function fiatToFloat(amount: number): number {
   return Math.trunc(amount) / FIAT_SCALING_FACTOR;
 }
 
-export function libraToFloat(amount: number): number {
-  return Math.trunc(amount) / LIBRA_SCALING_FACTOR;
+export function diemToFloat(amount: number): number {
+  return Math.trunc(amount) / DIEM_SCALING_FACTOR;
 }
 
 /**
@@ -41,17 +42,17 @@ export function fiatToHumanFriendly(amount: number): string {
 }
 
 /**
- * Convert the Libra amount from its internal representation to a human
+ * Convert the Diem amount from its internal representation to a human
  * readable decimal fraction.
  *
- * Libra amounts are handled internally as fixed point scaled numbers and are
+ * Diem amounts are handled internally as fixed point scaled numbers and are
  * converted to decimal fraction only for UI presentation.
  *
- * @param amount  Fixed point scaled Libra amount.
+ * @param amount  Fixed point scaled Diem amount.
  */
-export function libraToHumanFriendly(amount: number): string {
-  return libraToFloat(amount).toLocaleString(undefined, {
-    ...LIBRA_VISUAL_FORMAT,
+export function diemToHumanFriendly(amount: number): string {
+  return diemToFloat(amount).toLocaleString(undefined, {
+    ...DIEM_VISUAL_FORMAT,
     useGrouping: true,
   });
 }

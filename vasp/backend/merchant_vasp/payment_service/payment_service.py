@@ -98,6 +98,7 @@ def generate_payment_options_with_qr(payment):
     bech32addr = identifier.encode_account(vasp_addr, payment.subaddress, CHAIN_HRP)
 
     for payment_option in payment.payment_options:
+        # FIXME: DM
         payment_link = f"libra://{bech32addr}?c={payment_option.currency}&am={payment_option.amount}"
         payment_option_attributes = dict(
             address=bech32addr,

@@ -2,7 +2,7 @@ import typing
 from enum import Enum
 
 
-class LibraCurrency(str, Enum):
+class DiemCurrency(str, Enum):
     Coin1 = "Coin1"
 
 
@@ -17,4 +17,4 @@ class FiatCurrency(str, Enum):
     JPY = "JPY"
 
 
-Currency = typing.Union[FiatCurrency, LibraCurrency]
+Currency = typing.Union[FiatCurrency, DiemCurrency]

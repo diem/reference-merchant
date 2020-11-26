@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "libra-reference-merchant.fullname" . }}-frontend
+  name: {{ include "diem-reference-merchant.fullname" . }}-frontend
   labels:
-    app: {{ include "libra-reference-merchant.fullname" . }}-frontend
-    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-frontend
+    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      app: {{ include "libra-reference-merchant.fullname" . }}-frontend
-      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+      app: {{ include "diem-reference-merchant.fullname" . }}-frontend
+      {{- include "diem-reference-merchant.selectorLabels" . | nindent 6 }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -20,14 +20,14 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        app: {{ include "libra-reference-merchant.fullname" . }}-frontend
-        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+        app: {{ include "diem-reference-merchant.fullname" . }}-frontend
+        {{- include "diem-reference-merchant.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      serviceAccountName: {{ include "diem-reference-merchant.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

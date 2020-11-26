@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "diem-reference-merchant.fullname" . }}-vasp
+  labels:
+    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-vasp
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "diem-reference-merchant.selectorLabels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-vasp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "diem-reference-merchant.fullname" . }}-worker
+  labels:
+    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-worker
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "diem-reference-merchant.selectorLabels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-worker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "diem-reference-merchant.fullname" . }}-pubsub
+  labels:
+    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-pubsub
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "diem-reference-merchant.selectorLabels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-pubsub

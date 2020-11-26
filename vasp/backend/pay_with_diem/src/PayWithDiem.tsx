@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import "./PayWithLibra.css";
+import "./PayWithDiem.css";
 import {
   fetchAvailablePaymentOptions,
   PaymentOption,
 } from "./blockchainService";
 
-interface PayWithLibraProps {
+interface PayWithDiemProps {
   paymentLink: string;
 }
 
-function PayWithLibra({ paymentLink }: PayWithLibraProps) {
+function PayWithDiem({ paymentLink }: PayWithDiemProps) {
   const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ function PayWithLibra({ paymentLink }: PayWithLibraProps) {
   }, []);
 
   return (
-    <div className="pay-with-libra">
+    <div className="pay-with-diem">
       <div className="payment-options">
         {!paymentOptions && <span>Loading payment options...</span>}
         {paymentOptions && (
@@ -45,4 +45,4 @@ function PayWithLibra({ paymentLink }: PayWithLibraProps) {
   );
 }
 
-export default PayWithLibra;
+export default PayWithDiem;

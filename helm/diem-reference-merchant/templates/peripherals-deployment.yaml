@@ -2,15 +2,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "libra-reference-merchant.fullname" . }}-redis
+  name: {{ include "diem-reference-merchant.fullname" . }}-redis
   labels:
-    app: {{ include "libra-reference-merchant.fullname" . }}-redis
-    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-redis
+    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "libra-reference-merchant.fullname" . }}-redis
-      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+      app: {{ include "diem-reference-merchant.fullname" . }}-redis
+      {{- include "diem-reference-merchant.selectorLabels" . | nindent 6 }}
   replicas: 1
   template:
     metadata:
@@ -19,14 +19,14 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        app: {{ include "libra-reference-merchant.fullname" . }}-redis
-        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+        app: {{ include "diem-reference-merchant.fullname" . }}-redis
+        {{- include "diem-reference-merchant.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      serviceAccountName: {{ include "diem-reference-merchant.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -37,14 +37,14 @@ spec:
         {{- if .Values.peripherals.redis.persistence }}
         volumeMounts:
           - mountPath: /data
-            name: {{ include "libra-reference-merchant.fullname" . }}-redis-pv
+            name: {{ include "diem-reference-merchant.fullname" . }}-redis-pv
         {{- end }}
       restartPolicy: Always
       {{- if .Values.peripherals.redis.persistence }}
       volumes:
-        - name: {{ include "libra-reference-merchant.fullname" . }}-redis-pv
+        - name: {{ include "diem-reference-merchant.fullname" . }}-redis-pv
           persistentVolumeClaim:
-            claimName: {{ include "libra-reference-merchant.fullname" . }}-redis-pv-claim
+            claimName: {{ include "diem-reference-merchant.fullname" . }}-redis-pv-claim
       {{- end }}
 ---
 {{- end }}
@@ -52,15 +52,15 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "libra-reference-merchant.fullname" . }}-db
+  name: {{ include "diem-reference-merchant.fullname" . }}-db
   labels:
-    app: {{ include "libra-reference-merchant.fullname" . }}-db
-    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+    app: {{ include "diem-reference-merchant.fullname" . }}-db
+    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "libra-reference-merchant.fullname" . }}-db
-      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+      app: {{ include "diem-reference-merchant.fullname" . }}-db
+      {{- include "diem-reference-merchant.selectorLabels" . | nindent 6 }}
   replicas: 1
   template:
     metadata:
@@ -69,14 +69,14 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        app: {{ include "libra-reference-merchant.fullname" . }}-db
-        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+        app: {{ include "diem-reference-merchant.fullname" . }}-db
+        {{- include "diem-reference-merchant.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      serviceAccountName: {{ include "diem-reference-merchant.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -97,13 +97,13 @@ spec:
         {{- if .Values.peripherals.database.persistence }}
         volumeMounts:
           - mountPath: /data
-            name: {{ include "libra-reference-merchant.fullname" . }}-db-pv
+            name: {{ include "diem-reference-merchant.fullname" . }}-db-pv
         {{- end }}
       restartPolicy: Always
       {{- if .Values.peripherals.database.persistence }}
       volumes:
-        - name: {{ include "libra-reference-merchant.fullname" . }}-db-pv
+        - name: {{ include "diem-reference-merchant.fullname" . }}-db-pv
           persistentVolumeClaim:
-            claimName: {{ include "libra-reference-merchant.fullname" . }}-db-pv-claim
+            claimName: {{ include "diem-reference-merchant.fullname" . }}-db-pv-claim
       {{- end }}
 {{- end }}

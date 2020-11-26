@@ -1,30 +1,30 @@
-.pay-with-libra {
+.pay-with-diem {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.pay-with-libra h1 {
+.pay-with-diem h1 {
   margin: 0;
   font-weight: lighter;
 }
 
-.pay-with-libra .payment-options {
+.pay-with-diem .payment-options {
   display: flex;
 }
 
-.pay-with-libra .payment-options label {
+.pay-with-diem .payment-options label {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 1rem;
 }
 
-.pay-with-libra canvas {
+.pay-with-diem canvas {
   margin: 1rem 0;
 }
 
-.pay-with-libra .pay {
+.pay-with-diem .pay {
   color: white;
   padding: 0.5rem 1rem;
   background: #6720df;
@@ -33,7 +33,7 @@
   box-shadow: 0.1rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
 }
 
-.pay-with-libra .pay:hover {
+.pay-with-diem .pay:hover {
   background: #5d00ff;
   box-shadow: none;
 }

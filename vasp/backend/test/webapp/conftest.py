@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
+# FIXME: DM
 from libra.jsonrpc import CurrencyInfo
 from libra_utils.custody import Custody
 from libra_utils.sdks import liquidity
@@ -30,6 +31,7 @@ MOCK_SUPPORTED_CURRENCIES = [
     "AUD",
     "NZD",
     "JPY",
+    # FIXME: DM
     DEFAULT_LIBRA_CURRENCY,
 ]
 

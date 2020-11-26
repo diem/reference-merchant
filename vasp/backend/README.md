@@ -1,5 +1,5 @@
-# libra-reference-merchant
-Libra Reference Merchant - A demonstration merchant solution.
+# diem-reference-merchant
+Diem Reference Merchant - A demonstration merchant solution.
 
 
 ### Start docker compose and initial setup

@@ -1,4 +1,5 @@
 import pytest
+# FIXME: DM
 from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
 
 from merchant_vasp import payment_service
@@ -15,6 +16,7 @@ from test.conftest import (
     PAYMENT_ID,
 )
 
+# FIXME: DM
 CURRENCY = DEFAULT_LIBRA_CURRENCY
 
 
