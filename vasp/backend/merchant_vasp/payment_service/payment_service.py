@@ -3,7 +3,7 @@ from typing import Tuple
 
 import pyqrcode
 from diem import identifier, jsonrpc, testnet
-from diem_utils.types.currencies import FiatCurrency, LibraCurrency
+from diem_utils.types.currencies import FiatCurrency, DiemCurrency
 
 from .payment_exceptions import *
 from ..config import CHAIN_HRP, JSON_RPC_URL
@@ -18,13 +18,13 @@ def get_supported_network_currencies() -> Tuple[str]:
     api = jsonrpc.Client(JSON_RPC_URL)
     supported_currency_info = api.get_currencies()
 
-    return tuple(_.code for _ in supported_currency_info if _.code == LibraCurrency.Coin1)
+    return tuple(_.code for _ in supported_currency_info if _.code == DiemCurrency.Coin1)
 
 
 def get_supported_currencies() -> Tuple[str]:
     # TODO - error handling
     supported_currency_info = [_.value for _ in FiatCurrency] + [
-        _.value for _ in LibraCurrency
+        _.value for _ in DiemCurrency
     ]
 
     return tuple(supported_currency_info)

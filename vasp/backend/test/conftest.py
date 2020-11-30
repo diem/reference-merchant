@@ -9,7 +9,7 @@ from diem import identifier
 from diem.jsonrpc import CurrencyInfo
 from diem.testnet import CHAIN_ID
 from diem_utils.custody import Custody
-from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
+from diem_utils.types.currencies import DEFAULT_DIEM_CURRENCY
 from diem_utils.types.liquidity.currency import CurrencyPairs
 from diem_utils.types.liquidity.lp import LPDetails
 from diem_utils.types.liquidity.quote import QuoteData, Rate
@@ -41,7 +41,7 @@ MOCK_SUPPORTED_CURRENCIES = [
     "NZD",
     "JPY",
     # FIXME: DM
-    DEFAULT_LIBRA_CURRENCY,
+    DEFAULT_DIEM_CURRENCY,
 ]
 
 MOCK_NETWORK_SUPPORTED_CURRENCIES = [
@@ -95,7 +95,7 @@ CREATED_ORDER_ID = "4"
 PAYMENT_SUBADDR = "aaaaaaaaaaaaaaaa"
 PAYMENT_AMOUNT = 234
 # FIXME: DM
-PAYMENT_CURRENCY = DEFAULT_LIBRA_CURRENCY
+PAYMENT_CURRENCY = DEFAULT_DIEM_CURRENCY
 PAYMENT_AMOUNT_2 = 432
 REFUND_TX_ID = 7000289
 PAYOUT_TX_ID = 7000281
@@ -186,7 +186,7 @@ def db():
         sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR, CHAIN_HRP),
         amount=10,
         # FIXME: DM
-        currency=DEFAULT_LIBRA_CURRENCY,
+        currency=DEFAULT_DIEM_CURRENCY,
         tx_id=CLEARED_TX_ID,
     )
 

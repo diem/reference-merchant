@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 # FIXME: DM
 from diem import LocalAccount, utils, testnet, diem_types
 from diem_utils.custody import Custody
-from diem_utils.types.currencies import LibraCurrency
+from diem_utils.types.currencies import DiemCurrency
 from diem_utils.vasp import Vasp
 from offchainapi.crypto import ComplianceKey
 
@@ -156,6 +156,6 @@ with open(liquidity_env_file_path, "w") as dotenv:
     print('Mint currencies to liquidity account')
     for currency in diem_client.get_currencies():
         # FIXME: DM
-        if currency.code == LibraCurrency.Coin1:
+        if currency.code == DiemCurrency.Coin1:
             print(f"Minting {amount}{currency.code} for account {address_str}")
             faucet.mint(lp_account.auth_key.hex(), amount, currency.code)

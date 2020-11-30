@@ -76,7 +76,7 @@ export async function fetchAvailablePaymentOptions(): Promise<PaymentOption[]> {
       },
       // FIXME: DM
       homepageUrl: "https://demo-wallet.libra.org/",
-      protocol: "libra",
+      protocol: "diem",
     },
     {
       type: "web-link",

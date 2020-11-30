@@ -1,7 +1,7 @@
 import dramatiq
 # FIXME: DM
 from diem import diem_types
-from diem_utils.types.currencies import LibraCurrency
+from diem_utils.types.currencies import DiemCurrency
 
 from pubsub.types import LRWPubSubEvent
 from ..payment_service import process_incoming_transaction, PaymentServiceException
@@ -31,7 +31,7 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
                                      sender_sub_address=sender_sub_address, receiver_address=txn.receiver,
                                      receiver_sub_address=receiver_sub_address, amount=txn.amount,
                                      # FIXME: DM
-                                     currency=LibraCurrency[txn.currency])
+                                     currency=DiemCurrency[txn.currency])
     except PaymentServiceException as _:
         # TODO - log exception
         db_session.rollback()

@@ -12,7 +12,7 @@ from test.conftest import *
 def mock_get_supported_network_currencies(monkeypatch):
     def get_supported_network_currencies_impl():
         # FIXME: DM
-        return DEFAULT_LIBRA_CURRENCY
+        return DEFAULT_DIEM_CURRENCY
 
     monkeypatch.setattr(
         payment_service,

@@ -8,7 +8,7 @@ import pytest
 from diem.jsonrpc import CurrencyInfo
 from diem_utils.custody import Custody
 from diem_utils.sdks import liquidity
-from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
+from diem_utils.types.currencies import DEFAULT_DIEM_CURRENCY
 from diem_utils.types.liquidity.currency import CurrencyPairs
 from diem_utils.types.liquidity.lp import LPDetails
 from diem_utils.types.liquidity.quote import QuoteData, Rate
@@ -32,7 +32,7 @@ MOCK_SUPPORTED_CURRENCIES = [
     "NZD",
     "JPY",
     # FIXME: DM
-    DEFAULT_LIBRA_CURRENCY,
+    DEFAULT_DIEM_CURRENCY,
 ]
 
 MOCK_NETWORK_SUPPORTED_CURRENCIES = [

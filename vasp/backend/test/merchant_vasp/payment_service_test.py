@@ -1,6 +1,6 @@
 import pytest
 # FIXME: DM
-from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
+from diem_utils.types.currencies import DEFAULT_DIEM_CURRENCY
 
 from merchant_vasp import payment_service
 from merchant_vasp.onchainwallet import OnchainWallet
@@ -17,7 +17,7 @@ from test.conftest import (
 )
 
 # FIXME: DM
-CURRENCY = DEFAULT_LIBRA_CURRENCY
+CURRENCY = DEFAULT_DIEM_CURRENCY
 
 
 def test_payment_to_wrong_address(db):
