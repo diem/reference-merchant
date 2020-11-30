@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "diem-reference-merchant.fullname" . -}}
+{{- $fullName := include "libra-reference-merchant.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
@@ -10,7 +10,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}-backend
   labels:
-    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/x-forwarded-prefix: "/api"
@@ -23,7 +23,7 @@ spec:
       http:
         paths:
         - backend:
-            serviceName: {{ include "diem-reference-merchant.fullname" . }}-web
+            serviceName: {{ include "libra-reference-merchant.fullname" . }}-web
             servicePort: {{ .Values.service.port }}
           path: /api(/|$)(.*)
 ---
@@ -36,7 +36,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}-frontend
   labels:
-    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
   {{- if .Values.ingress.merchant.annotations }}
   annotations:
     {{ toYaml .Values.ingress.merchant.annotations | nindent 4 }}
@@ -47,7 +47,7 @@ spec:
       http:
         paths:
         - backend:
-            serviceName: {{ include "diem-reference-merchant.fullname" . }}-frontend
+            serviceName: {{ include "libra-reference-merchant.fullname" . }}-frontend
             servicePort: {{ .Values.service.port }}
           path: /
 
@@ -61,7 +61,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}-vasp
   labels:
-    {{- include "diem-reference-merchant.labels" . | nindent 4 }}
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
   {{- if .Values.ingress.vasp.annotations }}
   annotations:
     {{ toYaml .Values.ingress.vasp.annotations | nindent 4 }}
@@ -72,7 +72,7 @@ spec:
       http:
         paths:
         - backend:
-            serviceName: {{ include "diem-reference-merchant.fullname" . }}-vasp
+            serviceName: {{ include "libra-reference-merchant.fullname" . }}-vasp
             servicePort: {{ .Values.service.port }}
           path: /
 

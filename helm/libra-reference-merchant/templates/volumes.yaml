@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "diem-reference-merchant.fullname" . }}-redis-pv-claim
+  name: {{ include "libra-reference-merchant.fullname" . }}-redis-pv-claim
   labels:
-    app: {{ include "diem-reference-merchant.fullname" . }}-redis
+    app: {{ include "libra-reference-merchant.fullname" . }}-redis
 spec:
   accessModes:
     - ReadWriteOnce
@@ -15,10 +15,10 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ include "diem-reference-merchant.fullname" . }}-redis-pv
+  name: {{ include "libra-reference-merchant.fullname" . }}-redis-pv
   labels:
     type: local
-    app: {{ include "diem-reference-merchant.fullname" . }}-redis
+    app: {{ include "libra-reference-merchant.fullname" . }}-redis
 spec:
   storageClassName: manual
   capacity:
@@ -33,9 +33,9 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "diem-reference-merchant.fullname" . }}-db-pv-claim
+  name: {{ include "libra-reference-merchant.fullname" . }}-db-pv-claim
   labels:
-    app: {{ include "diem-reference-merchant.fullname" . }}-db
+    app: {{ include "libra-reference-merchant.fullname" . }}-db
 spec:
   accessModes:
     - ReadWriteOnce
@@ -46,10 +46,10 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ include "diem-reference-merchant.fullname" . }}-db-pv
+  name: {{ include "libra-reference-merchant.fullname" . }}-db-pv
   labels:
     type: local
-    app: {{ include "diem-reference-merchant.fullname" . }}-db
+    app: {{ include "libra-reference-merchant.fullname" . }}-db
 spec:
   storageClassName: manual
   capacity:
