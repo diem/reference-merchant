@@ -9,9 +9,9 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 # FIXME: DM
 from libra import LocalAccount, utils, testnet, libra_types
-from libra_utils.custody import Custody
-from libra_utils.types.currencies import LibraCurrency
-from libra_utils.vasp import Vasp
+from diem_utils.custody import Custody
+from diem_utils.types.currencies import LibraCurrency
+from diem_utils.vasp import Vasp
 from offchainapi.crypto import ComplianceKey
 
 diem_client = testnet.create_client()

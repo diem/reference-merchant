@@ -1,6 +1,6 @@
 import pytest
 # FIXME: DM
-from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
+from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
 
 from merchant_vasp import payment_service
 from merchant_vasp.onchainwallet import OnchainWallet

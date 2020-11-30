@@ -7,7 +7,7 @@ from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Range, Length
 
 # FIXME: DM
-from libra_utils.types.currencies import FiatCurrency
+from diem_utils.types.currencies import FiatCurrency
 
 
 def fiat_amount_field() -> Field:

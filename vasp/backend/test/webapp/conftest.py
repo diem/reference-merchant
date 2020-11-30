@@ -6,13 +6,13 @@ from uuid import UUID
 import pytest
 # FIXME: DM
 from libra.jsonrpc import CurrencyInfo
-from libra_utils.custody import Custody
-from libra_utils.sdks import liquidity
-from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
-from libra_utils.types.liquidity.currency import CurrencyPairs
-from libra_utils.types.liquidity.lp import LPDetails
-from libra_utils.types.liquidity.quote import QuoteData, Rate
-from libra_utils.types.liquidity.trade import TradeId
+from diem_utils.custody import Custody
+from diem_utils.sdks import liquidity
+from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
+from diem_utils.types.liquidity.currency import CurrencyPairs
+from diem_utils.types.liquidity.lp import LPDetails
+from diem_utils.types.liquidity.quote import QuoteData, Rate
+from diem_utils.types.liquidity.trade import TradeId
 
 from webapp import app
 

@@ -3,7 +3,7 @@ from typing import Tuple
 
 import pyqrcode
 from libra import identifier, jsonrpc, testnet
-from libra_utils.types.currencies import FiatCurrency, LibraCurrency
+from diem_utils.types.currencies import FiatCurrency, LibraCurrency
 
 from .payment_exceptions import *
 from ..config import CHAIN_HRP, JSON_RPC_URL

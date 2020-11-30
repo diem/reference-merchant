@@ -4,7 +4,7 @@ import secrets
 from datetime import datetime, timedelta
 
 from libra import utils, identifier
-from libra_utils.types.currencies import LibraCurrency
+from diem_utils.types.currencies import LibraCurrency
 
 from merchant_vasp import payment_service
 from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES, CHAIN_HRP

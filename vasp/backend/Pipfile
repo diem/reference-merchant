@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pre-commit = "*"
-black = "==19.10b0"
+black = "*"
 pytest = "*"
 pytest-mock = "*"
 pytest-cov = "*"
@@ -28,8 +28,8 @@ pyqrcode = "*"
 pypng = "*"
 apispec = "*"
 dataclasses-json = "*"
-libra-utils = {git = "https://49decaaaf2e5c1c77eca2805117a36b3135f2c26@github.com/libra/libra-reference-utils.git", ref = "master"}
-libra-client-sdk = "*"
+reference-utils = {git = "https://49decaaaf2e5c1c77eca2805117a36b3135f2c26@github.com/firstdag/reference-utils.git", editable = true, ref = "LibraMigration"}
+client-python-sdk = {git = "https://49decaaaf2e5c1c77eca2805117a36b3135f2c26@github.com/libra/client-sdk-python.git", editable = true, ref = "diem-migration"}
 libra-offchainreference = "*"
 
 [requires]

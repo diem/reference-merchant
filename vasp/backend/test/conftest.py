@@ -8,12 +8,12 @@ import pytest
 from libra import identifier
 from libra.jsonrpc import CurrencyInfo
 from libra.testnet import CHAIN_ID
-from libra_utils.custody import Custody
-from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
-from libra_utils.types.liquidity.currency import CurrencyPairs
-from libra_utils.types.liquidity.lp import LPDetails
-from libra_utils.types.liquidity.quote import QuoteData, Rate
-from libra_utils.types.liquidity.trade import TradeId
+from diem_utils.custody import Custody
+from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
+from diem_utils.types.liquidity.currency import CurrencyPairs
+from diem_utils.types.liquidity.lp import LPDetails
+from diem_utils.types.liquidity.quote import QuoteData, Rate
+from diem_utils.types.liquidity.trade import TradeId
 
 from merchant_vasp.config import CHAIN_HRP
 from merchant_vasp.storage import (

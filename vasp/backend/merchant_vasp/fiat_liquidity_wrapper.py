@@ -1,9 +1,9 @@
-from libra_utils.sdks import liquidity
-from libra_utils.types.liquidity.currency import CurrencyPair, CurrencyPairs, Currency
-from libra_utils.types.liquidity.trade import Direction
+from diem_utils.sdks import liquidity
+from diem_utils.types.liquidity.currency import CurrencyPair, CurrencyPairs, Currency
+from diem_utils.types.liquidity.trade import Direction
 
-from libra_utils.types.liquidity.currency import CurrencyPair, Currency
-from libra_utils.precise_amount import Amount
+from diem_utils.types.liquidity.currency import CurrencyPair, Currency
+from diem_utils.precise_amount import Amount
 
 import logging
 

@@ -1,6 +1,6 @@
 from http import HTTPStatus
 # FIXME: DM
-from libra_utils.vasp import Vasp
+from diem_utils.vasp import Vasp
 
 from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
 from merchant_vasp.payment_service import payment_service

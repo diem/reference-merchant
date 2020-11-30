@@ -1,7 +1,7 @@
 import dramatiq
 # FIXME: DM
 from libra import libra_types
-from libra_utils.types.currencies import LibraCurrency
+from diem_utils.types.currencies import LibraCurrency
 
 from pubsub.types import LRWPubSubEvent
 from ..payment_service import process_incoming_transaction, PaymentServiceException

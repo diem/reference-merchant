@@ -11,6 +11,7 @@ services:
       - COMPOSE_ENV=development
     volumes:
       - ../merchant/backend:/merchant-backend
+      - /merchant-backend/src
 
   merchant-frontend:
     stdin_open: true
@@ -31,16 +32,19 @@ services:
       - COMPOSE_ENV=development
     volumes:
       - ../vasp/backend:/vasp-backend
+      - /vasp-backend/src
 
   vasp-backend-pubsub:
     volumes:
-      - ../vasp/backend:/vasp-vackend
+      - ../vasp/backend:/vasp-backend
+      - /vasp-backend/src
 
   liquidity:
     environment:
       - COMPOSE_ENV=development
     volumes:
       - ../liquidity:/liquidity
+      - /liquidity/src
 
   db:
     ports:
