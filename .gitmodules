@@ -1,3 +1,0 @@
-[submodule "thirdparty/libra-reference-utils"]
-	path = thirdparty/libra-reference-utils
-	url = git@github.com:libra/libra-reference-utils.git
