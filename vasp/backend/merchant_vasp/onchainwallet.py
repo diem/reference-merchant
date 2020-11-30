@@ -3,13 +3,13 @@
 
 import os
 
-from libra import testnet, jsonrpc, libra_types
+from diem import testnet, jsonrpc, diem_types
 from diem_utils.custody import Custody
 from diem_utils.vasp import Vasp
 
 from merchant_vasp.config import JSON_RPC_URL
 
-CHAIN_ID = libra_types.ChainId(value=os.getenv("CHAIN_ID", testnet.CHAIN_ID.value))
+CHAIN_ID = diem_types.ChainId(value=os.getenv("CHAIN_ID", testnet.CHAIN_ID.value))
 
 Custody.init(CHAIN_ID)
 

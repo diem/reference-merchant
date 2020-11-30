@@ -3,7 +3,7 @@ import logging
 import secrets
 from datetime import datetime, timedelta
 
-from libra import utils, identifier
+from diem import utils, identifier
 from diem_utils.types.currencies import LibraCurrency
 
 from merchant_vasp import payment_service

@@ -2,7 +2,7 @@ import logging
 from typing import Tuple
 
 import pyqrcode
-from libra import identifier, jsonrpc, testnet
+from diem import identifier, jsonrpc, testnet
 from diem_utils.types.currencies import FiatCurrency, LibraCurrency
 
 from .payment_exceptions import *

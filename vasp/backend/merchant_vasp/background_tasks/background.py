@@ -1,6 +1,6 @@
 import dramatiq
 # FIXME: DM
-from libra import libra_types
+from diem import diem_types
 from diem_utils.types.currencies import LibraCurrency
 
 from pubsub.types import LRWPubSubEvent
@@ -16,8 +16,8 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
     receiver_sub_address = None
 
     # FIXME: DM
-    if metadata and isinstance(metadata, libra_types.Metadata__GeneralMetadata) \
-            and isinstance(metadata.value, libra_types.GeneralMetadata__GeneralMetadataVersion0):
+    if metadata and isinstance(metadata, diem_types.Metadata__GeneralMetadata) \
+            and isinstance(metadata.value, diem_types.GeneralMetadata__GeneralMetadataVersion0):
         general_metadata = metadata.value.value
 
         if general_metadata.to_subaddress:

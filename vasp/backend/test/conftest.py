@@ -5,9 +5,9 @@ from uuid import UUID
 
 import pytest
 # FIXME: DM
-from libra import identifier
-from libra.jsonrpc import CurrencyInfo
-from libra.testnet import CHAIN_ID
+from diem import identifier
+from diem.jsonrpc import CurrencyInfo
+from diem.testnet import CHAIN_ID
 from diem_utils.custody import Custody
 from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
 from diem_utils.types.liquidity.currency import CurrencyPairs

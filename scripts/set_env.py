@@ -8,7 +8,7 @@ import sys
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 # FIXME: DM
-from libra import LocalAccount, utils, testnet, libra_types
+from diem import LocalAccount, utils, testnet, diem_types
 from diem_utils.custody import Custody
 from diem_utils.types.currencies import LibraCurrency
 from diem_utils.vasp import Vasp
@@ -40,7 +40,7 @@ def init_onchain_account(
     print(f'Creating and initialize blockchain account {account_name} @ {account_addr}')
     os.environ["CUSTODY_PRIVATE_KEYS"] = custody_private_keys
     # FIXME: DM
-    Custody.init(libra_types.ChainId.from_int(chain_id))
+    Custody.init(diem_types.ChainId.from_int(chain_id))
     vasp = Vasp(diem_client, account_name)
     vasp.setup_blockchain(base_url, compliance_key)
     print(f'Account initialization done!')

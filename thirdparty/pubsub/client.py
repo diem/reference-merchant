@@ -8,7 +8,7 @@ import logging
 import time
 from typing import Any, Dict, Optional
 
-from libra import jsonrpc
+from diem import jsonrpc
 
 from merchant_vasp.background_tasks import process_incoming_txn
 from .types import LRWPubSubEvent

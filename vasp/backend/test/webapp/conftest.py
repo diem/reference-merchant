@@ -5,7 +5,7 @@ from uuid import UUID
 
 import pytest
 # FIXME: DM
-from libra.jsonrpc import CurrencyInfo
+from diem.jsonrpc import CurrencyInfo
 from diem_utils.custody import Custody
 from diem_utils.sdks import liquidity
 from diem_utils.types.currencies import DEFAULT_LIBRA_CURRENCY

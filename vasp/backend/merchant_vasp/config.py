@@ -6,7 +6,7 @@ from dramatiq.brokers.redis import RedisBroker, Broker
 from dramatiq.encoder import PickleEncoder
 from dramatiq.results import Results
 from dramatiq.results.backends.redis import RedisBackend
-from libra import identifier
+from diem import identifier
 
 DB_URL: str = os.getenv("DB_URL", "sqlite:////tmp/merchant_test.db")
 
