@@ -1,4 +1,4 @@
-# Copyright (c) The Libra Core Contributors
+# Copyright (c) The Diem Core Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -7,13 +7,14 @@ import sys
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from libra import LocalAccount, utils, testnet, libra_types
-from libra_utils.custody import Custody
-from libra_utils.types.currencies import LibraCurrency
-from libra_utils.vasp import Vasp
+# FIXME: DM
+from diem import LocalAccount, utils, testnet, diem_types
+from diem_utils.custody import Custody
+from diem_utils.types.currencies import DiemCurrency
+from diem_utils.vasp import Vasp
 from offchainapi.crypto import ComplianceKey
 
-libra_client = testnet.create_client()
+diem_client = testnet.create_client()
 
 wallet_account_name = "wallet"
 lp_account_name = "liquidity"
@@ -38,8 +39,9 @@ def init_onchain_account(
     account_addr = utils.account_address_hex(account.account_address)
     print(f'Creating and initialize blockchain account {account_name} @ {account_addr}')
     os.environ["CUSTODY_PRIVATE_KEYS"] = custody_private_keys
-    Custody.init(libra_types.ChainId.from_int(chain_id))
-    vasp = Vasp(libra_client, account_name)
+    # FIXME: DM
+    Custody.init(diem_types.ChainId.from_int(chain_id))
+    vasp = Vasp(diem_client, account_name)
     vasp.setup_blockchain(base_url, compliance_key)
     print(f'Account initialization done!')
 
@@ -60,6 +62,7 @@ ENV_FILE_NAME = os.getenv("ENV_FILE_NAME", ".env")
 LIQUIDITY_SERVICE_HOST = os.getenv("LIQUIDITY_SERVICE_HOST", "liquidity")
 LIQUIDITY_SERVICE_PORT = os.getenv("LIQUIDITY_SERVICE_PORT", 5000)
 NETWORK = os.getenv("NETWORK", "testnet")
+# FIXME: DM
 JSON_RPC_URL = os.getenv("JSON_RPC_URL", "https://testnet.libra.org/v1")
 FAUCET_URL = os.getenv("FAUCET_URL", "http://testnet.libra.org/mint")
 CHAIN_ID = int(os.getenv("CHAIN_ID", testnet.CHAIN_ID.value))
@@ -78,8 +81,8 @@ LIQUIDITY_PUBLIC_KEY_BYTES = COMPLIANCE_KEY_2.get_public().public_bytes(
 )
 
 if NETWORK == "premainnet":
-    vasp = Vasp(libra_client, wallet_account_name)
-    vasp_liquidity = Vasp(libra_client, lp_account_name)
+    vasp = Vasp(diem_client, wallet_account_name)
+    vasp_liquidity = Vasp(diem_client, lp_account_name)
     vasp.rotate_dual_attestation_info(VASP_BASE_URL, VASP_PUBLIC_KEY_BYTES)
     vasp_liquidity.rotate_dual_attestation_info(LIQUIDITY_BASE_URL, LIQUIDITY_PUBLIC_KEY_BYTES)
     exit(0)
@@ -146,12 +149,13 @@ with open(liquidity_env_file_path, "w") as dotenv:
 
     print('Mint currencies to liquidity account')
     address_str = utils.account_address_hex(lp_account.account_address)
-    faucet = testnet.Faucet(libra_client)
+    faucet = testnet.Faucet(diem_client)
 
     amount = 999 * 1_000_000
 
     print('Mint currencies to liquidity account')
-    for currency in libra_client.get_currencies():
-        if currency.code == LibraCurrency.Coin1:
+    for currency in diem_client.get_currencies():
+        # FIXME: DM
+        if currency.code == DiemCurrency.Coin1:
             print(f"Minting {amount}{currency.code} for account {address_str}")
             faucet.mint(lp_account.auth_key.hex(), amount, currency.code)

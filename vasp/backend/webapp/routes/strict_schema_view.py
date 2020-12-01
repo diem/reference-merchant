@@ -5,7 +5,6 @@ from jsonschema.exceptions import ValidationError
 from flasgger import SwaggerView, utils
 from flask import request, current_app, abort, jsonify, make_response
 from requests import RequestException
-from werkzeug.exceptions import HTTPException
 
 from merchant_vasp.storage import Merchant
 

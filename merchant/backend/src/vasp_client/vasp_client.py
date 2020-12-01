@@ -5,7 +5,6 @@ from uuid import UUID
 
 import requests
 
-from currency import Price
 from .types import PaymentStatus, Payment, PaymentEventsLog, PaymentEvent
 
 PAYMENT_VASP_URL = os.getenv("PAYMENT_VASP_URL", "http://127.0.0.1:5000")

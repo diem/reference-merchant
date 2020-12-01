@@ -69,13 +69,14 @@ export async function fetchAvailablePaymentOptions(): Promise<PaymentOption[]> {
     {
       type: "wallet-link",
       id: "lrw",
-      name: "Libra Reference Wallet",
+      name: "Diem Reference Wallet",
       logo: {
         base64: `data:image/svg+xml;utf8,${logoLRW}`,
-        alt: "Libra Reference Wallet",
+        alt: "Diem Reference Wallet",
       },
+      // FIXME: DM
       homepageUrl: "https://demo-wallet.libra.org/",
-      protocol: "libra",
+      protocol: "diem",
     },
     {
       type: "web-link",

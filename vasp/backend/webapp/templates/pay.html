@@ -34,12 +34,12 @@
 
 <body>
 <div class="container-fluid py-4 d-flex flex-column align-items-center justify-content-center">
-    <h1 class="h4 text-center mb-2">Pay {{ price }} {{ currency }} with ≋ Libra</h1>
+    <h1 class="h4 text-center mb-2">Pay {{ price }} {{ currency }} with ≋ Diem</h1>
     <div class="dropdown mb-2" id="currencyDropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                 style="min-width: 12rem"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Select a Libra Currency
+            Select a Diem Currency
         </button>
         <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
             {% for payment_option in payment_options %}

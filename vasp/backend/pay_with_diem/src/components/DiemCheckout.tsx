@@ -12,16 +12,16 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 import QRCode from "qrcode.react";
-import PayWithLibra from "../PayWithLibra";
-import {fiatToHumanFriendly, libraToHumanFriendly} from "../utils";
+import PayWithDiem from "../PayWithDiem";
+import {fiatToHumanFriendly, diemToHumanFriendly} from "../utils";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle,} from "@fortawesome/free-solid-svg-icons";
 
-export interface LibraCheckoutProps {
+export interface DiemCheckoutProps {
   paymentId: string;
 }
 
-export default function LibraCheckout({ paymentId }: LibraCheckoutProps) {
+export default function DiemCheckout({ paymentId }: DiemCheckoutProps) {
   const [paymentOptions, setPaymentOptions] = useState<
     PaymentOptions | undefined
   >();
@@ -94,7 +94,7 @@ export default function LibraCheckout({ paymentId }: LibraCheckoutProps) {
             </UncontrolledDropdown>
             <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="currencyHelp" />
             <UncontrolledTooltip target="currencyHelp">
-              Please select a Libra currency
+              Please select a Diem currency
             </UncontrolledTooltip>
           </Col>
         </Row>
@@ -102,14 +102,14 @@ export default function LibraCheckout({ paymentId }: LibraCheckoutProps) {
           <Col className="text-nowrap text-right">Total to pay:</Col>
           <Col className="d-flex align-items-center">
             <span className="text-nowrap">
-              {libraToHumanFriendly(
+              {diemToHumanFriendly(
                 paymentOptions.options[selectedOption].amount
               )}{" "}
               {paymentOptions.options[selectedOption].currency}
             </span>
             <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="totalToPayHelp" />
             <UncontrolledTooltip target="totalToPayHelp">
-              The amount you will be changed in Libra
+              The amount you will be changed in Diem
             </UncontrolledTooltip>
           </Col>
         </Row>
@@ -119,7 +119,7 @@ export default function LibraCheckout({ paymentId }: LibraCheckoutProps) {
           <>
             <div className="mt-4">
               <div className="text-center">Choose your wallet:</div>
-              <PayWithLibra
+              <PayWithDiem
                 paymentLink={
                   paymentOptions.options[selectedOption].paymentLink
                 }
@@ -152,11 +152,11 @@ export default function LibraCheckout({ paymentId }: LibraCheckoutProps) {
             </div>
             <div className="text-center">
               <Button color="primary" size="sm" onClick={() => setChooseWallet(true)}>
-                Open in Libra wallet
+                Open in Diem wallet
               </Button>
               <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="openInWalletHelp" />
               <UncontrolledTooltip target="openInWalletHelp">
-                Choose your Libra wallet
+                Choose your Diem wallet
               </UncontrolledTooltip>
             </div>
           </>

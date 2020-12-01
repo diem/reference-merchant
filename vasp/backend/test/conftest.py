@@ -4,15 +4,16 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
-from libra import identifier
-from libra.jsonrpc import CurrencyInfo
-from libra.testnet import CHAIN_ID
-from libra_utils.custody import Custody
-from libra_utils.types.currencies import DEFAULT_LIBRA_CURRENCY
-from libra_utils.types.liquidity.currency import CurrencyPairs
-from libra_utils.types.liquidity.lp import LPDetails
-from libra_utils.types.liquidity.quote import QuoteData, Rate
-from libra_utils.types.liquidity.trade import TradeId
+# FIXME: DM
+from diem import identifier
+from diem.jsonrpc import CurrencyInfo
+from diem.testnet import CHAIN_ID
+from diem_utils.custody import Custody
+from diem_utils.types.currencies import DEFAULT_DIEM_CURRENCY
+from diem_utils.types.liquidity.currency import CurrencyPairs
+from diem_utils.types.liquidity.lp import LPDetails
+from diem_utils.types.liquidity.quote import QuoteData, Rate
+from diem_utils.types.liquidity.trade import TradeId
 
 from merchant_vasp.config import CHAIN_HRP
 from merchant_vasp.storage import (
@@ -39,7 +40,8 @@ MOCK_SUPPORTED_CURRENCIES = [
     "AUD",
     "NZD",
     "JPY",
-    DEFAULT_LIBRA_CURRENCY,
+    # FIXME: DM
+    DEFAULT_DIEM_CURRENCY,
 ]
 
 MOCK_NETWORK_SUPPORTED_CURRENCIES = [
@@ -92,7 +94,8 @@ EXPIRED_PAYMENT_ID = "00000000-0000-7777-0000-00000000d0d4"
 CREATED_ORDER_ID = "4"
 PAYMENT_SUBADDR = "aaaaaaaaaaaaaaaa"
 PAYMENT_AMOUNT = 234
-PAYMENT_CURRENCY = DEFAULT_LIBRA_CURRENCY
+# FIXME: DM
+PAYMENT_CURRENCY = DEFAULT_DIEM_CURRENCY
 PAYMENT_AMOUNT_2 = 432
 REFUND_TX_ID = 7000289
 PAYOUT_TX_ID = 7000281
@@ -182,7 +185,8 @@ def db():
     cleared_payment.add_chain_transaction(
         sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR, CHAIN_HRP),
         amount=10,
-        currency=DEFAULT_LIBRA_CURRENCY,
+        # FIXME: DM
+        currency=DEFAULT_DIEM_CURRENCY,
         tx_id=CLEARED_TX_ID,
     )
 

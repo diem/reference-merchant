@@ -3,8 +3,8 @@ import logging
 import secrets
 from datetime import datetime, timedelta
 
-from libra import utils, identifier
-from libra_utils.types.currencies import LibraCurrency
+from diem import utils, identifier
+from diem_utils.types.currencies import DiemCurrency
 
 from merchant_vasp import payment_service
 from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES, CHAIN_HRP
@@ -37,7 +37,7 @@ def create_payment(currency, merchant_reference_id, amount, merchant_id):
     if existing_order is not None:
         raise TakenMerchantReferenceId
 
-    sub_address = secrets.token_hex(identifier.LIBRA_SUBADDRESS_SIZE)
+    sub_address = secrets.token_hex(identifier.DIEM_SUBADDRESS_SIZE)
     new_payment = Payment(
         merchant_id=merchant_id,
         requested_currency=currency,
@@ -85,7 +85,7 @@ def refund(payment):
     refund_target_sub_address = refund_target_sub_address.hex()
 
     refund_amount = target_transaction.amount  # payment.requested_amount
-    refund_currency = LibraCurrency(target_transaction.currency)
+    refund_currency = DiemCurrency(target_transaction.currency)
 
     payment.set_status(PaymentStatus.refund_requested)
 
@@ -143,7 +143,7 @@ def payout(merchant: Merchant, payment: Payment):
     )
     # 3. Pay according to quote to payout_target
     tx_id, _ = OnchainWallet().send_transaction(
-        LibraCurrency(client_payment.currency),
+        DiemCurrency(client_payment.currency),
         client_payment.amount,
         liquidity_provider.vasp_address(),
         payout_target.bytes[:utils.SUB_ADDRESS_LEN].hex(),

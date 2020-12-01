@@ -11,13 +11,13 @@ FROM node:12.16.2-alpine3.11 as frontend-builder
 WORKDIR /frontend
 RUN npm install -g react-scripts --silent
 
-COPY vasp/backend/pay_with_libra/package.json ./
-COPY vasp/backend/pay_with_libra/yarn.lock ./
-COPY vasp/backend/pay_with_libra/tsconfig.json ./
+COPY vasp/backend/pay_with_diem/package.json ./
+COPY vasp/backend/pay_with_diem/yarn.lock ./
+COPY vasp/backend/pay_with_diem/tsconfig.json ./
 RUN yarn install
 
-COPY vasp/backend/pay_with_libra/public ./public
-COPY vasp/backend/pay_with_libra/src ./src
+COPY vasp/backend/pay_with_diem/public ./public
+COPY vasp/backend/pay_with_diem/src ./src
 
 ARG REACT_APP_BACKEND_URL
 RUN echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL"
@@ -26,8 +26,8 @@ RUN yarn build
 #-------------------------------------------------------------------
 FROM backend-base
 
-RUN mkdir pay_with_libra
-COPY --from=frontend-builder /frontend/build ./pay_with_libra/build
+RUN mkdir pay_with_diem
+COPY --from=frontend-builder /frontend/build ./pay_with_diem/build
 COPY thirdparty/ /thirdparty/
 COPY vasp/backend/Pipfile vasp/backend/Pipfile.lock ./
 RUN pipenv install --deploy --system

@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Range
-
-from libra_utils.types.currencies import FiatCurrency
+# FIXME: DM
+from diem_utils.types.currencies import FiatCurrency
 
 from merchant_vasp.storage import PaymentStatus
 
@@ -16,10 +16,10 @@ def fiat_amount_field(**kwargs) -> fields.Field:
     )
 
 
-def libra_amount_field(**kwargs) -> fields.Field:
-    """Defines Libra currency amount schema field"""
+def diem_amount_field(**kwargs) -> fields.Field:
+    """Defines Diem currency amount schema field"""
     return fields.Int(
-        description="Amount of Libra currency in scale factor 6",
+        description="Amount of Diem currency in scale factor 6",
         validate=Range(min=1),
         strict=True,
         **kwargs,
@@ -44,10 +44,10 @@ def fiat_currency_code_field(**kwargs) -> fields.Field:
     )
 
 
-def libra_currency_code_field(**kwargs) -> fields.Field:
-    """Defines Libra currency code schema field"""
+def diem_currency_code_field(**kwargs) -> fields.Field:
+    """Defines Diem currency code schema field"""
     return fields.Str(
-        description="Libra currency code",
+        description="Diem currency code",
         **kwargs,
     )
 
@@ -139,8 +139,8 @@ class CurrencyListSchema(Schema):
 
 class PaymentOptionSchema(Schema):
     address = fields.Str(required=True)
-    currency = libra_currency_code_field(required=True)
-    amount = libra_amount_field(required=True)
+    currency = diem_currency_code_field(required=True)
+    amount = diem_amount_field(required=True)
     payment_link = fields.Str(required=True)
 
 

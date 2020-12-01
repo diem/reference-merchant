@@ -1,6 +1,6 @@
 from http import HTTPStatus
-
-from libra_utils.vasp import Vasp
+# FIXME: DM
+from diem_utils.vasp import Vasp
 
 from merchant_vasp.config import PAYMENT_EXPIRE_MINUTES
 from merchant_vasp.payment_service import payment_service
@@ -11,7 +11,8 @@ from test.conftest import *
 @pytest.fixture
 def mock_get_supported_network_currencies(monkeypatch):
     def get_supported_network_currencies_impl():
-        return DEFAULT_LIBRA_CURRENCY
+        # FIXME: DM
+        return DEFAULT_DIEM_CURRENCY
 
     monkeypatch.setattr(
         payment_service,

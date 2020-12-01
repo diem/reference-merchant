@@ -1,6 +1,7 @@
 import dramatiq
-from libra import libra_types
-from libra_utils.types.currencies import LibraCurrency
+# FIXME: DM
+from diem import diem_types
+from diem_utils.types.currencies import DiemCurrency
 
 from pubsub.types import LRWPubSubEvent
 from ..payment_service import process_incoming_transaction, PaymentServiceException
@@ -14,8 +15,9 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
     sender_sub_address = None
     receiver_sub_address = None
 
-    if metadata and isinstance(metadata, libra_types.Metadata__GeneralMetadata) \
-            and isinstance(metadata.value, libra_types.GeneralMetadata__GeneralMetadataVersion0):
+    # FIXME: DM
+    if metadata and isinstance(metadata, diem_types.Metadata__GeneralMetadata) \
+            and isinstance(metadata.value, diem_types.GeneralMetadata__GeneralMetadataVersion0):
         general_metadata = metadata.value.value
 
         if general_metadata.to_subaddress:
@@ -28,7 +30,8 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
         process_incoming_transaction(version=txn.version, sender_address=txn.sender,
                                      sender_sub_address=sender_sub_address, receiver_address=txn.receiver,
                                      receiver_sub_address=receiver_sub_address, amount=txn.amount,
-                                     currency=LibraCurrency[txn.currency])
+                                     # FIXME: DM
+                                     currency=DiemCurrency[txn.currency])
     except PaymentServiceException as _:
         # TODO - log exception
         db_session.rollback()

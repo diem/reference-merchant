@@ -5,6 +5,3 @@ services:
       target: static_conf
     volumes:
       - ../gateway/nginx.static.conf:/etc/nginx/nginx.conf
-
-  
-      

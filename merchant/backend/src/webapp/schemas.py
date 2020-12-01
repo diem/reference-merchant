@@ -6,7 +6,8 @@ from dataclasses_json import dataclass_json, config
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Range, Length
 
-from libra_utils.types.currencies import FiatCurrency
+# FIXME: DM
+from diem_utils.types.currencies import FiatCurrency
 
 
 def fiat_amount_field() -> Field:

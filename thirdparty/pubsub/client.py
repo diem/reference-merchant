@@ -1,6 +1,6 @@
 # pyre-strict
 
-# Copyright (c) The Libra Core Contributors
+# Copyright (c) The Diem Core Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -8,7 +8,7 @@ import logging
 import time
 from typing import Any, Dict, Optional
 
-from libra import jsonrpc
+from diem import jsonrpc
 
 from merchant_vasp.background_tasks import process_incoming_txn
 from .types import LRWPubSubEvent
@@ -37,14 +37,14 @@ class LRWPubSubClient:
         self.sync_interval_ms = config["sync_interval_ms"]
         self.accounts = config["accounts"]
 
-        self.libra_node_uri = config["libra_node_uri"]
+        self.diem_node_uri = config["diem_node_uri"]
         self.progress_file_path = config["progress_file_path"]
         self.fetch_batch_size = 10
         self.processor = config.get("processor", process_incoming_txn)
 
         logger.info(f"Loaded LRWPubSubClient with config: {config}")
 
-        self.client = jsonrpc.Client(self.libra_node_uri)
+        self.client = jsonrpc.Client(self.diem_node_uri)
         self.progress = FileProgressStorage(self.progress_file_path)
 
     def start(self) -> None:

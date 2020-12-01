@@ -9,7 +9,6 @@ RUN yarn install
 COPY public ./public
 COPY src ./src
 
-#RUN CI=true yarn test
 RUN yarn build
 
 ENTRYPOINT yarn start
