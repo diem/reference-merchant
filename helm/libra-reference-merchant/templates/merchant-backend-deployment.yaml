@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "libra-reference-merchant.fullname" . }}-web
+  labels:
+    app: {{ include "libra-reference-merchant.fullname" . }}-web
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "libra-reference-merchant.fullname" . }}-web
+      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app: {{ include "libra-reference-merchant.fullname" . }}-web
+        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: init-wait
+        image: "{{ .Values.images.merchantBackend }}"
+        command: ["sh", "-c", 'wait-for-it -t 30 {{ include "libra-reference-merchant.fullname" . }}-db:{{ .Values.peripherals.database.port }} || exit 1']
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+      containers:
+      - command:
+          - /merchant-backend/run_web.sh
+        env:
+        - name: COMPOSE_ENV
+          value: "production"
+        - name: MERCHANT_BACKEND_PORT
+          value: {{.Values.service.targetPort | quote}}
+        - name: PAYMENT_VASP_URL
+          value: {{ include "libra-reference-merchant.vaspUrl" . | quote}}
+        - name: VASP_TOKEN
+          value: {{ .Values.fakeMerchantAPIKey }}
+        - name: JSON_RPC_URL
+          value: {{ .Values.sdk.jsonRpc }}
+        - name: CHAIN_ID
+          value: {{ .Values.chainId | quote }}
+        image: "{{ .Values.images.merchantBackend }}"
+        name: lrm-web
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        ports:
+          - name: http
+            containerPort: {{.Values.service.targetPort}}
+            protocol: TCP

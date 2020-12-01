@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "libra-reference-merchant.fullname" . }}-frontend
+  labels:
+    app: {{ include "libra-reference-merchant.fullname" . }}-frontend
+    {{- include "libra-reference-merchant.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "libra-reference-merchant.fullname" . }}-frontend
+      {{- include "libra-reference-merchant.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app: {{ include "libra-reference-merchant.fullname" . }}-frontend
+        {{- include "libra-reference-merchant.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "libra-reference-merchant.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - image: "{{ .Values.images.frontend }}"
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        name: lrm-frontend
+        ports:
+          - name: http
+            containerPort: {{ .Values.service.targetPort }}
+            protocol: TCP

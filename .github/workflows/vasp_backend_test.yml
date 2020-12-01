@@ -1,0 +1,31 @@
+name: VASP Backend tests
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pipenv
+        run: |
+          pip install --upgrade pipenv
+      - name: Install dependencies for vasp backend
+        run: |
+          cd vasp/backend && pipenv install --dev
+          cd ../..
+      - name: Test with pytest
+        run: |
+          cd vasp/backend && ./test/test.sh
+        env:
+          CHAIN_ID: 2
+          JSON_RPC_URL: https://testnet.libra.org/v1

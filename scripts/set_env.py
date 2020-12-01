@@ -1,0 +1,161 @@
+# Copyright (c) The Diem Core Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+import json
+import os
+import sys
+
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+# FIXME: DM
+from diem import LocalAccount, utils, testnet, diem_types
+from diem_utils.custody import Custody
+from diem_utils.types.currencies import DiemCurrency
+from diem_utils.vasp import Vasp
+from offchainapi.crypto import ComplianceKey
+
+diem_client = testnet.create_client()
+
+wallet_account_name = "wallet"
+lp_account_name = "liquidity"
+
+
+def get_private_key_hex(key: Ed25519PrivateKey) -> str:
+    return key.private_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PrivateFormat.Raw,
+        encryption_algorithm=serialization.NoEncryption(),
+    ).hex()
+
+
+def init_onchain_account(
+        custody_private_keys,
+        account_name,
+        account: LocalAccount,
+        base_url,
+        compliance_key,
+        chain_id: int
+):
+    account_addr = utils.account_address_hex(account.account_address)
+    print(f'Creating and initialize blockchain account {account_name} @ {account_addr}')
+    os.environ["CUSTODY_PRIVATE_KEYS"] = custody_private_keys
+    # FIXME: DM
+    Custody.init(diem_types.ChainId.from_int(chain_id))
+    vasp = Vasp(diem_client, account_name)
+    vasp.setup_blockchain(base_url, compliance_key)
+    print(f'Account initialization done!')
+
+    return vasp
+
+
+if len(sys.argv) > 2 or len(sys.argv) > 1 and '--help' in sys.argv:
+    print("""
+    Setup wallet and liquidity environment including blockchain private keys generation.
+    Usage: set_env.py
+    Flags: --force      Will regenerate blockchain keys and run current .env configuration.
+    """)
+
+    exit()
+
+GW_PORT = os.getenv("GW_PORT", 8080)
+ENV_FILE_NAME = os.getenv("ENV_FILE_NAME", ".env")
+LIQUIDITY_SERVICE_HOST = os.getenv("LIQUIDITY_SERVICE_HOST", "liquidity")
+LIQUIDITY_SERVICE_PORT = os.getenv("LIQUIDITY_SERVICE_PORT", 5000)
+NETWORK = os.getenv("NETWORK", "testnet")
+# FIXME: DM
+JSON_RPC_URL = os.getenv("JSON_RPC_URL", "https://testnet.libra.org/v1")
+FAUCET_URL = os.getenv("FAUCET_URL", "http://testnet.libra.org/mint")
+CHAIN_ID = int(os.getenv("CHAIN_ID", testnet.CHAIN_ID.value))
+OFFCHAIN_SERVICE_PORT: int = int(os.getenv("OFFCHAIN_SERVICE_PORT", 8091))
+VASP_BASE_URL = os.getenv("VASP_BASE_URL", "http://0.0.0.0:8091")
+LIQUIDITY_BASE_URL = os.getenv("LIQUIDITY_BASE_URL", "http://0.0.0.0:8092")
+COMPLIANCE_KEY = ComplianceKey.generate()
+VASP_COMPLIANCE_KEY = os.getenv("VASP_COMPLIANCE_KEY", COMPLIANCE_KEY.export_full())
+VASP_PUBLIC_KEY_BYTES = COMPLIANCE_KEY.get_public().public_bytes(
+    encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw
+)
+COMPLIANCE_KEY_2 = ComplianceKey.generate()
+LIQUIDITY_COMPLIANCE_KEY = os.getenv("LIQUIDITY_COMPLIANCE_KEY", COMPLIANCE_KEY_2.export_full())
+LIQUIDITY_PUBLIC_KEY_BYTES = COMPLIANCE_KEY_2.get_public().public_bytes(
+    encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw
+)
+
+if NETWORK == "premainnet":
+    vasp = Vasp(diem_client, wallet_account_name)
+    vasp_liquidity = Vasp(diem_client, lp_account_name)
+    vasp.rotate_dual_attestation_info(VASP_BASE_URL, VASP_PUBLIC_KEY_BYTES)
+    vasp_liquidity.rotate_dual_attestation_info(LIQUIDITY_BASE_URL, LIQUIDITY_PUBLIC_KEY_BYTES)
+    exit(0)
+
+wallet_account = LocalAccount.generate()
+lp_account = LocalAccount.generate()
+
+execution_dir_path = os.getcwd()
+wallet_env_file_path = os.path.join(execution_dir_path, "vasp/backend", ENV_FILE_NAME)
+liquidity_env_file_path = os.path.join(execution_dir_path, "liquidity", ENV_FILE_NAME)
+
+if os.path.exists(wallet_env_file_path) and os.path.exists(liquidity_env_file_path):
+    if len(sys.argv) == 1 or (len(sys.argv) > 1 and sys.argv[1] != '--force'):
+        print(f".env variable files are already set.\n run {sys.argv[0]} --force to recreate them")
+        exit(0)
+
+print(f"Creating {wallet_env_file_path}")
+
+# setup merchant wallet
+with open(wallet_env_file_path, "w") as dotenv:
+    private_keys = {f"{wallet_account_name}": get_private_key_hex(wallet_account.private_key)}
+    wallet_custody_private_keys = json.dumps(private_keys, separators=(',', ':'))
+    dotenv.write(f"GW_PORT={GW_PORT}\n")
+    dotenv.write(f"WALLET_CUSTODY_ACCOUNT_NAME={wallet_account_name}\n")
+    dotenv.write(f"CUSTODY_PRIVATE_KEYS={wallet_custody_private_keys}\n")
+    dotenv.write(f"VASP_ADDR={utils.account_address_hex(wallet_account.account_address)}\n")
+    dotenv.write(f"VASP_BASE_URL={VASP_BASE_URL}\n")
+    dotenv.write(f"VASP_COMPLIANCE_KEY={VASP_COMPLIANCE_KEY}\n")
+    dotenv.write(f"LIQUIDITY_SERVICE_HOST={LIQUIDITY_SERVICE_HOST}\n")
+    dotenv.write(f"LIQUIDITY_SERVICE_PORT={LIQUIDITY_SERVICE_PORT}\n")
+    dotenv.write(f"OFFCHAIN_SERVICE_PORT={OFFCHAIN_SERVICE_PORT}\n")
+    dotenv.write(f"NETWORK={NETWORK}\n")
+    dotenv.write(f"JSON_RPC_URL={JSON_RPC_URL}\n")
+    dotenv.write(f"FAUCET_URL={FAUCET_URL}\n")
+    dotenv.write(f"CHAIN_ID={CHAIN_ID}\n")
+
+    init_onchain_account(
+        custody_private_keys=wallet_custody_private_keys,
+        account_name=wallet_account_name,
+        account=wallet_account,
+        base_url=VASP_BASE_URL,
+        compliance_key=VASP_PUBLIC_KEY_BYTES,
+        chain_id=CHAIN_ID
+    )
+
+# setup liquidity
+print(f"Creating {liquidity_env_file_path}")
+with open(liquidity_env_file_path, "w") as dotenv:
+    private_keys = {f"{lp_account_name}": get_private_key_hex(lp_account.private_key)}
+    lp_custody_private_keys = json.dumps(private_keys, separators=(',', ':'))
+    dotenv.write(f"LIQUIDITY_CUSTODY_ACCOUNT_NAME=liquidity\n")
+    dotenv.write(f"CUSTODY_PRIVATE_KEYS={lp_custody_private_keys}\n")
+    dotenv.write(f"CHAIN_ID={CHAIN_ID}\n")
+    dotenv.write(f"JSON_RPC_URL={JSON_RPC_URL}\n")
+
+    init_onchain_account(
+        custody_private_keys=lp_custody_private_keys,
+        account_name=lp_account_name,
+        account=lp_account,
+        base_url=LIQUIDITY_BASE_URL,
+        compliance_key=LIQUIDITY_PUBLIC_KEY_BYTES,
+        chain_id=CHAIN_ID
+    )
+
+    print('Mint currencies to liquidity account')
+    address_str = utils.account_address_hex(lp_account.account_address)
+    faucet = testnet.Faucet(diem_client)
+
+    amount = 999 * 1_000_000
+
+    print('Mint currencies to liquidity account')
+    for currency in diem_client.get_currencies():
+        # FIXME: DM
+        if currency.code == DiemCurrency.Coin1:
+            print(f"Minting {amount}{currency.code} for account {address_str}")
+            faucet.mint(lp_account.auth_key.hex(), amount, currency.code)

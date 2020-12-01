@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay Now</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script>
+        $(() => {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('#currencyDropdown .dropdown-menu .dropdown-item').click(function () {
+                let currency = $(this).text();
+                if (currency.startsWith('≋')) currency = currency.substring(1);
+                $('#dropdownMenuButton').text(currency);
+                $('.currency-option').addClass('d-none').removeClass('d-block');
+                $(`#currency-option-${currency}`).addClass('d-block').removeClass('d-none');
+            });
+        })
+    </script>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        html, body, .container-fluid {
+            min-height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container-fluid py-4 d-flex flex-column align-items-center justify-content-center">
+    <h1 class="h4 text-center mb-2">Pay {{ price }} {{ currency }} with ≋ Diem</h1>
+    <div class="dropdown mb-2" id="currencyDropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                style="min-width: 12rem"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Select a Diem Currency
+        </button>
+        <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+            {% for payment_option in payment_options %}
+            <a class="dropdown-item" href="#">≋{{ payment_option['c'] }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% for payment_option in payment_options %}
+    <div class="d-none currency-option" style="max-width: 16rem" id="currency-option-{{ payment_option['c'] }}">
+        <div class="card mb-2">
+            <div class="card-body">
+                <strong>Amount:</strong> {{ payment_option['hr_am'] }} ≋{{ payment_option['c'] }}
+                <img src="data:image/png;base64, {{ payment_option['qr_b64'] }}" class="img-fluid"/>
+                <a href="{{ payment_option['payment_link'] }}">
+                    <code>{{ payment_option['payment_link'] }}</code>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+</html>
