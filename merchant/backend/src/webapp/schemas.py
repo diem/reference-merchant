@@ -6,8 +6,7 @@ from dataclasses_json import dataclass_json, config
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Range, Length
 
-# FIXME: DM
-from diem_utils.types.currencies import FiatCurrency
+FIAT_CURRENCIES = ["USD", "EUR", "GBP", "CHF", "CAD", "AUD", "NZD", "JPY"]
 
 
 def fiat_amount_field() -> Field:
@@ -29,7 +28,7 @@ def fiat_currency_code_field() -> Field:
         metadata=config(
             mm_field=fields.Str(
                 description="Fiat currency code",
-                validate=OneOf(list(FiatCurrency.__members__)),
+                validate=OneOf(FIAT_CURRENCIES),
             )
         )
     )
