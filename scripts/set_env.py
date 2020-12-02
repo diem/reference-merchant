@@ -7,7 +7,6 @@ import sys
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-# FIXME: DM
 from diem import LocalAccount, utils, testnet, diem_types
 from diem_utils.custody import Custody
 from diem_utils.types.currencies import DiemCurrency

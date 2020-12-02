@@ -29,8 +29,7 @@ FROM backend-base
 RUN mkdir pay_with_diem
 COPY --from=frontend-builder /frontend/build ./pay_with_diem/build
 COPY thirdparty/ /thirdparty/
-COPY vasp/backend/Pipfile vasp/backend/Pipfile.lock ./
+COPY vasp/backend/ ./
 RUN pipenv install --deploy --system
 
-COPY vasp/backend/ ./
 
