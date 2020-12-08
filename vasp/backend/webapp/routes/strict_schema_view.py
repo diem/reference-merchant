@@ -80,8 +80,8 @@ class StrictSchemaView(SwaggerView):
             else:
                 current_app.logger.error(err)
             raise
-        except Exception as err:
-            current_app.logger.error(err)
+        except Exception:
+            current_app.logger.exception("Unexpected error while handling a request")
             raise
 
         # Reset arguments after handling request
