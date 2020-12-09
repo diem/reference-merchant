@@ -161,6 +161,9 @@ setup_environment() {
   info "***Installing liquidity dependencies***"
   sh -c "cd liquidity && pipenv install --dev"
 
+  info "***Setup Liquidity Provider***"
+  pipenv run python liquidity/setup_env.py || fail "Fail execute setup_env.py"
+
   info "***Setting up environment .env files***"
   PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/set_env.py || fail "Fail execute scripts/set_env.py"
 
