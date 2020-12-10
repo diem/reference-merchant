@@ -29,7 +29,7 @@ pyqrcode = "*"
 pypng = "*"
 apispec = "*"
 dataclasses-json = "*"
-client-python-sdk = {git="https://github.com/libra/client-sdk-python.git", editable=true}
+diem = "0.6.2020120202"
 libra-offchainreference = "*"
 
 [requires]
