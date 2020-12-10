@@ -162,10 +162,10 @@ setup_environment() {
   sh -c "cd liquidity && pipenv install --dev"
 
   info "***Setup Liquidity Provider***"
-  PIPENV_PIPFILE=liquidity/Pipfile pipenv run python liquidity/setup_env.py || fail "Fail execute setup_env.py"
+  PIPENV_PIPFILE=liquidity/Pipfile pipenv run python liquidity/setup_env.py || fail "Liquidity service setup failed"
 
   info "***Setting up environment .env files***"
-  PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/set_env.py || fail "Fail execute scripts/set_env.py"
+  PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/set_env.py || fail "Merchant setup failed"
 
   info "***Setting up docker-compose project name***"
   cp .env.example .env
