@@ -59,8 +59,8 @@ services:
   liquidity:
     image: lrm-liquidity
     build:
-      context: ../
-      dockerfile: liquidity/Dockerfile
+      context: ../liquidity
+      dockerfile: Dockerfile
     env_file:
       - ../liquidity/.env
     environment:
@@ -69,6 +69,7 @@ services:
       - ADMIN_USERNAME=admin@lrm
       - LIQUIDITY_SERVICE_HOST=liquidity
       - LIQUIDITY_SERVICE_PORT=5000
+    command: sh -c "/liquidity/wait.sh db 5432 && /liquidity/run.sh"
     restart: always
 
   redis:

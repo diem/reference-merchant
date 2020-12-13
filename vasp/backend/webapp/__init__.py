@@ -10,7 +10,6 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from merchant_vasp.config import DB_URL
-from merchant_vasp.onchainwallet import OnchainWallet
 from merchant_vasp.storage import db_session, engine, models, Merchant
 from .routes import vasp, vasp_wallet
 
