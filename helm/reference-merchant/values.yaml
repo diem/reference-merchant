@@ -5,17 +5,22 @@
 replicaCount: 1
 
 # XXX: fill these out
-custodyPrivateKeysMerchant:
-  merchant-wallet: '<MERCHANT_KEY>'
-custodyPrivateKeysLiquidity:
-  liquidity: '<LIQUIDITY_KEY>'
 vaspAddr: "<VASP_ADDR>"
+custodyMerchantAccountName: wallet1
+custodyPrivateKeysMerchant:
+  wallet1: '<MERCHANT_KEY>'
+
+# liquidity account not necessary for Testnet, as faucet is used
+custodyLiquidityAccountName: liquidity
+custodyPrivateKeysLiquidity:
+  # liquidity: '<LIQUIDITY_KEY>'
+
 fakeMerchantAPIKey: "abcdefghijklmnop"
 chainId: 2
 
 sdk:
-  jsonRpc: "https://testnet.libra.org/v1"
-  faucet: "http://testnet.libra.org/mint"
+  jsonRpc: "https://testnet.diem.com/v1"
+  faucet: "http://testnet.diem.com/mint"
 
 images:
   pullPolicy: Never
