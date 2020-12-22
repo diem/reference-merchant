@@ -392,7 +392,7 @@ class DiemReferenceMerchant(Deployment):
 
         # web backend
         self.vasp_backend_deployable(service_name=f'{MERCHANT_VASP_BACKEND_SERVICE_NAME}-web',
-                                     command=['/wallet/run_web.sh'],
+                                     command=['/vasp-backend/run_web.sh'],
                                      routes=[Route(host=self.get_diem_vasp_hostname(), path='/api')],
                                      db_username=db_username,
                                      db_password=db_password,
@@ -409,7 +409,7 @@ class DiemReferenceMerchant(Deployment):
 
         # dramatiq backend
         self.vasp_backend_deployable(service_name=f'{MERCHANT_VASP_BACKEND_SERVICE_NAME}-dramatiq',
-                                     command=['/wallet/run_worker.sh'],
+                                     command=['/vasp-backend/run_worker.sh'],
                                      routes=None,
                                      db_username=db_username,
                                      db_password=db_password,
@@ -423,7 +423,7 @@ class DiemReferenceMerchant(Deployment):
 
         # pubsub backend
         self.vasp_backend_deployable(service_name=f'{MERCHANT_VASP_BACKEND_SERVICE_NAME}-pubsub',
-                                     command=['/wallet/run_pubsub.sh'],
+                                     command=['/vasp-backend/run_pubsub.sh'],
                                      routes=None,
                                      db_username=db_username,
                                      db_password=db_password,
