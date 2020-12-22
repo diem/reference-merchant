@@ -1,0 +1,108 @@
+version: 2.1
+environment: &env
+  BACKEND_IMAGE_NAME: diem-reference-merchant-backend
+  LIQUIDITY_IMAGE_NAME: diem-reference-merchant-liquidity
+  STORE_IMAGE_NAME: diem-reference-merchant-store
+  AWS_REGISTRY_URL: 695406093586.dkr.ecr.eu-central-1.amazonaws.com
+jobs:
+  build_and_push:
+    environment: *env
+    docker:
+      - image: circleci/python:3.7
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Prepare
+          command: pip install --user awscli
+      - run:
+          name: Fetch submodules
+          command: |
+            git submodule update --init
+      - run:
+          name: Compile merchant frontend
+          command: |
+            mkdir -p workspace/frontend
+            docker build -f merchant/frontend/Dockerfile -t temp-merchant-frontend:latest merchant/frontend/
+            docker create --name tmp_merchant_frontend_container temp-merchant-frontend
+            docker cp tmp_merchant_frontend_container:/app/build/. workspace/merchant-frontend/
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - merchant-frontend
+      - run:
+          name: Build and push merchant backend
+          command: |
+            docker build -f merchant/backend/Dockerfile -t ${STORE_IMAGE_NAME}:latest -t ${AWS_REGISTRY_URL}/${STORE_IMAGE_NAME}:$CIRCLE_BRANCH -t ${AWS_REGISTRY_URL}/${STORE_IMAGE_NAME}:<< pipeline.number >> merchant/backend
+            eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+            docker push ${AWS_REGISTRY_URL}/${STORE_IMAGE_NAME}:<< pipeline.number >>
+            docker push ${AWS_REGISTRY_URL}/${STORE_IMAGE_NAME}:${CIRCLE_BRANCH}
+      - run:
+          name: Build and push vasp backend
+          command: |
+            docker build -f vasp/backend/Dockerfile -t ${BACKEND_IMAGE_NAME}:latest -t ${AWS_REGISTRY_URL}/${BACKEND_IMAGE_NAME}:$CIRCLE_BRANCH -t ${AWS_REGISTRY_URL}/${BACKEND_IMAGE_NAME}:<< pipeline.number >> .
+            eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+            docker push ${AWS_REGISTRY_URL}/${BACKEND_IMAGE_NAME}:<< pipeline.number >>
+            docker push ${AWS_REGISTRY_URL}/${BACKEND_IMAGE_NAME}:${CIRCLE_BRANCH}
+      - run:
+          name: Build and push Liquidity
+          command: |
+            docker build -f liquidity/Dockerfile -t ${LIQUIDITY_IMAGE_NAME}:latest -t ${AWS_REGISTRY_URL}/${LIQUIDITY_IMAGE_NAME}:$CIRCLE_BRANCH -t ${AWS_REGISTRY_URL}/${LIQUIDITY_IMAGE_NAME}:<< pipeline.number >> ./liquidity
+            eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+            docker push ${AWS_REGISTRY_URL}/${LIQUIDITY_IMAGE_NAME}:<< pipeline.number >>
+            docker push ${AWS_REGISTRY_URL}/${LIQUIDITY_IMAGE_NAME}:${CIRCLE_BRANCH}
+  deploy:
+    environment: *env
+    docker:
+      - image: circleci/python:3.7
+    parameters:
+      nirops_tag:
+        type: string
+    steps:
+      - setup_remote_docker
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Prepare
+          command: pip install --user awscli
+      - run:
+          name: Deploy components to EKS
+          command: |
+            eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+            docker pull ${AWS_REGISTRY_URL}/nirops:<< parameters.nirops_tag >>
+            docker build \
+              --build-arg NIROPS_TAG=<< parameters.nirops_tag >> \
+              -f .circleci/Dockerfile \
+              -t deployer:latest \
+              .circleci/
+
+            docker create \
+              -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+              -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+              --name deployer_container deployer:latest \
+              -b ${ENVIRONMENT} \
+              -e $ENV_PREFIX \
+              --set DiemReferenceMerchant.build_tag << pipeline.number >>
+
+            docker cp /tmp/workspace/merchant-frontend deployer_container:/
+            docker start -i deployer_container
+workflows:
+  staging:
+    jobs:
+      - build_and_push:
+          context: staging
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          context: staging
+          nirops_tag: master
+          requires:
+            - build_and_push
+          filters:
+            branches:
+              only:
+                - master
