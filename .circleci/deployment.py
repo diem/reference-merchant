@@ -24,9 +24,9 @@ from mothership.utils.domain_repository import DomainRepository
 from mothership.utils.k8s.k8s import SecretMapping, WorkerLabelSelector
 
 ECR_HOST = '695406093586.dkr.ecr.eu-central-1.amazonaws.com'
-MERCHANT_VASP_BACKEND_SERVICE_NAME = 'diem-reference-wallet-backend'
-MERCHANT_STORE_SERVICE_NAME = 'diem-reference-wallet-store'
-LIQUIDITY_SERVICE_NAME = 'diem-reference-wallet-liquidity'
+MERCHANT_VASP_BACKEND_SERVICE_NAME = 'diem-reference-merchant-backend'
+MERCHANT_STORE_SERVICE_NAME = 'diem-reference-merchant-store'
+LIQUIDITY_SERVICE_NAME = 'diem-reference-merchant-liquidity'
 REFERENCE_MERCHANT_KUB_SECRET_NAME = 'diem-reference-merchant'
 
 CHAIN_ID = testnet.CHAIN_ID.to_int()
