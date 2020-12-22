@@ -28,4 +28,4 @@ jobs:
           cd vasp/backend && ./test/test.sh
         env:
           CHAIN_ID: 2
-          JSON_RPC_URL: https://testnet.libra.org/v1
+          JSON_RPC_URL: https://testnet.diem.com/v1

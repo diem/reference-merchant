@@ -74,8 +74,7 @@ export async function fetchAvailablePaymentOptions(): Promise<PaymentOption[]> {
         base64: `data:image/svg+xml;utf8,${logoLRW}`,
         alt: "Diem Reference Wallet",
       },
-      // FIXME: DM
-      homepageUrl: "https://demo-wallet.libra.org/",
+      homepageUrl: "https://demo-wallet.diem.com/",
       protocol: "diem",
     },
     {

@@ -18,7 +18,7 @@ def get_supported_network_currencies() -> Tuple[str]:
     api = jsonrpc.Client(JSON_RPC_URL)
     supported_currency_info = api.get_currencies()
 
-    return tuple(_.code for _ in supported_currency_info if _.code == DiemCurrency.Coin1)
+    return tuple(_.code for _ in supported_currency_info if _.code == DiemCurrency.XUS)
 
 
 def get_supported_currencies() -> Tuple[str]:
@@ -98,8 +98,7 @@ def generate_payment_options_with_qr(payment):
     bech32addr = identifier.encode_account(vasp_addr, payment.subaddress, CHAIN_HRP)
 
     for payment_option in payment.payment_options:
-        # FIXME: DM
-        payment_link = f"libra://{bech32addr}?c={payment_option.currency}&am={payment_option.amount}"
+        payment_link = f"diem://{bech32addr}?c={payment_option.currency}&am={payment_option.amount}"
         payment_option_attributes = dict(
             address=bech32addr,
             currency=payment_option.currency,

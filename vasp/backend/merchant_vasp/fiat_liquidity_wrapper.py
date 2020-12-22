@@ -39,16 +39,16 @@ class FiatLiquidityWrapper:
         rate = unit / Amount().deserialize(quote.rate.rate)
         return (rate * Amount().deserialize(amount)).serialize()
 
-    def pay_out(self, target_currency, amount, libra_deposit_address):
+    def pay_out(self, target_currency, amount, diem_deposit_address):
         quote = self.liquidity_provider.get_quote(
             CurrencyPair(Currency(self.base_currency), Currency(target_currency)),
             amount,
         )
         trade_id = self.liquidity_provider.trade_and_execute(
-            quote.quote_id, Direction.Sell, libra_deposit_address
+            quote.quote_id, Direction.Sell, diem_deposit_address
         )
         logging.debug(
-            f"Sending payout: {quote.quote_id}, {Direction.Sell}, {libra_deposit_address} -> trade_id: {trade_id}"
+            f"Sending payout: {quote.quote_id}, {Direction.Sell}, {diem_deposit_address} -> trade_id: {trade_id}"
         )
 
         return trade_id, quote

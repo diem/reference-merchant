@@ -1,5 +1,4 @@
 import dramatiq
-# FIXME: DM
 from diem import diem_types
 from diem_utils.types.currencies import DiemCurrency
 
@@ -15,7 +14,6 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
     sender_sub_address = None
     receiver_sub_address = None
 
-    # FIXME: DM
     if metadata and isinstance(metadata, diem_types.Metadata__GeneralMetadata) \
             and isinstance(metadata.value, diem_types.GeneralMetadata__GeneralMetadataVersion0):
         general_metadata = metadata.value.value
@@ -30,7 +28,6 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
         process_incoming_transaction(version=txn.version, sender_address=txn.sender,
                                      sender_sub_address=sender_sub_address, receiver_address=txn.receiver,
                                      receiver_sub_address=receiver_sub_address, amount=txn.amount,
-                                     # FIXME: DM
                                      currency=DiemCurrency[txn.currency])
     except PaymentServiceException as _:
         # TODO - log exception

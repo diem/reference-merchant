@@ -1,5 +1,4 @@
 import pytest
-# FIXME: DM
 from diem_utils.types.currencies import DEFAULT_DIEM_CURRENCY
 
 from merchant_vasp import payment_service
@@ -16,7 +15,6 @@ from test.conftest import (
     PAYMENT_ID,
 )
 
-# FIXME: DM
 CURRENCY = DEFAULT_DIEM_CURRENCY
 
 
