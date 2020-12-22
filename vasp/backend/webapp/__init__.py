@@ -66,7 +66,6 @@ def _create_db(app: Flask) -> None:
 
 
 def _create_app() -> Flask:
-    # FIXME: DM
     app = Flask(__name__, static_folder='../pay_with_diem/build', static_url_path='/pay/')
 
     app.debug = True

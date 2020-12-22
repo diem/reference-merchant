@@ -115,8 +115,7 @@ function OrderDetails() {
             <LinkField
               caption="Diem transaction ID"
               text={tx ? `${tx.transactionId}` : undefined}
-              // FIXME: DM
-              url={`https://librabrowser.io/version/${tx?.transactionId}`}
+              url={`https://diemexplorer.com/testnet/version/${tx?.transactionId}`}
               external
             />
 
@@ -124,8 +123,7 @@ function OrderDetails() {
               <LinkField
                 caption="Diem refund transaction ID"
                 text={`${refundTx.transactionId}`}
-                // FIXME: DM
-                url={`https://librabrowser.io/version/${refundTx.transactionId}`}
+                url={`https://diemexplorer.com/testnet/version/${refundTx.transactionId}`}
                 external
               />
             )}

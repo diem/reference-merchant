@@ -29,8 +29,7 @@ pyqrcode = "*"
 pypng = "*"
 apispec = "*"
 dataclasses-json = "*"
-diem = "0.6.2020120202"
-libra-offchainreference = "*"
+diem = "*"
 
 [requires]
 python_version = "3.7"
