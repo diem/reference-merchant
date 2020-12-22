@@ -3,7 +3,7 @@ from enum import Enum
 
 
 class DiemCurrency(str, Enum):
-    Coin1 = "Coin1"
+    XUS = "XUS"
 
 
 class FiatCurrency(str, Enum):

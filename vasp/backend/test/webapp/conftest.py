@@ -4,7 +4,6 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 import pytest
-# FIXME: DM
 from diem.jsonrpc import CurrencyInfo
 from diem_utils.custody import Custody
 from diem_utils.sdks import liquidity
@@ -31,16 +30,15 @@ MOCK_SUPPORTED_CURRENCIES = [
     "AUD",
     "NZD",
     "JPY",
-    # FIXME: DM
     DEFAULT_DIEM_CURRENCY,
 ]
 
 MOCK_NETWORK_SUPPORTED_CURRENCIES = [
     CurrencyInfo(
-        code="Coin1",
+        code="XUS",
         scaling_factor=1000000,
         fractional_part=100,
-        to_lbr_exchange_rate=0.5,
+        to_xdx_exchange_rate=0.5,
         mint_events_key="",
         burn_events_key="",
         preburn_events_key="",
@@ -51,7 +49,7 @@ MOCK_NETWORK_SUPPORTED_CURRENCIES = [
 
 MOCK_QUOTE = QuoteData(
     quote_id=UUID("f24d20f8-e49c-4303-a736-afec37f7f7f3"),
-    rate=Rate(pair=CurrencyPairs.Coin1_USD, rate=1040000),
+    rate=Rate(pair=CurrencyPairs.XUS_USD, rate=1040000),
     expires_at=datetime(
         2020, 7, 5, 16, 47, 49, 452315, tzinfo=timezone(timedelta(seconds=10800), "IDT")
     ),

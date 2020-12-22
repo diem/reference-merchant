@@ -11,7 +11,6 @@ projects.
 When submitting a PR, the diem-github-bot will check your comment for a valid CLA. If one is not found, then you will need to submit an Individual CLA for yourself or a Corporate CLA for your company.
 
 ## Submitting Issues and Feature Requests
-<!--- FIXME: DM --->
 The Diem Reference Wallet uses [GitHub issues](https://github.com/diem/reference-merchant/issues) to track bugs and feature requests. Please include necessary information and instructions to reproduce your issue or describe your use case.
 
 ## Other Ways to Provide Feedback

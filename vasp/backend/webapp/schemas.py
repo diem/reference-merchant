@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf, Range
-# FIXME: DM
 from diem_utils.types.currencies import FiatCurrency
 
 from merchant_vasp.storage import PaymentStatus
