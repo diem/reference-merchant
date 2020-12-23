@@ -363,7 +363,7 @@ class DiemReferenceMerchant(Deployment):
         master_username = self.outputs['PostgresInstance']['master_username']
         master_password = self.outputs['PostgresInstance']['master_password']
         db_name_vasp_wallet = f'{self.env_prefix}_diem_reference_merchant_vasp'
-        db_name_liquidity_provider = f'{self.env_prefix}_lp'
+        db_name_liquidity_provider = f'{self.env_prefix}_diem_reference_merchant_lp'
         db_username = 'lrmuser'
         db_password = secrets.db_password
 
