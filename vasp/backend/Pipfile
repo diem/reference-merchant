@@ -30,6 +30,7 @@ pypng = "*"
 apispec = "*"
 dataclasses-json = "*"
 diem = "*"
+libra-offchainreference = "*"
 
 [requires]
 python_version = "3.7"
