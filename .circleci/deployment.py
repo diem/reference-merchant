@@ -92,7 +92,7 @@ class WalletSecrets:
 
         return cls(
             db_password=db_password,
-            backend_custodial_private_keys='{"wallet":"' + backend_custodial_private_key + '"}',
+            backend_custodial_private_keys='{"merchant-wallet":"' + backend_custodial_private_key + '"}',
             backend_wallet_private_key=backend_custodial_private_key,
             backend_compliance_private_key=backend_compliance_private_key,
             liquidity_custodial_private_keys='{"liquidity":"' + liquidity_custodial_private_key + '"}',
