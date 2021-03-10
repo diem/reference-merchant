@@ -10,7 +10,6 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from diem import LocalAccount, utils, testnet, diem_types
 from diem_utils.custody import Custody
 from diem_utils.vasp import Vasp
-from offchainapi.crypto import ComplianceKey
 
 diem_client = testnet.create_client()
 
@@ -53,36 +52,24 @@ if len(sys.argv) > 2 or len(sys.argv) > 1 and '--help' in sys.argv:
 
     exit()
 
+compliance_private_key = Ed25519PrivateKey.generate()
+
 GW_PORT = os.getenv("GW_PORT", 8080)
 ENV_FILE_NAME = os.getenv("ENV_FILE_NAME", ".env")
 LIQUIDITY_SERVICE_HOST = os.getenv("LIQUIDITY_SERVICE_HOST", "liquidity")
 LIQUIDITY_SERVICE_PORT = os.getenv("LIQUIDITY_SERVICE_PORT", 5000)
-NETWORK = os.getenv("NETWORK", "testnet")
 JSON_RPC_URL = os.getenv("JSON_RPC_URL", "https://testnet.diem.com/v1")
 FAUCET_URL = os.getenv("FAUCET_URL", "https://testnet.diem.com/mint")
 CHAIN_ID = int(os.getenv("CHAIN_ID", testnet.CHAIN_ID.value))
 OFFCHAIN_SERVICE_PORT: int = int(os.getenv("OFFCHAIN_SERVICE_PORT", 8091))
 VASP_BASE_URL = os.getenv("VASP_BASE_URL", "http://0.0.0.0:8091")
-COMPLIANCE_KEY = ComplianceKey.generate()
-VASP_COMPLIANCE_KEY = os.getenv("VASP_COMPLIANCE_KEY", COMPLIANCE_KEY.export_full())
-VASP_PUBLIC_KEY_BYTES = COMPLIANCE_KEY.get_public().public_bytes(
-    encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw
-)
-
-if NETWORK == "premainnet":
-    vasp = Vasp(diem_client, wallet_account_name)
-    vasp.rotate_dual_attestation_info(VASP_BASE_URL, VASP_PUBLIC_KEY_BYTES)
-    exit(0)
+VASP_COMPLIANCE_KEY = utils.private_key_bytes(compliance_private_key).hex()
+VASP_PUBLIC_KEY_BYTES = utils.public_key_bytes(compliance_private_key.public_key())
 
 wallet_account = LocalAccount.generate()
 
 execution_dir_path = os.getcwd()
 wallet_env_file_path = os.path.join(execution_dir_path, "vasp/backend", ENV_FILE_NAME)
-
-if os.path.exists(wallet_env_file_path):
-    if len(sys.argv) == 1 or (len(sys.argv) > 1 and sys.argv[1] != '--force'):
-        print(f".env variable files are already set.\n run {sys.argv[0]} --force to recreate them")
-        exit(0)
 
 print(f"Creating {wallet_env_file_path}")
 
@@ -99,7 +86,6 @@ with open(wallet_env_file_path, "w") as dotenv:
     dotenv.write(f"LIQUIDITY_SERVICE_HOST={LIQUIDITY_SERVICE_HOST}\n")
     dotenv.write(f"LIQUIDITY_SERVICE_PORT={LIQUIDITY_SERVICE_PORT}\n")
     dotenv.write(f"OFFCHAIN_SERVICE_PORT={OFFCHAIN_SERVICE_PORT}\n")
-    dotenv.write(f"NETWORK={NETWORK}\n")
     dotenv.write(f"JSON_RPC_URL={JSON_RPC_URL}\n")
     dotenv.write(f"FAUCET_URL={FAUCET_URL}\n")
     dotenv.write(f"CHAIN_ID={CHAIN_ID}\n")
