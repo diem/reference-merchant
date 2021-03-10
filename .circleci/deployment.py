@@ -404,7 +404,7 @@ class DiemReferenceMerchant(Deployment):
                                      vasp=merchant_vasp,
                                      env_vars={
                                          'SETUP_FAKE_MERCHANT': True,
-                                         'MY_EXTERNAL_URL': f'https://{self.get_diem_vasp_hostname()}/'
+                                         'MY_EXTERNAL_URL': f'https://{self.get_diem_vasp_hostname()}/api'
                                      }).deploy()
 
         # dramatiq backend
