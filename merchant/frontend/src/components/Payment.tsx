@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
+import {Button, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
 import BackendClient, {PaymentProcessingDetails} from "../services/merchant";
 import {Product} from "../interfaces/product";
+import OrderDetails from "./OrderDetails";
 
 export interface PaymentProps {
   product?: Product;
@@ -15,6 +16,7 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
   >();
   type PaymentState = "inactive" | "fetchingProcessingDetails" | "paying" | "paymentCleared";
   const [paymentState, setPaymentState] = useState<PaymentState>("inactive");
+  const [showOrderDetails, setShowOrderDetails] = useState<boolean>(false);
 
   if (paymentState === "inactive" && isOpen && !!product) {
     setPaymentState("fetchingProcessingDetails");
@@ -111,15 +113,36 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
         )}
 
         <div className="p-2 text-center">
-          <a
-            className="btn btn-sm btn-dark btn-block"
-            href={`admin/order/${paymentProcessingDetails?.orderId}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Button
+            disabled={false}
+            onClick={() => setShowOrderDetails(true)}
+            className="btn-sm"
+            color="dark"
+            block
           >
             See order details
-          </a>
+          </Button>
         </div>
+
+        <OrderDetailsModal orderId={paymentProcessingDetails?.orderId} isOpen={showOrderDetails} onClose={() => setShowOrderDetails(false)} />
+
+      </ModalBody>
+    </Modal>
+  );
+}
+
+interface OrderDetailsModalProps {
+  orderId?: string;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function OrderDetailsModal({ orderId, isOpen, onClose }: OrderDetailsModalProps) {
+  return (
+    <Modal isOpen={isOpen} centered={true} size="md" toggle={onClose} fade={true}>
+      <ModalHeader toggle={onClose} />
+      <ModalBody className="p-0">
+        {orderId && <OrderDetails orderId={orderId}/>}
       </ModalBody>
     </Modal>
   );
