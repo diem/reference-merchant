@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Alert, Button, Container, Spinner } from "reactstrap";
-import { useParams } from "react-router";
-import BackendClient, { Order } from "../services/merchant";
-import PaymentEvents from "../components/PaymentEvents";
-import OrderProducts from "../components/OrderProducts";
-import InfoField from "../components/InfoField";
-import LinkField from "../components/LinkField";
+import React, {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import BackendClient, {Order} from "../services/merchant";
+import {Alert, Button, Container, Spinner} from "reactstrap";
+import InfoField from "./InfoField";
+import OrderProducts from "./OrderProducts";
+import LinkField from "./LinkField";
+import PaymentEvents from "./PaymentEvents";
 
-function OrderDetails() {
+export interface OrderDetailsProps {
+  orderId: string;
+}
+
+function OrderDetails({ orderId }: OrderDetailsProps) {
   const { t } = useTranslation("order");
   const [order, setOrder] = useState<Order | undefined | null>();
-
-  const { orderId } = useParams();
 
   const tx =
     order && order.paymentStatus.blockchainTxs.length > 0
@@ -150,6 +151,16 @@ function OrderDetails() {
               >
                 Refund
               </Button>
+            </div>
+
+            <div className="d-flex justify-content-center mt-5">
+              <a
+                href={`admin/order/${orderId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                #permalink
+              </a>
             </div>
           </div>
         </>
