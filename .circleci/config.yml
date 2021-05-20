@@ -106,3 +106,20 @@ workflows:
             branches:
               only:
                 - master
+  prduction:
+    jobs:
+      - build_and_push:
+          context: production
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          context: production
+          nirops_tag: master
+          requires:
+            - build_and_push
+          filters:
+            branches:
+              only:
+                - master
