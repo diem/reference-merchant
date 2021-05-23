@@ -20,7 +20,7 @@ export default class Vasp {
   private client: AxiosInstance;
 
   constructor() {
-    const baseURL = process.env.REACT_APP_BACKEND_URL || "/api";
+    const baseURL = process.env.REACT_APP_BACKEND_URL || "/vasp";
     this.client = axios.create({
       baseURL,
       headers: {
