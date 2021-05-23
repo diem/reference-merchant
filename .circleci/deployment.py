@@ -185,9 +185,15 @@ class DiemReferenceMerchant(Deployment):
         diem_reference_merchant_hostname = domains.get_mapped_domain(Subsystem.DEMO, application_name)
         return diem_reference_merchant_hostname
 
+    def get_diem_vasp_url(self):
+        return f'https://{self.get_diem_vasp_hostname()}/vasp'
+
+    def get_diem_vasp_route(self) -> Route:
+        return Route(host=self.get_diem_vasp_hostname(), path='/vasp')
+
     def get_diem_merchant_store_hostname(self):
         domains: DomainRepository = self.outputs['IngressController']['domains']
-        application_name = 'diem-reference-merchant-store'
+        application_name = 'diem-reference-merchant'
         diem_reference_merchant_store_hostname = domains.get_mapped_domain(Subsystem.DEMO, application_name)
         return diem_reference_merchant_store_hostname
 
@@ -222,7 +228,7 @@ class DiemReferenceMerchant(Deployment):
         environment_variables = {
             'COMPOSE_ENV': 'production',
             'MERCHANT_BACKEND_PORT': 8080,
-            'API_URL': f'https://{self.get_diem_vasp_hostname()}/api',
+            'API_URL': self.get_diem_vasp_url(),
             'REDIS_HOST': redis_host,
             'DB_URL': db_url_diem_reference_merchant,
             'VASP_ADDR': vasp.account_address_hex,
@@ -341,7 +347,7 @@ class DiemReferenceMerchant(Deployment):
 
         merchant_vasp = Vasp.create(
             private_key=secrets.backend_wallet_private_key,
-            base_url=self.get_diem_vasp_hostname(),  # FIXME: Should be fixed to use offchain
+            base_url=self.get_diem_vasp_url(),  # FIXME: Should be fixed to use offchain
             compliance_private_key=secrets.backend_compliance_private_key,
         )
 
@@ -393,7 +399,7 @@ class DiemReferenceMerchant(Deployment):
         # web backend
         self.vasp_backend_deployable(service_name=f'{MERCHANT_VASP_BACKEND_SERVICE_NAME}-web',
                                      command=['/vasp-backend/run_web.sh'],
-                                     routes=[Route(host=self.get_diem_vasp_hostname(), path='/api')],
+                                     routes=[self.get_diem_vasp_route()],
                                      db_username=db_username,
                                      db_password=db_password,
                                      db_host=db_host,
@@ -404,7 +410,7 @@ class DiemReferenceMerchant(Deployment):
                                      vasp=merchant_vasp,
                                      env_vars={
                                          'SETUP_FAKE_MERCHANT': True,
-                                         'MY_EXTERNAL_URL': f'https://{self.get_diem_vasp_hostname()}/api'
+                                         'MY_EXTERNAL_URL': self.get_diem_vasp_url()
                                      }).deploy()
 
         # dramatiq backend
