@@ -179,23 +179,28 @@ class DiemReferenceMerchant(Deployment):
         self.db_config = None
         self.worker_label_selector = None
 
-    def get_diem_vasp_hostname(self):
+    def get_hostname_for_subsystem(self, subsystem_name):
         domains: DomainRepository = self.outputs['IngressController']['domains']
-        application_name = 'diem-reference-merchant'
-        diem_reference_merchant_hostname = domains.get_mapped_domain(Subsystem.DEMO, application_name)
+        diem_reference_merchant_hostname = domains.get_mapped_domain(Subsystem.DEMO, subsystem_name)
         return diem_reference_merchant_hostname
+
+    def get_ref_merchant_public_domain_name(self):
+        if self.env_base == "production":
+            return 'demo-merchant.diem.com'
+        else:
+            return self.get_hostname_for_subsystem('diem-reference-merchant')
+
+    def get_diem_merchant_store_hostname(self):
+        return self.get_ref_merchant_public_domain_name()
+
+    def get_diem_vasp_hostname(self):
+        return self.get_ref_merchant_public_domain_name()
 
     def get_diem_vasp_url(self):
         return f'https://{self.get_diem_vasp_hostname()}/vasp'
 
     def get_diem_vasp_route(self) -> Route:
         return Route(host=self.get_diem_vasp_hostname(), path='/vasp')
-
-    def get_diem_merchant_store_hostname(self):
-        domains: DomainRepository = self.outputs['IngressController']['domains']
-        application_name = 'diem-reference-merchant'
-        diem_reference_merchant_store_hostname = domains.get_mapped_domain(Subsystem.DEMO, application_name)
-        return diem_reference_merchant_store_hostname
 
     def deploy_secrets(self, secrets: WalletSecrets):
         kub_secrets = KubSecret(

@@ -106,7 +106,7 @@ workflows:
             branches:
               only:
                 - master
-  prduction:
+  production:
     jobs:
       - build_and_push:
           context: production
