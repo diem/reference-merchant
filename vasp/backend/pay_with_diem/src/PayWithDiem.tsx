@@ -22,7 +22,7 @@ function PayWithDiem({ paymentInfo }: PayWithDiemProps) {
   const merchantName = 'acme-store';
   const checkoutDataType = 'PAYMENT_REQUEST';
   const action = 'CHARGE';
-  const expiration = '2020-01-21T00%3A00%3A00.000Z';
+  const expiration = new Date(new Date().getTime() + 10 * 60000).toISOString();
   const redirectUrl = 'https://demo-merchant.diem.com/order/93c4963f-7f9e-4f9d-983e-7080ef782534/checkout/complete';
 
   useEffect(()=>{
