@@ -52,6 +52,7 @@ class Product:
     name: str
     description: str
     payment_type: str
+    image_url: str
     gtin: str = global_trade_item_number_field()
     price: int = fiat_amount_field()
     currency: str = fiat_currency_code_field()

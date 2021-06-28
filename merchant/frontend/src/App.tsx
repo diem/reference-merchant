@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import "./i18n";
 import "./assets/scss/diem-reference-merchant.scss";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
+import ConfirmationPage from "./pages/ConfirmationPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <main>
         <Switch>
           <Route path="/" exact component={Home} />
+          <Route path="/order/:orderId" component={ConfirmationPage} />
           <Route path="/admin/order/:orderId" component={OrderDetailsPage} />
           <Redirect to="/" />
         </Switch>

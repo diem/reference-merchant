@@ -50,6 +50,7 @@ export interface Order {
   currency: string;
   products: ProductOrder[];
   paymentStatus: PaymentDetailedStatus;
+  image_url?: string;
 }
 
 export default class BackendClient {
