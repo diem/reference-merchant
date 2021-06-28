@@ -150,6 +150,7 @@ class VaspRoutes:
                     ),
                     fiat_price=self.payment.requested_amount,
                     fiat_currency=self.payment.requested_currency,
+                    wallet_url=os.getenv("WALLET_URL"),
                 ),
                 HTTPStatus.OK,
             )

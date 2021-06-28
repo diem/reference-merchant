@@ -111,21 +111,6 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
             <i className="fa fa-check" /> Paid successfully!
           </h4>
         )}
-
-        <div className="p-2 text-center">
-          <Button
-            disabled={false}
-            onClick={() => setShowOrderDetails(true)}
-            className="btn-sm"
-            color="dark"
-            block
-          >
-            See order details
-          </Button>
-        </div>
-
-        <OrderDetailsModal orderId={paymentProcessingDetails?.orderId} isOpen={showOrderDetails} onClose={() => setShowOrderDetails(false)} />
-
       </ModalBody>
     </Modal>
   );

@@ -1,3 +1,5 @@
 {
-  "name": "Demo Gift Shop"
+  "name": "Demo Gift Shop",
+  "price": "Price",
+  "buyNow": "Buy Now"
 }

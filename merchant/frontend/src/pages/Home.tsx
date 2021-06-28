@@ -60,11 +60,8 @@ function Home() {
                       <Row>
                         <Col>
                           <div>
-                            <strong>Price:</strong> {product.price / 1000000} {product.currency}
-                          </div>
-                          <div>
-                            <strong>Payment Type:</strong>{" "}
-                            <span className="text-capitalize">{product.payment_type}</span>
+                            <strong>{t("price")}:</strong> {product.price / 1000000}{" "}
+                            {product.currency}
                           </div>
                         </Col>
                         <Col lg={4} className="text-right">
@@ -74,7 +71,7 @@ function Home() {
                             className="btn-sm"
                             onClick={() => setSelectedProduct(products[i])}
                           >
-                            Buy Now
+                            {t("buyNow")}
                           </Button>
                         </Col>
                       </Row>

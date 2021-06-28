@@ -16,10 +16,6 @@ ReactDOM.render(
       <h2 className="mb-4">Pay with Diem</h2>
       <DiemCheckout paymentId={query.get("payment")!} />
     </div>
-    <div className="payment-gateway" style={{ opacity: 0.25 }}>
-    </div>
-    <div className="payment-gateway" style={{ opacity: 0.25 }}>
-    </div>
   </React.StrictMode>,
   document.getElementById("root")
 );

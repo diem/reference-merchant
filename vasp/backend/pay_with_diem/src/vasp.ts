@@ -14,6 +14,7 @@ export interface PaymentOptions {
   fiatPrice: number;
   fiatCurrency: string;
   options: PaymentOption[];
+  walletURL: string;
 }
 
 export default class Vasp {
@@ -36,6 +37,7 @@ export default class Vasp {
       paymentId: response.data.payment_id,
       fiatPrice: response.data.fiat_price,
       fiatCurrency: response.data.fiat_currency,
+      walletURL: response.data.wallet_url,
       options: response.data.options.map((op: any) => ({
         address: op.address,
         currency: op.currency,
