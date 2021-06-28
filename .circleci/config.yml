@@ -96,7 +96,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - develop
       - deploy:
           context: staging
           nirops_tag: master
@@ -105,7 +105,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - develop
   production:
     jobs:
       - build_and_push:
