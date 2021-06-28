@@ -389,7 +389,8 @@ class DiemReferenceMerchant(Deployment):
             "master_password": master_password,
             "db_name": db_name_vasp_wallet,
             "db_username": db_username,
-            "db_password": db_password
+            "db_password": db_password,
+            "namespace": self.env_prefix,
         }
 
         # Wallet database
