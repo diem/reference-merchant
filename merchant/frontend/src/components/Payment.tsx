@@ -1,7 +1,7 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Button, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
-import BackendClient, {PaymentProcessingDetails} from "../services/merchant";
-import {Product} from "../interfaces/product";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal, ModalBody, ModalHeader, Spinner } from "reactstrap";
+import BackendClient, { PaymentProcessingDetails } from "../services/merchant";
+import { Product } from "../interfaces/product";
 import OrderDetails from "./OrderDetails";
 
 export interface PaymentProps {
@@ -31,6 +31,7 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
         if (paymentState !== "fetchingProcessingDetails") return;
 
         const payment = await new BackendClient().checkoutOne(product!.gtin);
+        console.log(payment);
 
         if (!isOutdated) {
           setPaymentProcessingDetails(payment);
@@ -126,9 +127,7 @@ function OrderDetailsModal({ orderId, isOpen, onClose }: OrderDetailsModalProps)
   return (
     <Modal isOpen={isOpen} centered={true} size="md" toggle={onClose} fade={true}>
       <ModalHeader toggle={onClose} />
-      <ModalBody className="p-0">
-        {orderId && <OrderDetails orderId={orderId}/>}
-      </ModalBody>
+      <ModalBody className="p-0">{orderId && <OrderDetails orderId={orderId} />}</ModalBody>
     </Modal>
   );
 }
