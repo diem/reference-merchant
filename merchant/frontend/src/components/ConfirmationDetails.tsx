@@ -74,7 +74,12 @@ function ConfirmationDetails({ orderId }: OrderDetailsProps) {
           </div>
           <Row style={{ alignItems: "center" }}>
             <Col xs={3}>
-              <img src={order.products[0].product.image_url} width="75" height="75" alt={'product image'} />
+              <img
+                src={order.products[0].product.image_url}
+                width="75"
+                height="75"
+                alt={"product image"}
+              />
             </Col>
             <Col>{order.products[0].product.name}</Col>
             <Col style={{ textAlign: "right" }}>

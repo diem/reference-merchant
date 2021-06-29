@@ -133,7 +133,9 @@ class VaspRoutes:
         summary = "Get available checkout options for a payment"
 
         responses = {
-            HTTPStatus.OK: response_definition("Checkout options fetched", schema=PaymentOptionsSchema),
+            HTTPStatus.OK: response_definition(
+                "Checkout options fetched", schema=PaymentOptionsSchema
+            ),
             HTTPStatus.NOT_FOUND: response_definition("Unknown payment"),
         }
 
@@ -211,7 +213,9 @@ class VaspRoutes:
             external_root = (
                 os.getenv("MY_EXTERNAL_URL", "http://127.0.0.1:5000").strip("/") + "/"
             )
-            payment_form_url = external_root + 'pay/index.html?payment=' + new_payment.id
+            payment_form_url = (
+                external_root + "pay/index.html?payment=" + new_payment.id
+            )
             self.logger.debug(f"payment form url: {payment_form_url}")
             return payment_form_url
 

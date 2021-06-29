@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
-import BackendClient, {Order} from "../services/merchant";
-import {Alert, Button, Container, Spinner} from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import BackendClient, { Order } from "../services/merchant";
+import { Alert, Button, Container, Spinner } from "reactstrap";
 import InfoField from "./InfoField";
 import OrderProducts from "./OrderProducts";
 import LinkField from "./LinkField";
@@ -154,11 +154,7 @@ function OrderDetails({ orderId }: OrderDetailsProps) {
             </div>
 
             <div className="d-flex justify-content-center mt-5">
-              <a
-                href={`admin/order/${orderId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={`admin/order/${orderId}`} target="_blank" rel="noopener noreferrer">
                 #permalink
               </a>
             </div>

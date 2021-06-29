@@ -48,10 +48,7 @@ function Home() {
               {products.map((product, i) => (
                 <Col key={product.gtin} md={6} lg={4}>
                   <Card key={product.gtin} className="mb-4">
-                    <CardImg
-                      top
-                      src={product.image_url}
-                    />
+                    <CardImg top src={product.image_url} />
                     <CardBody>
                       <CardTitle className="font-weight-bold h5">{product.name}</CardTitle>
                       <CardText>{product.description}</CardText>
