@@ -52,36 +52,6 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
 
   const timeoutRef = useRef<NodeJS.Timeout>();
 
-  // Polls the payment status
-  useEffect(() => {
-    const checkPaymentStatus = async () => {
-      try {
-        if (paymentState !== "paying") return;
-
-        const status = await new BackendClient().getPaymentStatus(
-          paymentProcessingDetails!.orderId
-        );
-
-        if (status === "cleared") {
-          setPaymentState("paymentCleared");
-        } else {
-          timeoutRef.current = setTimeout(checkPaymentStatus, 1000);
-        }
-      } catch (e) {
-        console.error("Unexpected error", e);
-      }
-    };
-
-    // noinspection JSIgnoredPromiseFromCall
-    checkPaymentStatus();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [paymentState, paymentProcessingDetails]);
-
   const onModalClosed = () => {
     setPaymentState("inactive");
     onClose();
