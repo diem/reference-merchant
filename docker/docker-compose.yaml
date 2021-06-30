@@ -1,6 +1,6 @@
 version: '3.4'
 services:
-  gateway:
+  merchant-gateway:
     image: lrm-gateway
     build:
       context: ../gateway
@@ -16,12 +16,11 @@ services:
       context: ../merchant/backend
     environment:
       - COMPOSE_ENV=production
-      - PAYMENT_VASP_URL=http://vasp-backend-web:5000
+      - PAYMENT_VASP_URL=http://merchant-vasp-backend-web:5000
       - VASP_TOKEN=abcdefghijklmnop
     restart: always
 
-
-  vasp-backend-web:
+  merchant-vasp-backend-web:
     image: lrm-vasp-backend
     build:
       context: ..
@@ -29,35 +28,35 @@ services:
     env_file:
       - ../vasp/backend/.env
     environment:
-      - REDIS_HOST=redis
+      - REDIS_HOST=merchant-redis
       - COMPOSE_ENV=production
-      - DB_URL=postgresql://backenduser:backendpassword@db/vasp_backend_db
+      - DB_URL=postgresql://backenduser:backendpassword@merchant-db/vasp_backend_db
       - MY_EXTERNAL_URL=http://localhost:8000/vasp
       - WALLET_URL=http://localhost:8080
-    command: sh -c "./wait.sh db 5432 && ./run_web.sh"
+    command: sh -c "./wait.sh merchant-db 5432 && ./run_web.sh"
     restart: always
 
-  vasp-backend-pubsub:
+  merchant-vasp-backend-pubsub:
     image: lrm-vasp-backend
     env_file:
       - ../vasp/backend/.env
     environment:
-      - REDIS_HOST=redis
-      - DB_URL=postgresql://backenduser:backendpassword@db/vasp_backend_db
+      - REDIS_HOST=merchant-redis
+      - DB_URL=postgresql://backenduser:backendpassword@merchant-db/vasp_backend_db
     restart: always
-    command: sh -c "./wait.sh db 5432 && ./run_pubsub.sh"
+    command: sh -c "./wait.sh merchant-db 5432 && ./run_pubsub.sh"
 
-  vasp-backend-worker:
+  merchant-vasp-backend-worker:
     image: lrm-vasp-backend
     env_file:
       - ../vasp/backend/.env
     environment:
-      - REDIS_HOST=redis
-      - DB_URL=postgresql://backenduser:backendpassword@db/vasp_backend_db
-    command: sh -c "./wait.sh db 5432 && ./run_worker.sh"
+      - REDIS_HOST=merchant-redis
+      - DB_URL=postgresql://backenduser:backendpassword@merchant-db/vasp_backend_db
+    command: sh -c "./wait.sh merchant-db 5432 && ./run_worker.sh"
     restart: always
 
-  liquidity:
+  merchant-liquidity:
     image: lrm-liquidity
     build:
       context: ../liquidity
@@ -66,19 +65,19 @@ services:
       - ../liquidity/.env
     environment:
       - COMPOSE_ENV=production
-      - LP_DB_URL=postgresql://backenduser:backendpassword@db/liquidity_provider_db
+      - LP_DB_URL=postgresql://backenduser:backendpassword@merchant-db/liquidity_provider_db
       - ADMIN_USERNAME=admin@lrm
-      - LIQUIDITY_SERVICE_HOST=liquidity
+      - LIQUIDITY_SERVICE_HOST=merchant-liquidity
       - LIQUIDITY_SERVICE_PORT=5000
-    command: sh -c "/liquidity/wait.sh db 5432 && /liquidity/run.sh"
+    command: sh -c "/liquidity/wait.sh merchant-db 5432 && /liquidity/run.sh"
     restart: always
 
-  redis:
+  merchant-redis:
     image: redis:5
     restart: always
 
-  db:
-    image: lrm_db
+  merchant-db:
+    image: lrm-db
     build:
       context: ./pg
     restart: always
@@ -86,8 +85,8 @@ services:
       - POSTGRES_PASSWORD=backenduser
       - POSTGRES_USER=backendpassword
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - merchant-pg-data:/var/lib/postgresql/data
 
 volumes:
-  pg-data:
+  merchant-pg-data:
     driver: local

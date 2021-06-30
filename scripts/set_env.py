@@ -56,7 +56,7 @@ compliance_private_key = Ed25519PrivateKey.generate()
 
 GW_PORT = os.getenv("GW_PORT", 8080)
 ENV_FILE_NAME = os.getenv("ENV_FILE_NAME", ".env")
-LIQUIDITY_SERVICE_HOST = os.getenv("LIQUIDITY_SERVICE_HOST", "liquidity")
+LIQUIDITY_SERVICE_HOST = os.getenv("LIQUIDITY_SERVICE_HOST", "merchant-liquidity")
 LIQUIDITY_SERVICE_PORT = os.getenv("LIQUIDITY_SERVICE_PORT", 5000)
 JSON_RPC_URL = os.getenv("JSON_RPC_URL", "https://testnet.diem.com/v1")
 FAUCET_URL = os.getenv("FAUCET_URL", "https://testnet.diem.com/mint")
