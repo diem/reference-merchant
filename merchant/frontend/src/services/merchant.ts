@@ -80,7 +80,7 @@ export default class BackendClient {
     return {
       orderId: response.data.order_id,
       vaspPaymentId: response.data.vasp_payment_id,
-      paymentFormUrl: response.data.payment_form_url,
+      paymentFormUrl: `${response.data.payment_form_url}&orderId=${response.data.order_id}`,
     };
   }
 

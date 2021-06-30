@@ -14,7 +14,7 @@ ReactDOM.render(
   <React.StrictMode>
     <div className="payment-gateway">
       <h2 className="mb-4">Pay with Diem</h2>
-      <DiemCheckout paymentId={query.get("payment")!} />
+      <DiemCheckout paymentId={query.get("payment")!} orderId={query.get("orderId")}/>
     </div>
   </React.StrictMode>,
   document.getElementById("root")
