@@ -20,9 +20,10 @@ import {faQuestionCircle,} from "@fortawesome/free-solid-svg-icons";
 export interface DiemCheckoutProps {
   paymentId: string;
   orderId: string | null;
+  demoMode?: string | null;
 }
 
-export default function DiemCheckout({ paymentId, orderId }: DiemCheckoutProps) {
+export default function DiemCheckout({ paymentId, orderId, demoMode }: DiemCheckoutProps) {
   const [paymentOptions, setPaymentOptions] = useState<
     PaymentOptions | undefined
   >();
@@ -150,6 +151,7 @@ export default function DiemCheckout({ paymentId, orderId }: DiemCheckoutProps) 
               <PayWithDiem
                 paymentInfo={paymentOptions}
                 orderId={orderId}
+                demoMode={demoMode}
               />
             </div>
             <div className="text-center small py-4 font-weight-bold">

@@ -18,10 +18,11 @@ import ProductsLoader from "../components/ProductsLoader";
 import BackendClient from "../services/merchant";
 import TestnetWarning from "../components/TestnetWarning";
 
-function Home() {
+function Home(props) {
   const { t } = useTranslation("layout");
   const [selectedProduct, setSelectedProduct] = useState<Product>();
   const [products, setProducts] = useState<Product[] | undefined>();
+  const [demoMode, setDemoMode] = useState<boolean>(props.demoMode === undefined? false : true);
 
   const getProducts = async () => {
     try {
@@ -81,6 +82,7 @@ function Home() {
         </section>
       </Container>
       <Payment
+        demoMode={demoMode}
         product={selectedProduct}
         isOpen={!!selectedProduct}
         onClose={() => setSelectedProduct(undefined)}

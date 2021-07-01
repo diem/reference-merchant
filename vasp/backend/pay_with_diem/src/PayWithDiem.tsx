@@ -9,9 +9,10 @@ import {PaymentOptions} from "./vasp";
 interface PayWithDiemProps {
   paymentInfo:PaymentOptions;
   orderId: string | null;
+  demoMode?: string | null | undefined;
 }
 
-function PayWithDiem({ paymentInfo, orderId }: PayWithDiemProps) {
+function PayWithDiem({ paymentInfo, orderId, demoMode }: PayWithDiemProps) {
   const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>();
   const [link, setLink] = useState('')
 
@@ -23,13 +24,14 @@ function PayWithDiem({ paymentInfo, orderId }: PayWithDiemProps) {
   const merchantName = 'acme-store';
   const checkoutDataType = 'PAYMENT_REQUEST';
   const action = 'CHARGE';
-  const expiration = new Date(new Date().getTime() + 10 * 60000).toISOString();
-  const redirectUrl = `https://demo-merchant.diem.com/order/${orderId}/checkout/complete`;
+  const expiration = encodeURIComponent(new Date(new Date().getTime() + 10 * 60000).toISOString());
+  const redirectUrl = `${paymentInfo.baseMerchantURL}/order/${orderId}/checkout/complete`;
+  const demo = demoMode ? '&demo=True' : "";
 
   useEffect(()=>{
     let redirect: string = '';
     if (paymentInfo !== undefined){
-        redirect = `${paymentInfo.walletURL}/?vaspAddress=${vaspAddress}&referenceId=${orderId}&merchantName=${merchantName}&checkoutDataType=${checkoutDataType}&action=${action}&amount=${paymentInfo.options[0].amount}&currency=${paymentInfo.options[0].currency}&expiration=${expiration}&redirectUrl=${redirectUrl}`;
+        redirect = `${paymentInfo.walletURL}/?vaspAddress=${vaspAddress}&referenceId=${orderId}&merchantName=${merchantName}&checkoutDataType=${checkoutDataType}&action=${action}&amount=${paymentInfo.options[0].amount}&currency=${paymentInfo.options[0].currency}&expiration=${expiration}&redirectUrl=${redirectUrl}${demo}`;
       setLink(redirect)
     }
   },[paymentInfo])

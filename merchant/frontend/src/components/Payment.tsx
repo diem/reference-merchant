@@ -7,10 +7,11 @@ import OrderDetails from "./OrderDetails";
 export interface PaymentProps {
   product?: Product;
   isOpen: boolean;
+  demoMode?: boolean;
   onClose: () => void;
 }
 
-export default function Payment({ product, isOpen, onClose }: PaymentProps) {
+export default function Payment({ product, isOpen, demoMode, onClose }: PaymentProps) {
   const [paymentProcessingDetails, setPaymentProcessingDetails] = useState<
     PaymentProcessingDetails | undefined
   >();
@@ -31,7 +32,6 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
         if (paymentState !== "fetchingProcessingDetails") return;
 
         const payment = await new BackendClient().checkoutOne(product!.gtin);
-        console.log(payment);
 
         if (!isOutdated) {
           setPaymentProcessingDetails(payment);
@@ -71,7 +71,11 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
           <iframe
             title="Checkout form"
             height="560"
-            src={paymentProcessingDetails?.paymentFormUrl}
+            src={
+              demoMode
+                ? `${paymentProcessingDetails?.paymentFormUrl}&demoMode=True`
+                : paymentProcessingDetails?.paymentFormUrl
+            }
             frameBorder="0"
             allowFullScreen
           />

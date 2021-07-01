@@ -149,3 +149,4 @@ class PaymentOptionsSchema(Schema):
     fiat_currency = fiat_currency_code_field()
     options = fields.List(fields.Nested(PaymentOptionSchema), required=True)
     wallet_url = fields.Str(allow_none=True)
+    base_merchant_url = fields.Str(allow_none=True)
