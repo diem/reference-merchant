@@ -20,7 +20,7 @@ function PayWithDiem({ paymentInfo, orderId, demoMode }: PayWithDiemProps) {
     fetchAvailablePaymentOptions().then(setPaymentOptions);
   }, []);
 
-  const vaspAddress = 'tdm1pgyne6my63v9j0ffwfnvn76mq398909f85gys03crzuwv0';
+  const vaspAddress = paymentInfo.vaspAddress.split("'")[1];
   const merchantName = 'acme-store';
   const checkoutDataType = 'PAYMENT_REQUEST';
   const action = 'CHARGE';

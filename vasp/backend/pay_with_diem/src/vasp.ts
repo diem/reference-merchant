@@ -16,6 +16,7 @@ export interface PaymentOptions {
   options: PaymentOption[];
   walletURL: string;
   baseMerchantURL: string;
+  vaspAddress: string;
 }
 
 export default class Vasp {
@@ -40,6 +41,7 @@ export default class Vasp {
       fiatCurrency: response.data.fiat_currency,
       walletURL: response.data.wallet_url,
       baseMerchantURL: response.data.base_merchant_url,
+      vaspAddress: response.data.vasp_address,
       options: response.data.options.map((op: any) => ({
         address: op.address,
         currency: op.currency,

@@ -29,6 +29,7 @@ from ..schemas import (
     BadArgsSchema,
     PaymentOptionsSchema,
 )
+from diem import identifier
 
 
 class PaymentNotFound(werkzeug.exceptions.NotFound):
@@ -139,6 +140,12 @@ class VaspRoutes:
             HTTPStatus.NOT_FOUND: response_definition("Unknown payment"),
         }
 
+        vaspAddress = os.getenv("VASP_ADDR")
+        chainId = os.getenv("CHAIN_ID")
+        sender_address=identifier.encode_account(
+            vaspAddress, 0, chainId
+        ),
+
         def get(self, payment_id):
             self._load_payment(payment_id)
             if not transaction_manager.payment_can_pay(self.payment):
@@ -154,6 +161,7 @@ class VaspRoutes:
                     fiat_currency=self.payment.requested_currency,
                     wallet_url=os.getenv("WALLET_URL"),
                     base_merchant_url=os.getenv("BASE_MERCHANT_URL"),
+                    vasp_address = self.sender_address,
                 ),
                 HTTPStatus.OK,
             )

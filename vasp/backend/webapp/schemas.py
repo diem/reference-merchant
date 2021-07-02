@@ -150,3 +150,4 @@ class PaymentOptionsSchema(Schema):
     options = fields.List(fields.Nested(PaymentOptionSchema), required=True)
     wallet_url = fields.Str(allow_none=True)
     base_merchant_url = fields.Str(allow_none=True)
+    vasp_address = fields.Str(allow_none=True)
