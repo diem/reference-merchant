@@ -141,7 +141,11 @@ class VaspRoutes:
         }
 
         vaspAddress = os.getenv("VASP_ADDR")
+        if vaspAddress is None:
+            vaspAddress = 'tdm1pgyne6my63v9j0ffwfnvn76mq398909f85gys03crzuwv0'
         chainId = os.getenv("CHAIN_ID")
+        if chainId is None:
+            chainId = 2
         sender_address=identifier.encode_account(
             vaspAddress, 0, chainId
         ),
