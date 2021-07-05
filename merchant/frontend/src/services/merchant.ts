@@ -116,21 +116,6 @@ export default class BackendClient {
     }
   }
 
-  public async getPaymentStatus(order_id: string): Promise<string> {
-    try {
-      const response = await this.client.get(`/orders/${order_id}/payment`);
-
-      return response.data.status;
-    } catch (e) {
-      if (e.response?.status === 404) {
-        return "Unknown";
-      }
-      console.error(e);
-      console.error(e.response);
-      throw e;
-    }
-  }
-
   public async getOrderDetails(order_id: string): Promise<Order | null> {
     try {
       const response = await this.client.get(`/orders/${order_id}`);

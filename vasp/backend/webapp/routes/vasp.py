@@ -147,7 +147,7 @@ class VaspRoutes:
         if chainId is None:
             chainId = 2
         sender_address=identifier.encode_account(
-            vaspAddress, 0, chainId
+            vaspAddress, 0, identifier.HRPS.get(chainId)
         ),
 
         def get(self, payment_id):
