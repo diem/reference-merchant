@@ -9,7 +9,7 @@ import {PaymentOptions} from "./vasp";
 interface PayWithDiemProps {
   paymentInfo:PaymentOptions;
   orderId: string | null;
-  demoMode?: string | null | undefined;
+  demoMode?: boolean;
 }
 
 function PayWithDiem({ paymentInfo, orderId, demoMode }: PayWithDiemProps) {

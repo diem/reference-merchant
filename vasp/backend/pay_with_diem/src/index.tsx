@@ -9,6 +9,7 @@ import DiemCheckout from "./components/DiemCheckout";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const query = new URLSearchParams(window.location.search);
+const demoMode = query.has("demoMode") ? true : false
 
 ReactDOM.render(
     <React.StrictMode>
@@ -17,7 +18,7 @@ ReactDOM.render(
             <DiemCheckout
                 paymentId={query.get("payment")!}
                 orderId={query.get("orderId")}
-                demoMode={query.get("demoMode")}
+                demoMode={demoMode}
             />
         </div>
     </React.StrictMode>,

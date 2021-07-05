@@ -20,7 +20,7 @@ import {faQuestionCircle,} from "@fortawesome/free-solid-svg-icons";
 export interface DiemCheckoutProps {
   paymentId: string;
   orderId: string | null;
-  demoMode?: string | null;
+  demoMode?: boolean;
 }
 
 export default function DiemCheckout({ paymentId, orderId, demoMode }: DiemCheckoutProps) {

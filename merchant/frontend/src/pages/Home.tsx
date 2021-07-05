@@ -22,7 +22,7 @@ function Home(props) {
   const { t } = useTranslation("layout");
   const [selectedProduct, setSelectedProduct] = useState<Product>();
   const [products, setProducts] = useState<Product[] | undefined>();
-  const [demoMode, setDemoMode] = useState<boolean>(props.demoMode === undefined? false : true);
+  const [demoMode, setDemoMode] = useState<boolean>(props.demoMode === undefined ? false : true);
 
   const getProducts = async () => {
     try {
