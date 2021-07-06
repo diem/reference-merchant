@@ -8,8 +8,8 @@ import {PaymentOptions} from "./vasp";
 
 interface PayWithDiemProps {
   paymentInfo:PaymentOptions;
-  orderId: string | null;
-  demoMode?: boolean;
+  orderId: string;
+  demoMode: boolean;
 }
 
 function PayWithDiem({ paymentInfo, orderId, demoMode }: PayWithDiemProps) {
@@ -19,7 +19,7 @@ function PayWithDiem({ paymentInfo, orderId, demoMode }: PayWithDiemProps) {
   useEffect(() => {
     fetchAvailablePaymentOptions().then(setPaymentOptions);
   }, []);
-
+  
   const vaspAddress = paymentInfo.vaspAddress.split("'")[1];
   const merchantName = 'acme-store';
   const checkoutDataType = 'PAYMENT_REQUEST';

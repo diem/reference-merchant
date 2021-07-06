@@ -14,7 +14,7 @@ function App() {
       <main>
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/demo" render={(props) => <Home demoMode={true} {...props} /> }/>
+          <Route path="/demo" render={(props) => <Home demoMode={true} {...props} />} />
           <Route path="/order/:orderId" component={ConfirmationPage} />
           <Route path="/admin/order/:orderId" component={OrderDetailsPage} />
           <Redirect to="/" />

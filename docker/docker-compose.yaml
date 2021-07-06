@@ -32,8 +32,6 @@ services:
       - COMPOSE_ENV=production
       - DB_URL=postgresql://backenduser:backendpassword@merchant-db/vasp_backend_db
       - MY_EXTERNAL_URL=http://localhost:8000/vasp
-      - WALLET_URL=http://localhost:8080
-      - BASE_MERCHANT_URL=http://localhost:8000
     command: sh -c "./wait.sh merchant-db 5432 && ./run_web.sh"
     restart: always
 

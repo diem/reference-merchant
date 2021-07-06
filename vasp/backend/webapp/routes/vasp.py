@@ -141,9 +141,12 @@ class VaspRoutes:
         }
         vaspAddress = os.getenv("VASP_ADDR")
         chainId = os.getenv("CHAIN_ID")
-        sender_address=identifier.encode_account(
-            vaspAddress, 0, identifier.HRPS.get(chainId, identifier.PDM)
-        ),
+        hrp = identifier.HRPS[int(chainId)]
+        sender_address = (
+            identifier.encode_account(
+                vaspAddress, '0000000000000000', hrp
+            ),
+        )
 
         def get(self, payment_id):
             self._load_payment(payment_id)
@@ -160,7 +163,7 @@ class VaspRoutes:
                     fiat_currency=self.payment.requested_currency,
                     wallet_url=os.getenv("WALLET_URL"),
                     base_merchant_url=os.getenv("BASE_MERCHANT_URL"),
-                    vasp_address = self.sender_address,
+                    vasp_address=self.sender_address,
                 ),
                 HTTPStatus.OK,
             )

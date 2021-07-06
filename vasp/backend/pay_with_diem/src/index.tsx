@@ -17,7 +17,7 @@ ReactDOM.render(
             <h2 className="mb-4">Pay with Diem</h2>
             <DiemCheckout
                 paymentId={query.get("payment")!}
-                orderId={query.get("orderId")}
+                orderId={query.get("orderId")!}
                 demoMode={demoMode}
             />
         </div>
