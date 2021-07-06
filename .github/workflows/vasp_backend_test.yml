@@ -23,9 +23,9 @@ jobs:
         run: |
           cd vasp/backend && pipenv install --dev
           cd ../..
+      - name: Setup Environment
+        run: |
+          ./scripts/lrm.sh setup_environment
       - name: Test with pytest
         run: |
           cd vasp/backend && ./test/test.sh
-        env:
-          CHAIN_ID: 2
-          JSON_RPC_URL: https://testnet.diem.com/v1
