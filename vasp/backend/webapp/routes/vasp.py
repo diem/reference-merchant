@@ -139,13 +139,8 @@ class VaspRoutes:
             ),
             HTTPStatus.NOT_FOUND: response_definition("Unknown payment"),
         }
-
         vaspAddress = os.getenv("VASP_ADDR")
-        if vaspAddress is None:
-            vaspAddress = '2d3366261195591a12c7d8959b20e460'
         chainId = os.getenv("CHAIN_ID")
-        if chainId is None:
-            chainId = 2
         sender_address=identifier.encode_account(
             vaspAddress, 0, identifier.HRPS.get(chainId, identifier.PDM)
         ),
