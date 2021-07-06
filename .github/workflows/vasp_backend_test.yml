@@ -23,9 +23,9 @@ jobs:
         run: |
           cd vasp/backend && pipenv install --dev
           cd ../..
-      - name: Setup Environment
+      - name: Create .env
         run: |
-          ./scripts/lrm.sh setup_environment
+          PIPENV_PIPFILE=vasp/backend/Pipfile pipenv run python scripts/set_env.py
       - name: Test with pytest
         run: |
           cd vasp/backend && ./test/test.sh
