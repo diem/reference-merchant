@@ -89,7 +89,7 @@ function ConfirmationDetails({ orderId }: OrderDetailsProps) {
           <Row className="mt-4">
             <Col xs={8}>{t("itemsTotal")}</Col>
             <Col xs={4} style={{ textAlign: "right" }}>
-              {order.totalPrice / 1000000} {order.currency}
+              {order.totalPrice / 1000000} XUS
             </Col>
           </Row>
           <Row className="mt-1">
@@ -109,7 +109,7 @@ function ConfirmationDetails({ orderId }: OrderDetailsProps) {
               {t("totalOrder")}
             </Col>
             <Col xs={4} style={{ textAlign: "right" }} className="font-weight-bold">
-              {order.totalPrice / 1000000} {order.currency}
+              {order.totalPrice / 1000000} XUS
             </Col>
           </Row>
         </>
