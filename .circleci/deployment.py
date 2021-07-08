@@ -32,6 +32,8 @@ REFERENCE_MERCHANT_KUB_SECRET_NAME = 'diem-reference-merchant'
 CHAIN_ID = testnet.CHAIN_ID.to_int()
 JSON_RPC_URL = testnet.JSON_RPC_URL
 CURRENCY = 'XUS'
+WALLET_URL = 'https://staging-diem-reference-wallet.dev.demo.firstdag.com/'
+BASE_MERCHANT_URL = 'https://demo-merchant.diem.com/'
 
 
 def get_account_from_private_key(private_key) -> LocalAccount:
@@ -245,6 +247,8 @@ class DiemReferenceMerchant(Deployment):
             'JSON_RPC_URL': JSON_RPC_URL,
             'CHAIN_ID': CHAIN_ID,
             'GAS_CURRENCY_CODE': CURRENCY,
+            'WALLET_URL': WALLET_URL,
+            'BASE_MERCHANT_URL': BASE_MERCHANT_URL
         }
         if env_vars is not None:
             environment_variables.update(env_vars)
