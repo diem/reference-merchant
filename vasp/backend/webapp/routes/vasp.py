@@ -143,9 +143,7 @@ class VaspRoutes:
         chainId = os.getenv("CHAIN_ID")
         hrp = identifier.HRPS[int(chainId)]
         sender_address = (
-            identifier.encode_account(
-                vaspAddress, '0000000000000000', hrp
-            ),
+            identifier.encode_account(vaspAddress, "0000000000000000", hrp),
         )
 
         def get(self, payment_id):
