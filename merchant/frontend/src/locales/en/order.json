@@ -17,13 +17,13 @@
     "payout_completed": "Payout completed"
   },
   "unknown": "Unknown payment ID.",
-  "orderOnTheWay": "Yay! Your order is on its way",
-  "gotYourOrder": "We got your order and we're working on it.",
-  "orderSummary": "Order summary:",
+  "order_on_the_way": "Yay! Your order is on its way",
+  "got_your_order": "We got your order and we're working on it.",
+  "order_summary": "Order summary:",
   "free": "FREE",
-  "totalOrder": "Total Order:",
-  "dutiesTaxes": "Duties, Taxes and Fees:",
+  "total_order": "Total Order:",
+  "duties_taxes": "Duties, Taxes and Fees:",
   "shipping": "Shipping:",
-  "itemsTotal": "Items Total:",
+  "items_Total": "Items Total:",
   "qty": "Qty"
 }

@@ -65,12 +65,12 @@ function ConfirmationDetails({ orderId }: OrderDetailsProps) {
           <div style={{ display: "flex", alignItems: "center" }}>
             <i className="fa fa-check-circle fa-4x" style={{ color: "#59a559" }} />
             <div style={{ marginLeft: 20, fontSize: 20, fontWeight: 500, color: "black" }}>
-              {t("orderOnTheWay")}
+              {t("order_on_the_way")}
             </div>
           </div>
           <div className="h5 mt-4 mb-4 font-weight-normal text-body">
-            {t("gotYourOrder")} <br />
-            {t("orderSummary")}
+            {t("got_your_order")} <br />
+            {t("order_summary")}
           </div>
           <Row style={{ alignItems: "center" }}>
             <Col xs={3}>
@@ -87,7 +87,7 @@ function ConfirmationDetails({ orderId }: OrderDetailsProps) {
             </Col>
           </Row>
           <Row className="mt-4">
-            <Col xs={8}>{t("itemsTotal")}</Col>
+            <Col xs={8}>{t("items_Total")}</Col>
             <Col xs={4} style={{ textAlign: "right" }}>
               {order.totalPrice / 1000000} XUS
             </Col>
@@ -99,14 +99,14 @@ function ConfirmationDetails({ orderId }: OrderDetailsProps) {
             </Col>
           </Row>
           <Row className="mt-1">
-            <Col xs={9}>{t("dutiesTaxes")}</Col>
+            <Col xs={9}>{t("duties_taxes")}</Col>
             <Col xs={3} className="pl-2">
               {t("free")}
             </Col>
           </Row>
           <Row className="mt-1">
             <Col xs={8} className="font-weight-bold">
-              {t("totalOrder")}
+              {t("total_order")}
             </Col>
             <Col xs={4} style={{ textAlign: "right" }} className="font-weight-bold">
               {order.totalPrice / 1000000} XUS

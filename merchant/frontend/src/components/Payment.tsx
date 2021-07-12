@@ -7,7 +7,7 @@ import OrderDetails from "./OrderDetails";
 export interface PaymentProps {
   product?: Product;
   isOpen: boolean;
-  demoMode?: boolean;
+  demoMode: boolean;
   onClose: () => void;
 }
 
