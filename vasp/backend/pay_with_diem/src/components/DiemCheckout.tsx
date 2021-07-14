@@ -19,14 +19,16 @@ import {faQuestionCircle,} from "@fortawesome/free-solid-svg-icons";
 
 export interface DiemCheckoutProps {
   paymentId: string;
+  orderId: string;
+  demoMode: boolean;
 }
 
-export default function DiemCheckout({ paymentId }: DiemCheckoutProps) {
+export default function DiemCheckout({ paymentId, orderId, demoMode }: DiemCheckoutProps) {
   const [paymentOptions, setPaymentOptions] = useState<
     PaymentOptions | undefined
   >();
   const [selectedOption, setSelectedOption] = useState(0);
-  const [chooseWallet, setChooseWallet] = useState(false);
+  const [chooseWallet, setChooseWallet] = useState(true);
 
   useEffect(() => {
     let isOutdated = false;
@@ -56,6 +58,11 @@ export default function DiemCheckout({ paymentId }: DiemCheckoutProps) {
   if (!paymentOptions) {
     return <div>Loading...</div>;
   }
+
+  const handleClick = () => {
+    setChooseWallet(false)
+  }
+
   return (
     <>
       <div className="w-100">
@@ -115,26 +122,7 @@ export default function DiemCheckout({ paymentId }: DiemCheckoutProps) {
         </Row>
       </div>
       <div>
-        {chooseWallet ? (
-          <>
-            <div className="mt-4">
-              <div className="text-center">Choose your wallet:</div>
-              <PayWithDiem
-                paymentLink={
-                  paymentOptions.options[selectedOption].paymentLink
-                }
-              />
-            </div>
-            <div className="text-center small py-4 font-weight-bold">
-              - OR -
-            </div>
-            <div className="text-center">
-              <Button color="primary" size="sm" onClick={() => setChooseWallet(false)}>
-                Scan QR
-              </Button>
-            </div>
-          </>
-        ) : (
+        {!chooseWallet ? (
           <>
             <QRCode
               className="img-fluid mt-4"
@@ -154,10 +142,25 @@ export default function DiemCheckout({ paymentId }: DiemCheckoutProps) {
               <Button color="primary" size="sm" onClick={() => setChooseWallet(true)}>
                 Open in Diem wallet
               </Button>
-              <FontAwesomeIcon size="xs" icon={faQuestionCircle} className="ml-2" id="openInWalletHelp" />
-              <UncontrolledTooltip target="openInWalletHelp">
-                Choose your Diem wallet
-              </UncontrolledTooltip>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mt-4">
+              <div className="text-center">Choose your wallet:</div>
+              <PayWithDiem
+                paymentInfo={paymentOptions}
+                orderId={orderId}
+                demoMode={demoMode}
+              />
+            </div>
+            <div className="text-center small py-4 font-weight-bold">
+              - OR -
+            </div>
+            <div className="text-center">
+              <Button color="primary" size="sm" onClick={()=>handleClick()}>
+                Scan QR
+              </Button>
             </div>
           </>
         )}

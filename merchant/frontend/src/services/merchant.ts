@@ -50,6 +50,7 @@ export interface Order {
   currency: string;
   products: ProductOrder[];
   paymentStatus: PaymentDetailedStatus;
+  image_url?: string;
 }
 
 export default class BackendClient {
@@ -79,7 +80,7 @@ export default class BackendClient {
     return {
       orderId: response.data.order_id,
       vaspPaymentId: response.data.vasp_payment_id,
-      paymentFormUrl: response.data.payment_form_url,
+      paymentFormUrl: `${response.data.payment_form_url}&orderId=${response.data.order_id}`,
     };
   }
 
@@ -111,21 +112,6 @@ export default class BackendClient {
       if (e.response?.status === 404) {
         return null;
       }
-      throw e;
-    }
-  }
-
-  public async getPaymentStatus(order_id: string): Promise<string> {
-    try {
-      const response = await this.client.get(`/orders/${order_id}/payment`);
-
-      return response.data.status;
-    } catch (e) {
-      if (e.response?.status === 404) {
-        return "Unknown";
-      }
-      console.error(e);
-      console.error(e.response);
       throw e;
     }
   }

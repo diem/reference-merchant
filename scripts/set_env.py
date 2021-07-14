@@ -56,7 +56,7 @@ compliance_private_key = Ed25519PrivateKey.generate()
 
 GW_PORT = os.getenv("GW_PORT", 8080)
 ENV_FILE_NAME = os.getenv("ENV_FILE_NAME", ".env")
-LIQUIDITY_SERVICE_HOST = os.getenv("LIQUIDITY_SERVICE_HOST", "liquidity")
+LIQUIDITY_SERVICE_HOST = os.getenv("LIQUIDITY_SERVICE_HOST", "merchant-liquidity")
 LIQUIDITY_SERVICE_PORT = os.getenv("LIQUIDITY_SERVICE_PORT", 5000)
 JSON_RPC_URL = os.getenv("JSON_RPC_URL", "https://testnet.diem.com/v1")
 FAUCET_URL = os.getenv("FAUCET_URL", "https://testnet.diem.com/mint")
@@ -65,6 +65,8 @@ OFFCHAIN_SERVICE_PORT: int = int(os.getenv("OFFCHAIN_SERVICE_PORT", 8091))
 VASP_BASE_URL = os.getenv("VASP_BASE_URL", "http://0.0.0.0:8091")
 VASP_COMPLIANCE_KEY = utils.private_key_bytes(compliance_private_key).hex()
 VASP_PUBLIC_KEY_BYTES = utils.public_key_bytes(compliance_private_key.public_key())
+WALLET_URL=os.getenv("WALLET_URL", "http://localhost:8080")
+BASE_MERCHANT_URL=os.getenv("BASE_MERCHANT_URL", "http://localhost:8000")
 
 wallet_account = LocalAccount.generate()
 
@@ -87,6 +89,8 @@ with open(wallet_env_file_path, "w") as dotenv:
     dotenv.write(f"LIQUIDITY_SERVICE_PORT={LIQUIDITY_SERVICE_PORT}\n")
     dotenv.write(f"OFFCHAIN_SERVICE_PORT={OFFCHAIN_SERVICE_PORT}\n")
     dotenv.write(f"JSON_RPC_URL={JSON_RPC_URL}\n")
+    dotenv.write(f"WALLET_URL={WALLET_URL}\n")
+    dotenv.write(f"BASE_MERCHANT_URL={BASE_MERCHANT_URL}\n")
     dotenv.write(f"FAUCET_URL={FAUCET_URL}\n")
     dotenv.write(f"CHAIN_ID={CHAIN_ID}\n")
 

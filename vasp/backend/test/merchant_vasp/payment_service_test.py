@@ -20,7 +20,7 @@ CURRENCY = DEFAULT_DIEM_CURRENCY
 
 def test_payment_to_wrong_address(db):
     with pytest.raises(
-            payment_service.WrongReceiverAddressException, match="wrongaddr"
+        payment_service.WrongReceiverAddressException, match="wrongaddr"
     ) as e:
         payment_service.process_incoming_transaction(
             version=0,
@@ -35,7 +35,7 @@ def test_payment_to_wrong_address(db):
 
 def test_payment_to_wrong_sub_address(db):
     with pytest.raises(
-            payment_service.PaymentForSubaddrNotFoundException, match="wrongsubaddr"
+        payment_service.PaymentForSubaddrNotFoundException, match="wrongsubaddr"
     ) as e:
         payment_service.process_incoming_transaction(
             sender_address=SENDER_MOCK_ADDR,
@@ -50,7 +50,7 @@ def test_payment_to_wrong_sub_address(db):
 
 def test_payment_status_invalid(db):
     with pytest.raises(
-            payment_service.PaymentStatusException, match="invalidpaymentstatus"
+        payment_service.PaymentStatusException, match="invalidpaymentstatus"
     ) as e:
         payment_service.process_incoming_transaction(
             sender_address=SENDER_MOCK_ADDR,
@@ -65,7 +65,7 @@ def test_payment_status_invalid(db):
 
 def test_payment_expired(db):
     with pytest.raises(
-            payment_service.PaymentExpiredException, match="paymentexpired"
+        payment_service.PaymentExpiredException, match="paymentexpired"
     ) as e:
         payment_service.process_incoming_transaction(
             sender_address=SENDER_MOCK_ADDR,
@@ -80,7 +80,7 @@ def test_payment_expired(db):
 
 def test_invalid_payment_amount(db):
     with pytest.raises(
-            payment_service.PaymentOptionNotFoundException, match="paymentoptionnotfound"
+        payment_service.PaymentOptionNotFoundException, match="paymentoptionnotfound"
     ) as e:
         payment_service.process_incoming_transaction(
             sender_address=SENDER_MOCK_ADDR,
@@ -93,7 +93,7 @@ def test_invalid_payment_amount(db):
         )
 
     with pytest.raises(
-            payment_service.PaymentOptionNotFoundException, match="paymentoptionnotfound"
+        payment_service.PaymentOptionNotFoundException, match="paymentoptionnotfound"
     ) as e:
         payment_service.process_incoming_transaction(
             sender_address=SENDER_MOCK_ADDR,
@@ -108,7 +108,7 @@ def test_invalid_payment_amount(db):
 
 def test_invalid_payment_currency(db):
     with pytest.raises(
-            payment_service.PaymentOptionNotFoundException, match="paymentoptionnotfound"
+        payment_service.PaymentOptionNotFoundException, match="paymentoptionnotfound"
     ) as e:
         payment_service.process_incoming_transaction(
             sender_address=SENDER_MOCK_ADDR,

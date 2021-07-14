@@ -68,7 +68,9 @@ MOCK_QUOTE = QuoteData(
 MOCK_TRADE = TradeId(UUID("f24d20f8-0011-4206-9736-afec37f7f7f3"))
 
 MOCK_LP_DETAILS = LPDetails(
-    sub_address="waka" * 8, vasp="b" * 32, IBAN_number="1" * 64,
+    sub_address="waka" * 8,
+    vasp="b" * 32,
+    IBAN_number="1" * 64,
 )
 
 FAKE_WALLET_PRIVATE_KEY = (
@@ -152,7 +154,9 @@ def db():
     payment.payment_options.extend(
         [
             PaymentOption(
-                payment_id=payment.id, amount=PAYMENT_AMOUNT, currency=PAYMENT_CURRENCY,
+                payment_id=payment.id,
+                amount=PAYMENT_AMOUNT,
+                currency=PAYMENT_CURRENCY,
             ),
             PaymentOption(
                 payment_id=payment.id,
@@ -180,7 +184,9 @@ def db():
         )
     )
     cleared_payment.add_chain_transaction(
-        sender_address=identifier.encode_account(SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR, CHAIN_HRP),
+        sender_address=identifier.encode_account(
+            SENDER_MOCK_ADDR, SENDER_MOCK_SUBADDR, CHAIN_HRP
+        ),
         amount=10,
         currency=DEFAULT_DIEM_CURRENCY,
         tx_id=CLEARED_TX_ID,

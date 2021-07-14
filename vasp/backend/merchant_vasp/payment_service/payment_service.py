@@ -31,13 +31,13 @@ def get_supported_currencies() -> Tuple[str]:
 
 
 def process_incoming_transaction(
-        version,
-        sender_address,
-        sender_sub_address,
-        receiver_address,
-        receiver_sub_address,
-        amount,
-        currency,
+    version,
+    sender_address,
+    sender_sub_address,
+    receiver_address,
+    receiver_sub_address,
+    amount,
+    currency,
 ) -> None:
     """This function receives incoming payment events from the chain"""
     # Check if the payment is intended for us - this address is configured via environment variable, see config.py
@@ -92,7 +92,9 @@ def generate_payment_options_with_qr(payment):
 
     vasp_addr = OnchainWallet().address_str
     logger.debug(f"Current vasp address: {vasp_addr}")
-    full_payment_addr = identifier.encode_account(vasp_addr, payment.subaddress, CHAIN_HRP)
+    full_payment_addr = identifier.encode_account(
+        vasp_addr, payment.subaddress, CHAIN_HRP
+    )
     logger.debug(f"Rendering full payment link: {full_payment_addr}")
 
     bech32addr = identifier.encode_account(vasp_addr, payment.subaddress, CHAIN_HRP)

@@ -55,7 +55,9 @@ def create_payment(currency, merchant_reference_id, amount, merchant_id):
 
         new_payment.payment_options.append(
             PaymentOption(
-                payment_id=new_payment.id, amount=quote_price, currency=quote_currency,
+                payment_id=new_payment.id,
+                amount=quote_price,
+                currency=quote_currency,
             )
         )
     Payment.add_payment(new_payment)
@@ -79,8 +81,9 @@ def refund(payment):
     if target_transaction.is_refund:
         raise InvalidPaymentStatus("refund_transaction")
 
-    refund_target_address, refund_target_sub_address = identifier.decode_account(target_transaction.sender_address,
-                                                                                 CHAIN_HRP)
+    refund_target_address, refund_target_sub_address = identifier.decode_account(
+        target_transaction.sender_address, CHAIN_HRP
+    )
     refund_target_address = utils.account_address_hex(refund_target_address)
     refund_target_sub_address = refund_target_sub_address.hex()
 
@@ -121,7 +124,14 @@ def payout(merchant: Merchant, payment: Payment):
 
     settlement_information = merchant.settlement_information
     settlement_currency = merchant.settlement_currency
-    if settlement_information in (None, "",) or settlement_currency in (None, ""):
+    if (
+        settlement_information
+        in (
+            None,
+            "",
+        )
+        or settlement_currency in (None, "")
+    ):
         raise InvalidPaymentStatus("invalid_merchant_information")
 
     client_payments = [
@@ -139,14 +149,16 @@ def payout(merchant: Merchant, payment: Payment):
     db_session.commit()
     # 2. Send requested amount
     payout_target, quote = liquidity_provider.pay_out(
-        settlement_currency, client_payment.amount, merchant.settlement_information,
+        settlement_currency,
+        client_payment.amount,
+        merchant.settlement_information,
     )
     # 3. Pay according to quote to payout_target
     tx_id, _ = OnchainWallet().send_transaction(
         DiemCurrency(client_payment.currency),
         client_payment.amount,
         liquidity_provider.vasp_address(),
-        payout_target.bytes[:utils.SUB_ADDRESS_LEN].hex(),
+        payout_target.bytes[: utils.SUB_ADDRESS_LEN].hex(),
     )
     payment.set_status(PaymentStatus.payout_completed)
     db_session.commit()
@@ -156,13 +168,18 @@ def payout(merchant: Merchant, payment: Payment):
 
 def get_payment_events(payment):
     return [
-        {"created_at": payment_log.created_at, "status": payment_log.status, }
+        {
+            "created_at": payment_log.created_at,
+            "status": payment_log.status,
+        }
         for payment_log in payment.payment_status_logs
     ]
 
 
 def get_merchant_full_addr(payment):
-    return identifier.encode_account(OnchainWallet().address_str, payment.subaddress, CHAIN_HRP)
+    return identifier.encode_account(
+        OnchainWallet().address_str, payment.subaddress, CHAIN_HRP
+    )
 
 
 def get_merchant_payments(merchant):
@@ -207,8 +224,8 @@ def payment_chain_txs(payment: Payment):
 
 def payment_can_pay(payment: Payment):
     return (
-            payment.status == PaymentStatus.created
-            and payment.expiry_date >= datetime.utcnow()
+        payment.status == PaymentStatus.created
+        and payment.expiry_date >= datetime.utcnow()
     )
 
 

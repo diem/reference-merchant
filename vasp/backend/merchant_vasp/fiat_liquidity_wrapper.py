@@ -30,7 +30,10 @@ class FiatLiquidityWrapper:
                 f"Could not get quote from {self.base_currency} to {quote_currency}"
             )
             return None
-        return self.liquidity_provider.get_quote(currency_pair, amount,)
+        return self.liquidity_provider.get_quote(
+            currency_pair,
+            amount,
+        )
 
     def quote_price(self, quote_currency, amount):
         quote = self.quote(quote_currency, amount)

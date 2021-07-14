@@ -9,19 +9,20 @@ import DiemCheckout from "./components/DiemCheckout";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const query = new URLSearchParams(window.location.search);
+const demoMode = query.has("demoMode") ? true : false
 
 ReactDOM.render(
-  <React.StrictMode>
-    <div className="payment-gateway">
-      <h2 className="mb-4">Pay with Diem</h2>
-      <DiemCheckout paymentId={query.get("payment")!} />
-    </div>
-    <div className="payment-gateway" style={{ opacity: 0.25 }}>
-    </div>
-    <div className="payment-gateway" style={{ opacity: 0.25 }}>
-    </div>
-  </React.StrictMode>,
-  document.getElementById("root")
+    <React.StrictMode>
+        <div className="payment-gateway">
+            <h2 className="mb-4">Pay with Diem</h2>
+            <DiemCheckout
+                paymentId={query.get("payment")!}
+                orderId={query.get("orderId")!}
+                demoMode={demoMode}
+            />
+        </div>
+    </React.StrictMode>,
+    document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

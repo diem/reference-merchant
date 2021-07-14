@@ -29,6 +29,7 @@ from ..schemas import (
     BadArgsSchema,
     PaymentOptionsSchema,
 )
+from diem import identifier
 
 
 class PaymentNotFound(werkzeug.exceptions.NotFound):
@@ -133,9 +134,17 @@ class VaspRoutes:
         summary = "Get available checkout options for a payment"
 
         responses = {
-            HTTPStatus.OK: response_definition("Checkout options fetched", schema=PaymentOptionsSchema),
+            HTTPStatus.OK: response_definition(
+                "Checkout options fetched", schema=PaymentOptionsSchema
+            ),
             HTTPStatus.NOT_FOUND: response_definition("Unknown payment"),
         }
+        vaspAddress = os.getenv("VASP_ADDR")
+        chainId = os.getenv("CHAIN_ID")
+        hrp = identifier.HRPS[int(chainId)]
+        sender_address = (
+            identifier.encode_account(vaspAddress, "0000000000000000", hrp),
+        )
 
         def get(self, payment_id):
             self._load_payment(payment_id)
@@ -150,6 +159,9 @@ class VaspRoutes:
                     ),
                     fiat_price=self.payment.requested_amount,
                     fiat_currency=self.payment.requested_currency,
+                    wallet_url=os.getenv("WALLET_URL"),
+                    base_merchant_url=os.getenv("BASE_MERCHANT_URL"),
+                    vasp_address=self.sender_address,
                 ),
                 HTTPStatus.OK,
             )
@@ -210,7 +222,9 @@ class VaspRoutes:
             external_root = (
                 os.getenv("MY_EXTERNAL_URL", "http://127.0.0.1:5000").strip("/") + "/"
             )
-            payment_form_url = external_root + 'pay/index.html?payment=' + new_payment.id
+            payment_form_url = (
+                external_root + "pay/index.html?payment=" + new_payment.id
+            )
             self.logger.debug(f"payment form url: {payment_form_url}")
             return payment_form_url
 

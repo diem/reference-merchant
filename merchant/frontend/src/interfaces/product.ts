@@ -1,6 +1,6 @@
 export type FiatCurrency = "USD" | "EUR";
 
-export type PaymentType = "direct"
+export type PaymentType = "direct";
 
 export interface Product {
   gtin: string;
