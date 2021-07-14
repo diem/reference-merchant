@@ -1,16 +1,17 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Button, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
-import BackendClient, {PaymentProcessingDetails} from "../services/merchant";
-import {Product} from "../interfaces/product";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal, ModalBody, ModalHeader, Spinner } from "reactstrap";
+import BackendClient, { PaymentProcessingDetails } from "../services/merchant";
+import { Product } from "../interfaces/product";
 import OrderDetails from "./OrderDetails";
 
 export interface PaymentProps {
   product?: Product;
   isOpen: boolean;
+  demoMode: boolean;
   onClose: () => void;
 }
 
-export default function Payment({ product, isOpen, onClose }: PaymentProps) {
+export default function Payment({ product, isOpen, demoMode, onClose }: PaymentProps) {
   const [paymentProcessingDetails, setPaymentProcessingDetails] = useState<
     PaymentProcessingDetails | undefined
   >();
@@ -51,36 +52,6 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
 
   const timeoutRef = useRef<NodeJS.Timeout>();
 
-  // Polls the payment status
-  useEffect(() => {
-    const checkPaymentStatus = async () => {
-      try {
-        if (paymentState !== "paying") return;
-
-        const status = await new BackendClient().getPaymentStatus(
-          paymentProcessingDetails!.orderId
-        );
-
-        if (status === "cleared") {
-          setPaymentState("paymentCleared");
-        } else {
-          timeoutRef.current = setTimeout(checkPaymentStatus, 1000);
-        }
-      } catch (e) {
-        console.error("Unexpected error", e);
-      }
-    };
-
-    // noinspection JSIgnoredPromiseFromCall
-    checkPaymentStatus();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [paymentState, paymentProcessingDetails]);
-
   const onModalClosed = () => {
     setPaymentState("inactive");
     onClose();
@@ -100,7 +71,11 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
           <iframe
             title="Checkout form"
             height="560"
-            src={paymentProcessingDetails?.paymentFormUrl}
+            src={
+              demoMode
+                ? `${paymentProcessingDetails?.paymentFormUrl}&demoMode=True`
+                : paymentProcessingDetails?.paymentFormUrl
+            }
             frameBorder="0"
             allowFullScreen
           />
@@ -111,21 +86,6 @@ export default function Payment({ product, isOpen, onClose }: PaymentProps) {
             <i className="fa fa-check" /> Paid successfully!
           </h4>
         )}
-
-        <div className="p-2 text-center">
-          <Button
-            disabled={false}
-            onClick={() => setShowOrderDetails(true)}
-            className="btn-sm"
-            color="dark"
-            block
-          >
-            See order details
-          </Button>
-        </div>
-
-        <OrderDetailsModal orderId={paymentProcessingDetails?.orderId} isOpen={showOrderDetails} onClose={() => setShowOrderDetails(false)} />
-
       </ModalBody>
     </Modal>
   );
@@ -141,9 +101,7 @@ function OrderDetailsModal({ orderId, isOpen, onClose }: OrderDetailsModalProps)
   return (
     <Modal isOpen={isOpen} centered={true} size="md" toggle={onClose} fade={true}>
       <ModalHeader toggle={onClose} />
-      <ModalBody className="p-0">
-        {orderId && <OrderDetails orderId={orderId}/>}
-      </ModalBody>
+      <ModalBody className="p-0">{orderId && <OrderDetails orderId={orderId} />}</ModalBody>
     </Modal>
   );
 }

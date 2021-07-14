@@ -22,10 +22,6 @@ body {
 }
 
 .payment-gateway {
-  border: 1px solid #eee;
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
 
   display: flex;

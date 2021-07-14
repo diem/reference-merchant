@@ -59,7 +59,9 @@ MOCK_QUOTE = QuoteData(
 MOCK_TRADE = TradeId(UUID("f24d20f8-0011-4206-9736-afec37f7f7f3"))
 
 MOCK_LP_DETAILS = LPDetails(
-    sub_address="waka" * 8, vasp="b" * 32, IBAN_number="1" * 64,
+    sub_address="waka" * 8,
+    vasp="b" * 32,
+    IBAN_number="1" * 64,
 )
 
 FAKE_WALLET_PRIVATE_KEY = (

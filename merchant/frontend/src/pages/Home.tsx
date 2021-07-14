@@ -18,10 +18,11 @@ import ProductsLoader from "../components/ProductsLoader";
 import BackendClient from "../services/merchant";
 import TestnetWarning from "../components/TestnetWarning";
 
-function Home() {
+function Home(props) {
   const { t } = useTranslation("layout");
   const [selectedProduct, setSelectedProduct] = useState<Product>();
   const [products, setProducts] = useState<Product[] | undefined>();
+  const [demoMode, setDemoMode] = useState<boolean>(props.demoMode === undefined ? false : true);
 
   const getProducts = async () => {
     try {
@@ -48,10 +49,7 @@ function Home() {
               {products.map((product, i) => (
                 <Col key={product.gtin} md={6} lg={4}>
                   <Card key={product.gtin} className="mb-4">
-                    <CardImg
-                      top
-                      src={product.image_url}
-                    />
+                    <CardImg top src={product.image_url} />
                     <CardBody>
                       <CardTitle className="font-weight-bold h5">{product.name}</CardTitle>
                       <CardText>{product.description}</CardText>
@@ -61,10 +59,6 @@ function Home() {
                         <Col>
                           <div>
                             <strong>Price:</strong> {product.price / 1000000} {product.currency}
-                          </div>
-                          <div>
-                            <strong>Payment Type:</strong>{" "}
-                            <span className="text-capitalize">{product.payment_type}</span>
                           </div>
                         </Col>
                         <Col lg={4} className="text-right">
@@ -88,6 +82,7 @@ function Home() {
         </section>
       </Container>
       <Payment
+        demoMode={demoMode}
         product={selectedProduct}
         isOpen={!!selectedProduct}
         onClose={() => setSelectedProduct(undefined)}

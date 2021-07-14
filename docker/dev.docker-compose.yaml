@@ -1,6 +1,6 @@
 version: '3.4'
 services:
-  gateway:
+  merchant-gateway:
     build:
       target: dynamic_conf
     volumes:
@@ -23,7 +23,7 @@ services:
       - ../merchant/frontend:/app
       - /app/node_modules/
 
-  vasp-backend-web:
+  merchant-vasp-backend-web:
     build:
       args:
         REACT_APP_BACKEND_URL: "/vasp"
@@ -34,18 +34,18 @@ services:
       - ../vasp/backend:/vasp-backend
       - /vasp-backend/src
 
-  vasp-backend-pubsub:
+  merchant-vasp-backend-pubsub:
     volumes:
       - ../vasp/backend:/vasp-backend
       - /vasp-backend/src
 
-  liquidity:
+  merchant-liquidity:
     environment:
       - COMPOSE_ENV=development
     volumes:
       - ../liquidity:/liquidity
       - /liquidity/src
 
-  db:
+  merchant-db:
     ports:
       - 25432:5432

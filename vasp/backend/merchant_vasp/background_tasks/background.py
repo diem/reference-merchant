@@ -14,8 +14,13 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
     sender_sub_address = None
     receiver_sub_address = None
 
-    if metadata and isinstance(metadata, diem_types.Metadata__GeneralMetadata) \
-            and isinstance(metadata.value, diem_types.GeneralMetadata__GeneralMetadataVersion0):
+    if (
+        metadata
+        and isinstance(metadata, diem_types.Metadata__GeneralMetadata)
+        and isinstance(
+            metadata.value, diem_types.GeneralMetadata__GeneralMetadataVersion0
+        )
+    ):
         general_metadata = metadata.value.value
 
         if general_metadata.to_subaddress:
@@ -25,10 +30,15 @@ def process_incoming_txn(txn: LRWPubSubEvent) -> None:
             sender_sub_address = general_metadata.from_subaddress.hex()
 
     try:
-        process_incoming_transaction(version=txn.version, sender_address=txn.sender,
-                                     sender_sub_address=sender_sub_address, receiver_address=txn.receiver,
-                                     receiver_sub_address=receiver_sub_address, amount=txn.amount,
-                                     currency=DiemCurrency[txn.currency])
+        process_incoming_transaction(
+            version=txn.version,
+            sender_address=txn.sender,
+            sender_sub_address=sender_sub_address,
+            receiver_address=txn.receiver,
+            receiver_sub_address=receiver_sub_address,
+            amount=txn.amount,
+            currency=DiemCurrency[txn.currency],
+        )
     except PaymentServiceException as _:
         # TODO - log exception
         db_session.rollback()

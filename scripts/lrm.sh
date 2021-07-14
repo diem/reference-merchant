@@ -92,8 +92,6 @@ develop() {
   local follow=${2:-true}
   echo "debug mode with gw port ${port}"
 
-  docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} pull redis
-
   GW_PORT=$port docker-compose -f ${COMPOSE_YAML} -f ${COMPOSE_DEV_YAML} up --detach --no-build
 
   if [ "$follow" == true ]; then

@@ -4,17 +4,26 @@
   "event": "Event",
   "status": {
     "title": "Status",
-    "created":  "Created",
+    "created": "Created",
     "cleared": "Cleared",
-    "rejected":  "Rejected",
-    "refunded":  "Refunded",
+    "rejected": "Rejected",
+    "refunded": "Refunded",
     "Refund requested": "Refund requested",
     "Refund rejected": "Refund rejected",
     "Refund refunded": "Refunded",
     "Refund error": "Refund error",
     "error": "Error",
-    "payout_processing":  "Started payout",
+    "payout_processing": "Started payout",
     "payout_completed": "Payout completed"
   },
-  "unknown": "Unknown payment ID."
+  "unknown": "Unknown payment ID.",
+  "order_on_the_way": "Yay! Your order is on its way",
+  "got_your_order": "We got your order and we're working on it.",
+  "order_summary": "Order summary:",
+  "free": "FREE",
+  "total_order": "Total Order:",
+  "duties_taxes": "Duties, Taxes and Fees:",
+  "shipping": "Shipping:",
+  "items_Total": "Items Total:",
+  "qty": "Qty"
 }

@@ -169,7 +169,9 @@ api.add_url_rule(
 )
 
 api.add_url_rule(
-    rule="/payments", view_func=CheckoutView.as_view("checkout"), methods=["POST"],
+    rule="/payments",
+    view_func=CheckoutView.as_view("checkout"),
+    methods=["POST"],
 )
 
 api.add_url_rule(
