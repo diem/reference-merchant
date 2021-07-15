@@ -21,7 +21,7 @@ function PayWithDiem({ paymentInfo, orderId, demoMode }: PayWithDiemProps) {
   }, []);
   
   const vaspAddress = paymentInfo.vaspAddress.split("'")[1];
-  const merchantName = 'acme-store';
+  const merchantName = 'Demo Gift Shop';
   const checkoutDataType = 'PAYMENT_REQUEST';
   const action = 'CHARGE';
   const expiration = encodeURIComponent(new Date(new Date().getTime() + 10 * 60000).toISOString());
