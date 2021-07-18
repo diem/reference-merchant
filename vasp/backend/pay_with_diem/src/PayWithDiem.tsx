@@ -31,10 +31,10 @@ function PayWithDiem({ paymentInfo, orderId, demoMode }: PayWithDiemProps) {
   useEffect(()=>{
     let redirect: string = '';
     if (paymentInfo !== undefined){
+      redirect = `${paymentInfo.walletURL}/?vaspAddress=${vaspAddress}&referenceId=${orderId}`;
+
       if (demoMode){
-        redirect = `${paymentInfo.walletURL}/?vaspAddress=${vaspAddress}&referenceId=${orderId}&merchantName=${merchantName}&checkoutDataType=${checkoutDataType}&action=${action}&amount=${paymentInfo.options[0].amount}&currency=${paymentInfo.options[0].currency}&expiration=${expiration}&redirectUrl=${redirectUrl}${demo}`;
-      } else {
-        redirect = `${paymentInfo.walletURL}/?vaspAddress=${vaspAddress}&referenceId=${orderId}`;
+        redirect = `${redirect}&merchantName=${merchantName}&checkoutDataType=${checkoutDataType}&action=${action}&amount=${paymentInfo.options[0].amount}&currency=${paymentInfo.options[0].currency}&expiration=${expiration}&redirectUrl=${redirectUrl}${demo}`;
       }
       setLink(redirect)
     }
